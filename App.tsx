@@ -88,7 +88,7 @@ function App(): JSX.Element {
 
   return (
     <SafeAreaView style={{ gap: 20 }}>
-      <Button onPress={onPressUpload} title='Upload' />
+      <Button onPress={onPressUpload} title='Select File' />
       <Text style={{ fontSize: 30 }}>{status}</Text>
       <Text style={{marginHorizontal: 10}}>{resultText}</Text>
       {

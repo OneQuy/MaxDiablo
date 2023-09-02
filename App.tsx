@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import {
   Button,
   Platform,
-  SafeAreaView
+  SafeAreaView,
+  Text
 } from 'react-native';
 
 // @ts-ignore
 import { openPicker } from '@baronha/react-native-multiple-image-picker'
-import { FirebaseStorage_GetDownloadURL, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
+import { FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
+import { ToCanPrint } from './scr/common/UtilsTS';
 
 function App(): JSX.Element {
+  const [status, setStatus] = useState('')
+  const [resultText, setResultText] = useState('')
+
   const onPressUpload = async () => {
     const response = await openPicker();
 
@@ -22,6 +28,9 @@ function App(): JSX.Element {
     else {
       const path = Platform.OS === 'android' ? 'file://' + response[0].realPath : response[0].path;
 
+      setStatus('Uploading...')
+      setResultText('')
+
       const tempFilePath = 'tmpfile-' + Date.now()
       FirebaseInit()
       const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
@@ -29,6 +38,7 @@ function App(): JSX.Element {
 
       if (uplodaErr) {
         console.error('upload file fail', uplodaErr);
+        setStatus('Upload failed: ' + ToCanPrint(uplodaErr))
         return
       }
       else
@@ -38,6 +48,7 @@ function App(): JSX.Element {
 
       if (getURLRes.error) {
         console.error('FirebaseStorage_GetDownloadURLAsync', getURLRes.error);
+        setStatus('GetURL Failed: ' + ToCanPrint(getURLRes.error))
         return
       }
       else
@@ -61,18 +72,29 @@ function App(): JSX.Element {
       }
     };
 
+    setStatus('Processing...')
+
     try {
       const response = await axios.request(options);
       console.log('-------------------');
       console.log(response.data);
+      setStatus('SUCCESS')
+      setResultText(ToCanPrint(response.data))
     } catch (error) {
       console.error(error);
+      setStatus('OCR Failed: ' + ToCanPrint(error))
     }
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ gap: 20 }}>
       <Button onPress={onPressUpload} title='Upload' />
+      <Text style={{ fontSize: 30 }}>{status}</Text>
+      <Text style={{marginHorizontal: 10}}>{resultText}</Text>
+      {
+        resultText === '' ? undefined :
+        <Button onPress={() => Clipboard.setString(resultText)} title='Copy Result for Quy ^^' />
+      }
     </SafeAreaView>
   )
 }

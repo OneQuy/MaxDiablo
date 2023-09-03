@@ -1,6 +1,6 @@
 // file / dir
 
-import { Alert, Platform, AlertButton } from "react-native";
+import { Alert, Platform, AlertButton, PermissionsAndroid } from "react-native";
 
 const colorNameToHexDefines = {
     "aliceblue": "#f0f8ff",
@@ -300,10 +300,40 @@ export function ArrayBufferToBase64String(buffer: ArrayBuffer) {
     var binary = '';
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
-    
+
     for (var i = 0; i < len; i++) {
         binary += String.fromCharCode(bytes[i]);
     }
 
     return btoa(binary);
+}
+
+/**
+ * 
+ * @returns if granted: true, cancel: false, else return error
+ */
+export const RequestCameraPermissionAsync = async () => {
+    try {
+        if (Platform.OS !== 'android')
+            return true
+        
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+            {
+                title: "App Camera Permission",
+                message: "App needs access to your camera. Please accept it to take photo.",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "Accept"
+            }
+        )
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            return true
+        } else {
+           return false
+        }
+    } catch (err) {
+        return err
+    }
 }

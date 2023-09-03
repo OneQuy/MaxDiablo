@@ -1,62 +1,50 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 import {
+  Alert,
   Button,
+  Image,
   Platform,
   SafeAreaView,
-  Text
+  ScrollView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 // @ts-ignore
 import { openPicker } from '@baronha/react-native-multiple-image-picker'
 import { FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
-import { ToCanPrint } from './scr/common/UtilsTS';
+import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { ExtractSlotCard } from './scr/OCRUtils';
-
-
-const text = "ODD SIGNET\nAncestral Rare Ring\n792 Item Power\n• 25.0% Cold Resistance [25.0]%\n• 25.0% Lightning Resistance [25.01%\n• +497 Maximum Life [331-718]\n+ +17.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +14.0% Barrier Generation [7.0 -\n14.01%\n• Golems Inherit +4.4% of Your Thoms\n[4.2 - 7.0]%\nEmpty Vicious malignant socket\nTake\nLink\nSHIFT\nTSHIFT Compare\nRequires Level 80\nSell Value: 24,831"
-const text1 = "DOOM CASQUE OF\nMIGHT\nAncestral Legendary Helm\n800+25 Item Power\n◆ Upgrades: 5/5\n1,031 Armor\nD\n+20 Maximum Essence [8 - 20]\n+1,211 Maximum Life [559 - 1,211]\n+7.2% Total Armor [3.0 - 7.2]%\n10.3 % Cooldown Reduction [6.2 -\n10.3]%\n★ Basic Skills grant 20% Damage\nReduction for 6.0 [2.0-6.0] seconds.\n◆\nD\n◆\nD\nAspect unlocked by completing\nDark Ravine in Dry Steppes\n4.0% Maximum Life\nRELATED P\nEndgame Bone Spear Build\n*A tier c\nSANCTU"
-const text2 = "S\nfb\nX9gag\nORDER BURDEN\nAncestral Rare Amulet\n749 Item Power\n17.8% Resistance to All Elements\n[17.8]%\n◆ 5.2% Damage Reduction [3.1-7.3]%\n◆ +2 Ranks of All Companion Skills [1 -\n2]\n+7.7% Total Armor while in Werewolf\nForm [4.9-10.5]%\n◆ +2 Ranks of the Envenom Passive [1 -\n2] (Druid Only)\nEmpty Devious malignant socket\n1 dev\nRequires Level 80\n8\nG"
-const text3 = "INTENTAR\nETERNITY OFFER\nAncestral Rare Ring\n795 Item Power\n◆ 25.0% Fire Resistance [25.0]%\n◆ 25.0% Poison Resistance [25.01%\n+ +17.5% Critical Strike Damage [10.5 -\n17.5]%\n+16.0% Fortify Generation [15.0-\n22.01%\n+ +6.0% Lucky Hit Chance [3.2-6.01%\n++3.8% Critical Strike Chance [1.8-\n5.01%\nEmpty Vicious malignant socket\nTake\nTimals\nRequires Level 80\nSell Value: 24,995"
+import { FontSize, Outline, windowSize } from './scr/AppConstant';
+import {CameraOptions, launchCamera} from 'react-native-image-picker';
 
 function App(): JSX.Element {
+  const [userImgUri, setUserImgUri] = useState('')
   const [status, setStatus] = useState('')
-  const [resultText, setResultText] = useState('')
+  // const [resultText, setResultText] = useState('')
 
-  const onPressUpload = async (num: number) => {
-
-    let res
-
-    if (num === 0)
-      res = ExtractSlotCard(text)
-    if (num === 1)
-      res = ExtractSlotCard(text1)
-    if (num === 2)
-      res = ExtractSlotCard(text2)
-    if (num === 3)
-      res = ExtractSlotCard(text3)
-    console.log(JSON.stringify(res, null, 1));
-    
-    return
-
+  const onPressUpload = useCallback(async () => {
     const response = await openPicker();
 
     if (!response || response.lenght > 0) {
-      console.error('pls only pick 1 file');
+      Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
     }
     else {
       const path = Platform.OS === 'android' ? 'file://' + response[0].realPath : response[0].path;
-
+      setUserImgUri(path)
+      
+      return
       setStatus('Uploading...')
-      setResultText('')
 
       const tempFilePath = 'tmpfile-' + Date.now()
       FirebaseInit()
       const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
-
 
       if (uplodaErr) {
         console.error('upload file fail', uplodaErr);
@@ -78,7 +66,30 @@ function App(): JSX.Element {
 
       await detectFromImgUrl(getURLRes.url)
     }
-  };
+  }, [])
+
+  const onPressTakePhoto = useCallback(async () => {
+    const camRequestRes = await RequestCameraPermissionAsync()
+    
+    if (camRequestRes !== true) {
+      Clipboard.setString('cam req ' + ToCanPrint(camRequestRes))
+      return
+    }
+
+    const result = await launchCamera({saveToPhotos: false} as CameraOptions)
+
+    Clipboard.setString(ToCanPrint(result))
+
+    if (!result || !result.assets)
+      return
+    
+    const path = result.assets[0].uri
+
+    if (!path)
+      return
+
+    setUserImgUri(path)
+  }, [])
 
   const detectFromImgUrl = async (imgUrl: string) => {
     const options = {
@@ -101,7 +112,6 @@ function App(): JSX.Element {
       console.log('-------------------');
       console.log(response.data);
       setStatus('SUCCESS')
-      setResultText(ToCanPrint(response.data))
     } catch (error) {
       console.error(error);
       setStatus('OCR Failed: ' + ToCanPrint(error))
@@ -109,17 +119,39 @@ function App(): JSX.Element {
   };
 
   return (
-    <SafeAreaView style={{ gap: 20 }}>
-      <Button onPress={() => onPressUpload(0)} title='Select File' />
-      <Button onPress={() => onPressUpload(1)} title='Select File' />
-      <Button onPress={() => onPressUpload(2)} title='Select File' />
-      <Button onPress={() => onPressUpload(3)} title='Select File' />
-      <Text style={{ fontSize: 30 }}>{status}</Text>
-      <Text style={{ marginHorizontal: 10 }}>{resultText}</Text>
-      {
-        resultText === '' ? undefined :
-          <Button onPress={() => Clipboard.setString(resultText)} title='Copy Result for Quy ^^' />
-      }
+    <SafeAreaView style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
+      <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
+      {/* title */}
+      <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
+        <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo [IV] Senpai</Text>
+        <Text style={{ fontSize: 15, color: 'white' }}>(version 0.0.1)</Text>
+      </View>
+      <ScrollView style={{marginHorizontal: Outline.Margin}}>
+        {/* select photo btns */}
+        <Text style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
+        <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
+          <TouchableOpacity onPress={onPressUpload} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPressTakePhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
+          </TouchableOpacity>
+        </View>
+        {/* user upload image info */}
+        <View style={{ height: windowSize.height * 0.4, marginTop: Outline.Gap, flexDirection: 'row', borderColor: 'white', borderWidth: 1 }}>
+          {/* image */}
+          <View style={{ flex: 1 }}>
+            {
+              userImgUri === '' ? undefined :
+              <Image style={{ width: '100%', height: '100%' }} resizeMode='contain' source={{ uri: userImgUri }} />
+            }
+          </View>
+          {/* info */}
+          <View style={{ flex: 1 }}>
+
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

@@ -13,7 +13,7 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
     for (let index = 1; index < lines.length; index++) {
         const line = lines[index];
-        
+
         const openSqrBracketIdx = line.indexOf('[')
         const closeSqrBracketIdx = line.indexOf(']')
 
@@ -31,7 +31,7 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
                 }
             }
 
-            if (!haveAnyNumBefore) 
+            if (!haveAnyNumBefore)
                 needMerge = true
         }
 
@@ -47,7 +47,7 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
     lines = lines.filter(line => line !== '')
 
     // console.log('------------------');
-    
+
     // for (let index = 0; index < lines.length; index++) {
     //     const line = lines[index];
     //     console.log(line);
@@ -93,17 +93,19 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
         let numberS = ''
 
-        for (let i = firstCharIdx - 1; i >= 0; i--) {
-            if (IsNumOrDot(line[i])) {
-                numberS = line[i] + numberS
-            }
-            else {
-                if (numberS === '')
-                    continue
-                else if (line[i] === ',')
-                    continue
-                else
-                    break
+        if (!line.includes('Inherit')) {
+            for (let i = firstCharIdx - 1; i >= 0; i--) {
+                if (IsNumOrDot(line[i])) {
+                    numberS = line[i] + numberS
+                }
+                else {
+                    if (numberS === '')
+                        continue
+                    else if (line[i] === ',')
+                        continue
+                    else
+                        break
+                }
             }
         }
 
@@ -123,7 +125,7 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
         // parse and return
 
-        const value = Number.parseFloat(numberS)
+        const value = line.includes('Inherit') ? SplitNumberInText(line) :  Number.parseFloat(numberS)
 
         if (!Number.isNaN(value) && nameStat.length > 0) {
             stats.push({
@@ -156,6 +158,10 @@ const IsNumOrDot = (c: string) => {
         return false
 }
 
+const IsNum = (c: string) => {
+    return !Number.isNaN(Number.parseFloat(c))
+}
+
 const IsChar = (c: string) => {
     const cLower = c.toLowerCase()
 
@@ -165,25 +171,34 @@ const IsChar = (c: string) => {
         return false
 }
 
-// const IsLaLozChar = (c: string) => {
-//     const cLower = c.toLowerCase()
+const SplitNumberInText = (text: string) => {
+    if (!text)
+        return NaN
 
-//     if ((cLower >= 'a' && cLower <= 'z') ||
-//         cLower === '[' ||
-//         cLower === ']' ||
-//         cLower === '+' ||
-//         cLower === '-' ||
-//         cLower === '%' ||
-//         cLower === ' ' ||
-//         cLower === '(' ||
-//         cLower === ')' ||
-//         cLower === ':' ||
-//         cLower === '.' ||
-//         (cLower >= '0' && cLower <= '9'))
-//         return false
-//     else
-//         return true
-// }
+    let numS = ''
+
+    for (let index = 0; index < text.length; index++) {
+        const char = text[index]
+
+        if (char >= '0' && char <= '9') {
+            numS += char
+        }
+        else {
+            if (numS === '')
+                continue
+            else if (char === '.') {
+                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
+                    numS += char
+                else
+                    break
+            }
+            else
+                break
+        }
+    }
+
+    return Number.parseFloat(numS)
+}
 
 const IsOnlyCharAndSpaceLine = (line: string) => {
     for (let index = 0; index < line.length; index++) {

@@ -15,6 +15,7 @@ export enum SlotName {
 export type Stat = {
     name: string,
     value: number
+    isPercent: boolean
 }
 
 export type SlotCard = {

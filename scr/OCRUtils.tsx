@@ -9,6 +9,55 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
     if (lines.length <= 1)
         return undefined
 
+    // merge line
+
+    for (let index = 1; index < lines.length; index++) {
+        const line = lines[index];
+        
+        const openSqrBracketIdx = line.indexOf('[')
+        const closeSqrBracketIdx = line.indexOf(']')
+
+        let needMerge = false
+
+        if (openSqrBracketIdx < 0 && closeSqrBracketIdx >= 0) // -0.8]
+            needMerge = true
+        else if (openSqrBracketIdx >= 0) { // Form [0.7-0.8] // [0.7-0.8]%
+            let haveAnyNumBefore = false
+
+            for (let i = openSqrBracketIdx - 1; i >= 0; i--) {
+                if (!Number.isNaN(Number.parseFloat(line[i]))) {
+                    haveAnyNumBefore = true
+                    break
+                }
+            }
+
+            if (!haveAnyNumBefore) 
+                needMerge = true
+        }
+
+        if (needMerge) {
+            lines[index - 1] += ' ' + line
+            lines[index] = ''
+            // console.log('merged line: ', line, 'resutt =>>>>', lines[index - 1]);
+        }
+    }
+
+    // remove empty lines 
+
+    lines = lines.filter(line => line !== '')
+
+    // console.log('------------------');
+    
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index];
+    //     console.log(line);
+
+    // }
+
+    // console.log('------------------');
+
+    // return
+
     // remove [] part
 
     for (let index = 0; index < lines.length; index++) {
@@ -72,11 +121,14 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
         nameStat = nameStat.trim()
 
+        // parse and return
+
         const value = Number.parseFloat(numberS)
-        
+
         if (!Number.isNaN(value) && nameStat.length > 0) {
             stats.push({
                 name: nameStat,
+                isPercent: line.includes('%'),
                 value
             })
         }
@@ -84,12 +136,6 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
     // result 
 
-    // lines.map(line => {
-    //     console.log(line);
-    //     return undefined
-    // })
-
-    
     if (stats.length > 0) {
         return {
             slotName: SlotName.Amulet,

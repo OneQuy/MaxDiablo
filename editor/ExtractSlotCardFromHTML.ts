@@ -111,7 +111,7 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
             max = SplitNumberInText(rangeArrS[1])
         }
 
-        if (min === -1 || max === -1) {
+        if (min === -1 || max === -1 || min > max) {
             return 'cant extract range of stat of line: ' + line
         }
 
@@ -167,6 +167,12 @@ const SplitNumberInText = (text: string) => {
         else {
             if (numS === '')
                 continue
+            else if (char === ',') {
+                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
+                    continue
+                else
+                    break
+            }
             else if (char === '.') {
                 if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
                     numS += char

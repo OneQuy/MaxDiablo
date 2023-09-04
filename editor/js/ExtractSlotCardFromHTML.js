@@ -31,9 +31,10 @@ function ExtractSlotCardFromHTML(htmlString) {
     }
     var stats = [];
     for (var i = 0; i < statRaws.length; i++) {
-        var line = statRaws[i].structuredText;
+        // Example:
         // +2 Ranks of Hydra (Sorcerer Only) [1 - 2]
         // +4.5% Basic Skill Attack Speed  [2.1 - 4.5]%
+        var line = statRaws[i].structuredText;
         // find first char
         var firstCharIdx = 0;
         for (firstCharIdx = 0; firstCharIdx < line.length; firstCharIdx++)
@@ -82,7 +83,7 @@ function ExtractSlotCardFromHTML(htmlString) {
             min = SplitNumberInText(rangeArrS[0]);
             max = SplitNumberInText(rangeArrS[1]);
         }
-        if (min === -1 || max === -1) {
+        if (min === -1 || max === -1 || min > max) {
             return 'cant extract range of stat of line: ' + line;
         }
         // validate & return
@@ -127,6 +128,12 @@ var SplitNumberInText = function (text) {
         else {
             if (numS === '')
                 continue;
+            else if (char === ',') {
+                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
+                    continue;
+                else
+                    break;
+            }
             else if (char === '.') {
                 if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
                     numS += char;

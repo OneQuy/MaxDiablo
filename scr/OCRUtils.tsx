@@ -125,7 +125,7 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
         // parse and return
 
-        const value = line.includes('Inherit') ? SplitNumberInText(line) :  Number.parseFloat(numberS)
+        const value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS)
 
         if (!Number.isNaN(value) && nameStat.length > 0) {
             stats.push({
@@ -182,6 +182,12 @@ const SplitNumberInText = (text: string) => {
         else {
             if (numS === '')
                 continue
+            else if (char === ',') {
+                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
+                    continue
+                else
+                    break
+            }
             else if (char === '.') {
                 if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
                     numS += char

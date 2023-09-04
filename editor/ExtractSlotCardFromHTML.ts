@@ -1,7 +1,7 @@
 // const { parse } = require('node-html-parser');
 
 import parse from "node-html-parser";
-import { SlotName } from "../scr/Types";
+import { SlotName } from "./Types";
 
 export function ExtractSlotCardFromHTML(htmlString: string) {
 

@@ -6,9 +6,8 @@ export enum SlotName {
     Boots = 'Boots',
     Amulet = 'Amulet',
     Ring = 'Ring',
-    H1Weapon = '1h Weapon',
-    H2Weapon = '2h Weapon',
-    Offhand = 'Offhand',
+    Wand = 'Wand',
+    Focus = 'Focus',
     Shield = 'Shield',
 }
 

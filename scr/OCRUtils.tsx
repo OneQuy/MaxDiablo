@@ -158,10 +158,6 @@ const IsNumOrDot = (c: string) => {
         return false
 }
 
-const IsNum = (c: string) => {
-    return !Number.isNaN(Number.parseFloat(c))
-}
-
 const IsChar = (c: string) => {
     const cLower = c.toLowerCase()
 

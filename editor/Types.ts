@@ -10,3 +10,16 @@ export enum SlotName {
     Focus = 'Focus',
     Shield = 'Shield',
 }
+
+export type Stat = {
+    name: string,
+    value: number
+    min: number,
+    max: number,
+    isPercent: boolean
+}
+
+export type SlotCard = {
+    slotName: SlotName,
+    stats: Stat[]
+}

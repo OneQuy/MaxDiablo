@@ -13,7 +13,9 @@ export enum SlotName {
 
 export type Stat = {
     name: string,
-    value: number
+    value: number,
+    min: number,
+    max: number,
     isPercent: boolean
 }
 

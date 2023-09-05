@@ -1,13 +1,20 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 
-export function ExtractSlotCard(text: string): SlotCard | undefined {
+export function ExtractSlotCard(text: string): SlotCard | string {
+    // console.log('----------------');
+    // console.log(text);
+    // console.log('----------------');
+
     if (!text)
-        return undefined
+        return 'text to regconize is null'
 
     let lines = text.split('\n')
 
     if (lines.length <= 1)
-        return undefined
+        lines = text.split('\\n')
+
+    if (lines.length <= 1)
+        return 'text to regconize is not enough lines: ' + lines.length
 
     // merge line
 
@@ -38,7 +45,6 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
         if (needMerge) {
             lines[index - 1] += ' ' + line
             lines[index] = ''
-            // console.log('merged line: ', line, 'resutt =>>>>', lines[index - 1]);
         }
     }
 
@@ -46,35 +52,14 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
     lines = lines.filter(line => line !== '')
 
-    // console.log('------------------');
-
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index];
-    //     console.log(line);
-
-    // }
-
-    // console.log('------------------');
-
-    // return
-
-    // remove [] part
-
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index];
-
-        const sqrbracketidx = line.indexOf('[')
-
-        if (sqrbracketidx >= 0) {
-            lines[index] = line.substring(0, sqrbracketidx)
-        }
-    }
-
     // remove ignored lines
 
     lines = lines.filter(i => !IsIgnoredLine(i))
 
-    // extract
+    if (lines.length <= 1)
+        return 'text to regconize doesnt follow requires'
+
+    // extract each line
 
     let stats: Stat[] = []
 
@@ -109,6 +94,12 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
             }
         }
 
+        const value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS)
+
+        if (!IsNum(value)) {
+            continue
+        }
+
         // extract name stat
 
         let nameStat = ''
@@ -123,17 +114,39 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
 
         nameStat = nameStat.trim()
 
+        if (nameStat.length <= 0) {
+            continue
+        }
+
+        // range
+
+        const sqrbracketidx = line.indexOf('[')
+        let min = -1
+        let max = -1
+
+        if (sqrbracketidx >= 0) {
+            const s = line.substring(sqrbracketidx)
+            const rangeArrS = s.split('-')
+
+            if (rangeArrS && rangeArrS.length === 2) {
+                min = SplitNumberInText(rangeArrS[0])
+                max = SplitNumberInText(rangeArrS[1])
+            }
+        }
+
+        if (!IsNum(min) || !IsNum(max) || min === -1 || max === -1 || min > max) {
+            continue
+        }
+
         // parse and return
 
-        const value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS)
-
-        if (!Number.isNaN(value) && nameStat.length > 0) {
-            stats.push({
-                name: nameStat,
-                isPercent: line.includes('%'),
-                value
-            })
-        }
+        stats.push({
+            name: nameStat,
+            min,
+            max,
+            isPercent: line.includes('%'),
+            value
+        })
     }
 
     // result 
@@ -145,7 +158,7 @@ export function ExtractSlotCard(text: string): SlotCard | undefined {
         } as SlotCard
     }
     else
-        return undefined
+        return 'cant extract any stats'
 }
 
 const IsNumOrDot = (c: string) => {
@@ -165,6 +178,10 @@ const IsChar = (c: string) => {
         return true
     else
         return false
+}
+
+const IsNum = (o: any) => {
+    return typeof o === 'number' && !Number.isNaN(o)
 }
 
 const SplitNumberInText = (text: string) => {

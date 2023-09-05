@@ -20,9 +20,9 @@ import { openPicker } from '@baronha/react-native-multiple-image-picker'
 import { FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
-import { ExtractSlotCard } from './scr/OCRUtils';
 import { FontSize, Outline, windowSize } from './scr/AppConstant';
 import {CameraOptions, launchCamera} from 'react-native-image-picker';
+import { ExtractSlotCard } from './scr/OCRUtils';
 
 function App(): JSX.Element {
   const [userImgUri, setUserImgUri] = useState('')
@@ -66,6 +66,13 @@ function App(): JSX.Element {
 
       await detectFromImgUrl(getURLRes.url)
     }
+  }, [])
+
+  const onPressTmp = useCallback(async () => {
+    const res  = ExtractSlotCard(await Clipboard.getString())
+
+    console.log(JSON.stringify(res, null, 1));
+    
   }, [])
 
   const onPressTakePhoto = useCallback(async () => {
@@ -151,6 +158,7 @@ function App(): JSX.Element {
 
           </View>
         </View>
+        <Button title='Log stats from text OCR in Clipboard' onPress={onPressTmp} />
       </ScrollView>
     </SafeAreaView>
   )

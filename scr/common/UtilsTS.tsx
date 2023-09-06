@@ -1,6 +1,10 @@
-// file / dir
-
 import { Alert, Platform, AlertButton, PermissionsAndroid } from "react-native";
+
+// const -------------------------
+
+export const TimeOutError = '[time_out]';
+
+// color ------------------------
 
 const colorNameToHexDefines = {
     "aliceblue": "#f0f8ff",
@@ -149,8 +153,6 @@ const colorNameToHexDefines = {
 
 export type ColorName = keyof typeof colorNameToHexDefines;
 
-export const TimeOutError = '[time_out]';
-
 export function ColorNameToHex(name: ColorName): string {
     return colorNameToHexDefines[name];
 }
@@ -177,6 +179,8 @@ export function HexToRgb(hex: string, opacity?: number): string {
 export function RGBToRGBAText(colorText: string, opacity: number): string {
     return colorText.replace(')', ', ' + opacity + ')').replace('rgb', 'rgba');
 }
+
+// file / dir ---------------------------
 
 export function GetFileExtensionByFilepath(filepath: string): string {
     var dotIdx = filepath.lastIndexOf('.');
@@ -222,7 +226,139 @@ export function GetBlobFromFLPAsync(flp: string): Promise<Blob> {
         // Send the request. The 'null' argument means that no body content is given for the request
         xhr.send(null);
     });
-};
+}
+
+// convert ---------------------------
+
+export function ArrayBufferToBase64String(buffer: ArrayBuffer) {
+    var binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+
+    return btoa(binary);
+}
+
+/**
+ * binary string to base64 string
+ */
+export const btoa = (input: string) => {
+    let output = '';
+
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+    for (let block = 0, charCode, i = 0, map = chars;
+        input.charAt(i | 0) || (map = '=', i % 1);
+        output += map.charAt(63 & block >> 8 - i % 1 * 8)) {
+
+        charCode = input.charCodeAt(i += 3 / 4);
+
+        if (charCode > 0xFF) {
+            throw new Error("'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.");
+        }
+
+        block = block << 8 | charCode;
+    }
+
+    return output;
+}
+
+// check type -----------------------------
+
+export const IsNumOrDotChar = (c: string) => {
+    if (typeof c !== 'string' || c.length !== 1)
+        return false
+
+    if (c === '.')
+        return true
+
+    if (c >= '0' && c <= '9')
+        return true
+    else
+        return false
+}
+
+export const IsChar = (c: string) => {
+    if (typeof c !== 'string' || c.length !== 1)
+        return false
+
+    const cLower = c.toLowerCase()
+
+    if (cLower >= 'a' && cLower <= 'z')
+        return true
+    else
+        return false
+}
+
+export const IsNumType = (o: any) => {
+    return typeof o === 'number' && !Number.isNaN(o)
+}
+
+// string utils ---------------------------
+
+export function StringReplaceCharAt(str: string, index: number, replacement: string) {
+    if (index > str.length - 1) 
+        return str
+
+    return str.substring(0, index) + replacement + str.substring(index + 1);
+}
+
+/**
+ * @returns number or NaN
+ */
+export const SplitNumberInText = (text: string) => {
+    if (!text)
+        return NaN
+
+    let numS = ''
+
+    for (let index = 0; index < text.length; index++) {
+        const char = text[index]
+
+        if (char >= '0' && char <= '9') {
+            numS += char
+        }
+        else {
+            if (numS === '')
+                continue
+            else if (char === ',') {
+                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
+                    continue
+                else
+                    break
+            }
+            else if (char === '.') {
+                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
+                    numS += char
+                else
+                    break
+            }
+            else
+                break
+        }
+    }
+
+    return Number.parseFloat(numS)
+}
+
+// other utils ---------------------------
+
+export const ToCanPrint = (something: any) => {
+    if (typeof something === 'object') {
+        const res = JSON.stringify(something);
+
+        if (res === '{}') {
+            return '' + something;
+        }
+        else
+            return res;
+    }
+
+    return something;
+}
 
 /**
  * @usage const isPressRight = await AlertAsync('title', 'message', 'cancel', 'OK');
@@ -257,56 +393,6 @@ export const AlertAsync = async (
         }
     );
 })
-
-export const ToCanPrint = (something: any) => {
-    if (typeof something === 'object') {
-        const res = JSON.stringify(something);
-
-        if (res === '{}') {
-            return '' + something;
-        }
-        else
-            return res;
-    }
-
-    return something;
-}
-
-/**
- * binary string to base64 string
- */
-export const btoa = (input: string) => {
-    let output = '';
-
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-    for (let block = 0, charCode, i = 0, map = chars;
-        input.charAt(i | 0) || (map = '=', i % 1);
-        output += map.charAt(63 & block >> 8 - i % 1 * 8)) {
-
-        charCode = input.charCodeAt(i += 3 / 4);
-
-        if (charCode > 0xFF) {
-            throw new Error("'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.");
-        }
-
-        block = block << 8 | charCode;
-    }
-
-    return output;
-}
-
-export function ArrayBufferToBase64String(buffer: ArrayBuffer) {
-    var binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-
-    return btoa(binary);
-}
 
 /**
  * 

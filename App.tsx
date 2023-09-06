@@ -68,7 +68,7 @@ function App(): JSX.Element {
     }
   }, [])
 
-  const onPressTmp = useCallback(async () => {
+  const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
     const res  = ExtractSlotCard(await Clipboard.getString())
 
     console.log(JSON.stringify(res, null, 1));
@@ -158,7 +158,7 @@ function App(): JSX.Element {
 
           </View>
         </View>
-        <Button title='Log stats from text OCR in Clipboard' onPress={onPressTmp} />
+        <Button title='Log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} />
       </ScrollView>
     </SafeAreaView>
   )

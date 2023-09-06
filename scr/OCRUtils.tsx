@@ -1,9 +1,12 @@
 import { SlotCard, SlotName, Stat } from "./Types";
+import { IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
 export function ExtractSlotCard(text: string): SlotCard | string {
     // console.log('----------------');
     // console.log(text);
     // console.log('----------------');
+
+    const isLog = false
 
     if (!text)
         return 'text to regconize is null'
@@ -16,13 +19,40 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     if (lines.length <= 1)
         return 'text to regconize is not enough lines: ' + lines.length
 
-    // merge line
+    // find name slot
+
+    let slotName: SlotName | undefined = undefined
+    const names  = Object.values(SlotName)
+
+    for (let index = 1; index < lines.length; index++) {
+       
+        for (let i = 0; i < names.length; i++) {
+            const namee  = names[i]
+            
+            if (lines[index].includes(namee)) {
+                slotName = namee as SlotName
+                break
+            }
+        }
+
+        if (slotName)
+            break
+    }
+
+    if (!slotName) {
+        return 'cant extract SlotName'
+    }
+
+    // merge close bracket line
 
     for (let index = 1; index < lines.length; index++) {
         const line = lines[index];
 
         const openSqrBracketIdx = line.indexOf('[')
         const closeSqrBracketIdx = line.indexOf(']')
+
+        const openSqrBracketIdx_PreviousLine = lines[index - 1].indexOf('[')
+        const closeSqrBracketIdx_PreviousLine = lines[index - 1].indexOf(']')
 
         let needMerge = false
 
@@ -41,6 +71,9 @@ export function ExtractSlotCard(text: string): SlotCard | string {
             if (!haveAnyNumBefore)
                 needMerge = true
         }
+        else if (openSqrBracketIdx_PreviousLine >= 0 && closeSqrBracketIdx_PreviousLine < 0) {
+            needMerge = true
+        }
 
         if (needMerge) {
             lines[index - 1] += ' ' + line
@@ -48,9 +81,41 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         }
     }
 
+    // fix miss close sqr bracket line
+
+    for (let index = 1; index < lines.length; index++) {
+        // +12.5% Vulnerable Damage [7.0- 14.01%
+
+        const line = lines[index];
+
+        const openSqrBracketIdx = line.indexOf('[')
+        const closeSqrBracketIdx = line.indexOf(']')
+
+        if (openSqrBracketIdx >= 0 && closeSqrBracketIdx < 0) { // need to fix
+            let fixed = false
+
+            for (let i = line.length - 1; i > openSqrBracketIdx; i--) {
+                if (line[i] === '1') { // this '1' is close bracket
+                    fixed = true
+                    lines[index] = StringReplaceCharAt(line, i, ']')
+                    break
+                }
+            }
+
+            if (!fixed) {
+                return 'this line can not be fixed close bracket: ' + line
+            }
+        }
+    }
+
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
+
     // remove empty lines 
 
-    lines = lines.filter(line => line !== '')
+    lines = lines.filter(line => line && line.trim() !== '')
 
     // remove ignored lines
 
@@ -80,7 +145,7 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
         if (!line.includes('Inherit')) {
             for (let i = firstCharIdx - 1; i >= 0; i--) {
-                if (IsNumOrDot(line[i])) {
+                if (IsNumOrDotChar(line[i])) {
                     numberS = line[i] + numberS
                 }
                 else {
@@ -96,7 +161,10 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
         const value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS)
 
-        if (!IsNum(value)) {
+        if (!IsNumType(value)) {
+            if (isLog)
+                console.log('[log extract] cant get value of line: ' + line);
+
             continue
         }
 
@@ -115,26 +183,37 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         nameStat = nameStat.trim()
 
         if (nameStat.length <= 0) {
+            if (isLog)
+                console.log('[log extract] cant get name stat of line: ' + line);
+
             continue
         }
 
         // range
 
-        const sqrbracketidx = line.indexOf('[')
+        const openSqrBracketIdx = line.indexOf('[')
+        const closeSqrBracketIdx = line.indexOf(']')
         let min = -1
         let max = -1
 
-        if (sqrbracketidx >= 0) {
-            const s = line.substring(sqrbracketidx)
+        if (openSqrBracketIdx >= 0 && closeSqrBracketIdx >= 0) {
+            const s = line.substring(openSqrBracketIdx)
             const rangeArrS = s.split('-')
 
             if (rangeArrS && rangeArrS.length === 2) {
                 min = SplitNumberInText(rangeArrS[0])
                 max = SplitNumberInText(rangeArrS[1])
             }
+            else if (rangeArrS && rangeArrS.length === 1) {
+                min = SplitNumberInText(rangeArrS[0])
+                max = SplitNumberInText(rangeArrS[0])
+            }
         }
 
-        if (!IsNum(min) || !IsNum(max) || min === -1 || max === -1 || min > max) {
+        if (!IsNumType(min) || !IsNumType(max) || min === -1 || max === -1 || min > max) {
+            if (isLog)
+                console.log('[log extract] cant get range of line: ' + line);
+
             continue
         }
 
@@ -153,70 +232,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
     if (stats.length > 0) {
         return {
-            slotName: SlotName.Amulet,
+            slotName,
             stats
         } as SlotCard
     }
     else
         return 'cant extract any stats'
-}
-
-const IsNumOrDot = (c: string) => {
-    if (c === '.')
-        return true
-
-    if (c >= '0' && c <= '9')
-        return true
-    else
-        return false
-}
-
-const IsChar = (c: string) => {
-    const cLower = c.toLowerCase()
-
-    if (cLower >= 'a' && cLower <= 'z')
-        return true
-    else
-        return false
-}
-
-const IsNum = (o: any) => {
-    return typeof o === 'number' && !Number.isNaN(o)
-}
-
-const SplitNumberInText = (text: string) => {
-    if (!text)
-        return NaN
-
-    let numS = ''
-
-    for (let index = 0; index < text.length; index++) {
-        const char = text[index]
-
-        if (char >= '0' && char <= '9') {
-            numS += char
-        }
-        else {
-            if (numS === '')
-                continue
-            else if (char === ',') {
-                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
-                    continue
-                else
-                    break
-            }
-            else if (char === '.') {
-                if (index + 1 < text.length && !Number.isNaN(Number.parseInt(text[index + 1])))
-                    numS += char
-                else
-                    break
-            }
-            else
-                break
-        }
-    }
-
-    return Number.parseFloat(numS)
 }
 
 const IsOnlyCharAndSpaceLine = (line: string) => {

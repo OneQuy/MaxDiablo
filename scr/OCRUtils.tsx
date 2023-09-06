@@ -19,17 +19,43 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     if (lines.length <= 1)
         return 'text to regconize is not enough lines: ' + lines.length
 
+
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
+
     // find name slot
 
     let slotName: SlotName | undefined = undefined
-    const names  = Object.values(SlotName)
+    const names = Object.values(SlotName)
 
     for (let index = 1; index < lines.length; index++) {
-       
+        const line = lines[index]
+
+        // check hard code when name in two lines
+
+        if (index < lines.length - 1) {
+            // Ancestral Legendary Two-
+            // Handed Mace
+
+            if (line.includes('Two') && lines[index + 1].includes('Sword'))
+                slotName = SlotName.TwoHandedSword
+            else if (line.includes('Two') && lines[index + 1].includes('Mace'))
+                slotName = SlotName.TwoHandedMace
+            else if (line.includes('Chest') && lines[index + 1].includes('Armor'))
+                slotName = SlotName.ChestArmor
+        }
+
+        if (slotName)
+            break
+
+        // loop all names
+
         for (let i = 0; i < names.length; i++) {
-            const namee  = names[i]
-            
-            if (lines[index].includes(namee)) {
+            const namee = names[i]
+
+            if (line.includes(namee)) {
                 slotName = namee as SlotName
                 break
             }
@@ -107,11 +133,6 @@ export function ExtractSlotCard(text: string): SlotCard | string {
             }
         }
     }
-
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
 
     // remove empty lines 
 

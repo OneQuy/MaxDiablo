@@ -199,7 +199,7 @@ function App(): JSX.Element {
           }
         </View>
         <Text style={{ color: 'white' }}>{status}</Text>
-        {/* <Button title='Log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} /> */}
+        <Button title='Log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} />
       </ScrollView>
     </SafeAreaView>
   )

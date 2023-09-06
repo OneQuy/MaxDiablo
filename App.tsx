@@ -26,29 +26,30 @@ import { ExtractSlotCard } from './scr/OCRUtils';
 import { SlotCard } from './scr/Types';
 
 function App(): JSX.Element {
-  const [userImgUri, setUserImgUri] = useState('')
   const [status, setStatus] = useState('')
+  const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
 
   const onPressUpload = useCallback(async () => {
     try {
-      const response = await openPicker({ 
+      const response = await openPicker({
         mediaType: 'mediaType',
         singleSelectedMode: true,
         selectedColor: '#000000',
-        isCrop: true,
       });
       
-      if (!response || response.length > 1) {
+      if (!response) {
         Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
       }
       else {
-        const path = Platform.OS === 'android' ? 'file://' + response[0].realPath : response[0].path;
+        const path = Platform.OS === 'android' ? 'file://' + response.realPath : response.path;
         onSelectedImg(path)
       }
     }
-    catch { }
+    catch (e) {
+      console.log(e);
+    }
   }, [])
 
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
@@ -66,7 +67,7 @@ function App(): JSX.Element {
       return
     }
 
-    const result = await launchCamera({ 
+    const result = await launchCamera({
       saveToPhotos: false,
       cameraType: 'back',
       mediaType: 'photo'
@@ -94,8 +95,8 @@ function App(): JSX.Element {
 
   const onSelectedImg = useCallback(async (path: string) => {
     slotCardRef.current = undefined
-
-    setUserImgUri(path)
+    userImgUri.current = path
+    
     setStatus('Uploading...')
 
     const tempFilePath = 'tmpfile-' + Date.now()
@@ -188,8 +189,8 @@ function App(): JSX.Element {
           {/* image */}
           <View style={{ flex: 1 }}>
             {
-              userImgUri === '' ? undefined :
-                <Image style={{ width: '100%', height: '100%' }} resizeMode='contain' source={{ uri: userImgUri }} />
+              userImgUri.current === '' ? undefined :
+                <Image style={{ width: '100%', height: '100%' }} resizeMode='contain' source={{ uri: userImgUri.current }} />
             }
           </View>
           {/* info */}

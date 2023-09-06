@@ -5,7 +5,6 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {
   Alert,
   Button,
-  FlatList,
   Image,
   Platform,
   SafeAreaView,
@@ -24,23 +23,32 @@ import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { SlotCard, Stat } from './scr/Types';
+import { SlotCard } from './scr/Types';
 
 function App(): JSX.Element {
   const [userImgUri, setUserImgUri] = useState('')
   const [status, setStatus] = useState('')
   const slotCardRef = useRef<SlotCard | undefined>()
+  const ocrResult = useRef('')
 
   const onPressUpload = useCallback(async () => {
-    const response = await openPicker();
-
-    if (!response || response.lenght > 0) {
-      Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
+    try {
+      const response = await openPicker({ 
+        mediaType: 'mediaType',
+        singleSelectedMode: true,
+        selectedColor: '#000000',
+        isCrop: true,
+      });
+      
+      if (!response || response.length > 1) {
+        Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
+      }
+      else {
+        const path = Platform.OS === 'android' ? 'file://' + response[0].realPath : response[0].path;
+        onSelectedImg(path)
+      }
     }
-    else {
-      const path = Platform.OS === 'android' ? 'file://' + response[0].realPath : response[0].path;
-      onSelectedImg(path)
-    }
+    catch { }
   }, [])
 
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
@@ -50,7 +58,7 @@ function App(): JSX.Element {
 
   }, [])
 
-  const onPressTakePhoto = useCallback(async () => {
+  const onPressTakeCamera = useCallback(async () => {
     const camRequestRes = await RequestCameraPermissionAsync()
 
     if (camRequestRes !== true) {
@@ -73,7 +81,14 @@ function App(): JSX.Element {
     onSelectedImg(path)
   }, [])
 
-  const onSelectedImg = async (path: string) => {
+  const onPressCopyOCRResult = useCallback(async () => {
+    if (!ocrResult.current)
+      return
+
+    Clipboard.setString(ocrResult.current)
+  }, [])
+
+  const onSelectedImg = useCallback(async (path: string) => {
     slotCardRef.current = undefined
 
     setUserImgUri(path)
@@ -102,9 +117,9 @@ function App(): JSX.Element {
       console.log('get file url success', getURLRes.url);
 
     await detectFromImgUrl(getURLRes.url)
-  }
+  }, [])
 
-  const detectFromImgUrl = async (imgUrl: string) => {
+  const detectFromImgUrl = useCallback(async (imgUrl: string) => {
     const options = {
       method: 'POST',
       url: 'https://cloudlabs-image-ocr.p.rapidapi.com/ocr/recognizeUrl',
@@ -122,13 +137,11 @@ function App(): JSX.Element {
 
     try {
       const response = await axios.request(options);
-
+      ocrResult.current = response.data
       const result = response.data?.result
 
       if (!result)
         throw 'No have result'
-
-      // console.log(result);
 
       const extractRes = ExtractSlotCard(result)
 
@@ -145,7 +158,7 @@ function App(): JSX.Element {
       console.error(error);
       setStatus('OCR Failed: ' + ToCanPrint(error))
     }
-  };
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
@@ -162,7 +175,7 @@ function App(): JSX.Element {
           <TouchableOpacity onPress={onPressUpload} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onPressTakePhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
           </TouchableOpacity>
         </View>
@@ -180,7 +193,7 @@ function App(): JSX.Element {
             !slotCardRef.current ? undefined :
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
                 <Text style={{ color: 'tomato', fontSize: FontSize.Normal }}>{slotCardRef.current.slotName}</Text>
-                <ScrollView contentContainerStyle={{gap: Outline.Gap, marginTop: Outline.Margin}}>
+                <ScrollView contentContainerStyle={{ gap: Outline.Gap, marginTop: Outline.Margin }}>
                   {
                     slotCardRef.current.stats.map((item, index) => {
                       return <View key={index}>
@@ -195,12 +208,12 @@ function App(): JSX.Element {
                     })
                   }
                 </ScrollView>
-                <Button title='Copy result' />
               </View>
           }
         </View>
         <Text style={{ color: 'white' }}>{status}</Text>
-        <Button title='Log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} />
+        <Button title='[dev] log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} />
+        <Button title='[dev] copy ocr result' onPress={onPressCopyOCRResult} />
       </ScrollView>
     </SafeAreaView>
   )

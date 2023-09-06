@@ -38,17 +38,21 @@ function App(): JSX.Element {
         singleSelectedMode: true,
         selectedColor: '#000000',
       });
-      
+
       if (!response) {
         Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
       }
       else {
+        if ((Platform.OS === 'android' && !response.realPath) || (Platform.OS !== 'android' && !response.path)) {
+          Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
+          return
+        }
+
         const path = Platform.OS === 'android' ? 'file://' + response.realPath : response.path;
         onSelectedImg(path)
       }
     }
     catch (e) {
-      console.log(e);
     }
   }, [])
 
@@ -96,7 +100,7 @@ function App(): JSX.Element {
   const onSelectedImg = useCallback(async (path: string) => {
     slotCardRef.current = undefined
     userImgUri.current = path
-    
+
     setStatus('Uploading...')
 
     const tempFilePath = 'tmpfile-' + Date.now()

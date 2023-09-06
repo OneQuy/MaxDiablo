@@ -9,6 +9,9 @@ export enum SlotName {
     Wand = 'Wand',
     Focus = 'Focus',
     Shield = 'Shield',
+    Sword = 'Sword',
+    Dagger = 'Dagger',
+    Crossbow = 'Crossbow',
 }
 
 export type Stat = {

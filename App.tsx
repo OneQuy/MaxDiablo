@@ -66,7 +66,11 @@ function App(): JSX.Element {
       return
     }
 
-    const result = await launchCamera({ saveToPhotos: false } as CameraOptions)
+    const result = await launchCamera({ 
+      saveToPhotos: false,
+      cameraType: 'back',
+      mediaType: 'photo'
+    } as CameraOptions)
 
     Clipboard.setString(ToCanPrint(result))
 

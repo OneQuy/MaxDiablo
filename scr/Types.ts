@@ -26,6 +26,7 @@ export type Stat = {
 
 export type SlotCard = {
     slotName: SlotName,
+    itemPower: number,
     stats: Stat[]
 }
 

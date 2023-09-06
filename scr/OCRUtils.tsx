@@ -25,6 +25,23 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     //     console.log(line);
     // }
 
+    // extract item power
+
+    let itemPower: number = NaN
+
+    for (let index = 1; index < lines.length; index++) {
+        const line = lines[index]
+
+        if (line.includes('Item Power')) {
+            itemPower = SplitNumberInText(line)
+            break
+        }
+    }
+
+    if (Number.isNaN(itemPower)) {
+        return 'cant extract ItemPower' 
+    }
+
     // find name slot
 
     let slotName: SlotName | undefined = undefined
@@ -254,6 +271,7 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     if (stats.length > 0) {
         return {
             slotName,
+            itemPower,
             stats
         } as SlotCard
     }

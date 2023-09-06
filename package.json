@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "tsc": "tsc editor/index.ts --outDir ./editor/js",
+    "builda": "cd android && ./gradlew assembleRelease",
     "tscr": "tsc editor/index.ts --outDir ./editor/js && node editor/js",
     "test": "jest"
   },

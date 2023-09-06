@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 import {
   Alert,
   Button,
+  FlatList,
   Image,
   Platform,
   SafeAreaView,
@@ -23,11 +24,12 @@ import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
+import { SlotCard, Stat } from './scr/Types';
 
 function App(): JSX.Element {
   const [userImgUri, setUserImgUri] = useState('')
   const [status, setStatus] = useState('')
-  // const [resultText, setResultText] = useState('')
+  const slotCardRef = useRef<SlotCard | undefined>()
 
   const onPressUpload = useCallback(async () => {
     const response = await openPicker();
@@ -75,6 +77,7 @@ function App(): JSX.Element {
     setUserImgUri(path)
 
     setStatus('Uploading...')
+    slotCardRef.current = undefined
 
     const tempFilePath = 'tmpfile-' + Date.now()
     FirebaseInit()
@@ -127,10 +130,17 @@ function App(): JSX.Element {
 
       // console.log(result);
 
-      const ocrText = ExtractSlotCard(result)
-      await Clipboard.setString(JSON.stringify(ocrText, null, 1))
+      const extractRes = ExtractSlotCard(result)
 
-      setStatus('SUCCESS')
+      if (typeof extractRes === 'object') {
+        slotCardRef.current = extractRes
+
+        await Clipboard.setString(JSON.stringify(extractRes, null, 1))
+
+        setStatus('SUCCESS')
+      }
+      else 
+        setStatus('FAIL: ' + extractRes)
     } catch (error) {
       console.error(error);
       setStatus('OCR Failed: ' + ToCanPrint(error))
@@ -166,12 +176,30 @@ function App(): JSX.Element {
             }
           </View>
           {/* info */}
-          <View style={{ flex: 1 }}>
-
-          </View>
+          {
+            !slotCardRef.current ? undefined :
+              <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
+                <Text style={{ color: 'tomato', fontSize: FontSize.Normal }}>{slotCardRef.current.slotName}</Text>
+                <FlatList
+                  data={slotCardRef.current?.stats}
+                  contentContainerStyle={{marginTop: Outline.Margin, gap: Outline.Gap}}
+                  renderItem={({ item }: { item: Stat }) => {
+                    return <View>
+                      <Text style={{color: 'white'}}>{item.name}</Text>
+                      <Text style={{color: 'white'}}>
+                        {item.value}{item.isPercent ? '%' : ''}
+                        <Text style={{color: 'gray'}}>
+                          {'  '}[{item.min}-{item.max}]
+                        </Text>
+                      </Text>
+                    </View>
+                  }}
+                />
+              </View>
+          }
         </View>
         <Text style={{ color: 'white' }}>{status}</Text>
-        <Button title='Log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} />
+        {/* <Button title='Log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} /> */}
       </ScrollView>
     </SafeAreaView>
   )

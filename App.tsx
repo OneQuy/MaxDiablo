@@ -74,10 +74,10 @@ function App(): JSX.Element {
   }, [])
 
   const onSelectedImg = async (path: string) => {
-    setUserImgUri(path)
-
-    setStatus('Uploading...')
     slotCardRef.current = undefined
+
+    setUserImgUri(path)
+    setStatus('Uploading...')
 
     const tempFilePath = 'tmpfile-' + Date.now()
     FirebaseInit()
@@ -139,7 +139,7 @@ function App(): JSX.Element {
 
         setStatus('SUCCESS')
       }
-      else 
+      else
         setStatus('FAIL: ' + extractRes)
     } catch (error) {
       console.error(error);
@@ -180,21 +180,22 @@ function App(): JSX.Element {
             !slotCardRef.current ? undefined :
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
                 <Text style={{ color: 'tomato', fontSize: FontSize.Normal }}>{slotCardRef.current.slotName}</Text>
-                <FlatList
-                  data={slotCardRef.current?.stats}
-                  contentContainerStyle={{marginTop: Outline.Margin, gap: Outline.Gap}}
-                  renderItem={({ item }: { item: Stat }) => {
-                    return <View>
-                      <Text style={{color: 'white'}}>{item.name}</Text>
-                      <Text style={{color: 'white'}}>
-                        {item.value}{item.isPercent ? '%' : ''}
-                        <Text style={{color: 'gray'}}>
-                          {'  '}[{item.min}-{item.max}]
+                <ScrollView contentContainerStyle={{gap: Outline.Gap, marginTop: Outline.Margin}}>
+                  {
+                    slotCardRef.current.stats.map((item, index) => {
+                      return <View key={index}>
+                        <Text style={{ color: 'white' }}>{item.name}</Text>
+                        <Text style={{ color: 'white' }}>
+                          {item.value}{item.isPercent ? '%' : ''}
+                          <Text style={{ color: 'gray' }}>
+                            {'  '}[{item.min}-{item.max}]
+                          </Text>
                         </Text>
-                      </Text>
-                    </View>
-                  }}
-                />
+                      </View>
+                    })
+                  }
+                </ScrollView>
+                <Button title='Copy result' />
               </View>
           }
         </View>

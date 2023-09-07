@@ -29,3 +29,13 @@ export type SlotCard = {
     itemPower: number,
     stats: Stat[]
 }
+
+export type Build = {
+    name: string,
+    slots: SlotCard[],
+}
+
+export type Tier = {
+    name: string,
+    builds: Build[]
+}

@@ -13,6 +13,8 @@ export const GenerateBuildData = (): string | undefined => {
         LogRed('not found any tier dir in ' + tiersDirPath)
 
     const tiers: Tier[] = []
+    let countBuilds = 0
+    let countSlots = 0
 
     for (let i = 0; i < tierDirs.length; i++) {
         // tier name
@@ -21,7 +23,7 @@ export const GenerateBuildData = (): string | undefined => {
 
         if (tierDirName === 'Data.json')
             continue
-        
+
         const arrTier = tierDirName.split(' ')
 
         if (arrTier.length !== 2)
@@ -64,11 +66,15 @@ export const GenerateBuildData = (): string | undefined => {
                     slotCards.push(slotCardRes)
             }
 
+            countSlots += slotCards.length
+
             builds.push({
                 name: buildDirName,
                 slots: slotCards
             })
         }
+
+        countBuilds += builds.length
 
         tiers.push({
             name: tierName,
@@ -76,6 +82,10 @@ export const GenerateBuildData = (): string | undefined => {
         })
     }
 
+    console.log('slot count: ' + countSlots);
+    console.log('build count: ' + countBuilds);
+    console.log('tier count: ' + tiers.length);
+    
     fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
     return
 }

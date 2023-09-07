@@ -10,6 +10,7 @@ var GenerateBuildData = function () {
     if (tierDirs.length <= 0)
         (0, Utils_NodeJS_1.LogRed)('not found any tier dir in ' + tiersDirPath);
     var tiers = [];
+    var countBuilds = 0;
     for (var i = 0; i < tierDirs.length; i++) {
         // tier name
         var tierDirName = tierDirs[i];
@@ -47,11 +48,14 @@ var GenerateBuildData = function () {
                 slots: slotCards
             });
         }
+        countBuilds += builds.length;
         tiers.push({
             name: tierName,
             builds: builds
         });
     }
+    console.log('build count: ' + countBuilds);
+    console.log('tier count: ' + tiers.length);
     fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
     return;
 };

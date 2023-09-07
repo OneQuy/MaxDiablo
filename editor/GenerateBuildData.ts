@@ -1,12 +1,12 @@
 import { ExtractSlotCardFromHTML } from "./ExtractSlotCardFromHTML"
 import { Build, SlotCard, Tier } from "./Types"
-import { LogGreen, LogRed, LogYellow } from "./Utils_NodeJS"
+import { LogRed } from "./Utils_NodeJS"
 
 const fs = require('fs')
 
 const tiersDirPath = './editor/builddata/'
 
-export const GenerateBuildData = (): string | Tier[] => {
+export const GenerateBuildData = (): string | undefined => {
     const tierDirs = fs.readdirSync(tiersDirPath)
 
     if (tierDirs.length <= 0)
@@ -18,6 +18,10 @@ export const GenerateBuildData = (): string | Tier[] => {
         // tier name
 
         const tierDirName = tierDirs[i]
+
+        if (tierDirName === 'Data.json')
+            continue
+        
         const arrTier = tierDirName.split(' ')
 
         if (arrTier.length !== 2)
@@ -46,12 +50,16 @@ export const GenerateBuildData = (): string | Tier[] => {
 
             for (let a = 0; a < buildDirs.length; a++) {
                 const slotFileName = slotFileNames[a]
+
+                if (!slotFileName || !slotFileName.includes('.txt'))
+                    continue
+
                 const path = tiersDirPath + tierDirName + '/' + buildDirName + '/' + slotFileName
                 const str = fs.readFileSync(path, { encoding: 'utf8', flag: 'r' });
-                const slotCardRes = ExtractSlotCardFromHTML(str)
+                const slotCardRes = ExtractSlotCardFromHTML(str, true)
 
                 if (typeof slotCardRes === 'string')
-                    return 'can extract file: ' + path + ', error: ' + slotCardRes
+                    LogRed('can extract file: ' + path + ', error: ' + slotCardRes)
                 else
                     slotCards.push(slotCardRes)
             }
@@ -68,5 +76,6 @@ export const GenerateBuildData = (): string | Tier[] => {
         })
     }
 
-    return tiers
+    fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
+    return
 }

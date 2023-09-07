@@ -4,7 +4,7 @@ exports.__esModule = true;
 exports.ExtractSlotCardFromHTML = void 0;
 var node_html_parser_1 = require("node-html-parser");
 var Types_1 = require("./Types");
-function ExtractSlotCardFromHTML(htmlString) {
+function ExtractSlotCardFromHTML(htmlString, ignoreLineCantExtractStat) {
     var _a, _b;
     var root = (0, node_html_parser_1["default"])(htmlString);
     if (!root)
@@ -23,9 +23,11 @@ function ExtractSlotCardFromHTML(htmlString) {
         return 'missing d4t-sub-title (slot name)';
     }
     var slotName = undefined;
-    for (var i in Types_1.SlotName) {
-        if (name.includes(i)) {
-            slotName = i;
+    var names = Object.values(Types_1.SlotName);
+    for (var i = 0; i < names.length; i++) {
+        var namee = names[i];
+        if (name.includes(namee)) {
+            slotName = namee;
             break;
         }
     }
@@ -34,8 +36,8 @@ function ExtractSlotCardFromHTML(htmlString) {
     }
     // extract stats
     var statRaws = root.querySelectorAll('.d4t-list-affix.d4-color-gray');
-    if (statRaws.length < 2) {
-        return 'not enought stats line of .d4t-list-affix.d4-color-gray';
+    if (statRaws.length <= 0) {
+        return 'Zero stat, not enought stats line of .d4t-list-affix.d4-color-gray';
     }
     var stats = [];
     for (var i = 0; i < statRaws.length; i++) {
@@ -67,7 +69,10 @@ function ExtractSlotCardFromHTML(htmlString) {
         }
         var value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS);
         if (Number.isNaN(value)) {
-            return 'cant extract value of stat of line: ' + line;
+            if (ignoreLineCantExtractStat)
+                continue;
+            else
+                return 'cant extract value of stat of line: ' + line;
         }
         // extract name stat
         var nameStat = '';
@@ -80,7 +85,10 @@ function ExtractSlotCardFromHTML(htmlString) {
         }
         nameStat = nameStat.trim();
         if (nameStat.length <= 0) {
-            return 'cant extract name of stat of line: ' + line;
+            if (ignoreLineCantExtractStat)
+                continue;
+            else
+                return 'cant extract name of stat of line: ' + line;
         }
         // extract range
         var bracketPart = line.substring(line.indexOf('['));
@@ -91,8 +99,15 @@ function ExtractSlotCardFromHTML(htmlString) {
             min = SplitNumberInText(rangeArrS[0]);
             max = SplitNumberInText(rangeArrS[1]);
         }
+        else if (rangeArrS && rangeArrS.length === 1) {
+            min = SplitNumberInText(rangeArrS[0]);
+            max = SplitNumberInText(rangeArrS[0]);
+        }
         if (min === -1 || max === -1 || min > max) {
-            return 'cant extract range of stat of line: ' + line;
+            if (ignoreLineCantExtractStat)
+                continue;
+            else
+                return 'cant extract range of stat of line: ' + line;
         }
         // validate & return
         stats.push({
@@ -103,6 +118,8 @@ function ExtractSlotCardFromHTML(htmlString) {
             value: value
         });
     }
+    if (ignoreLineCantExtractStat && stats.length <= 0)
+        return 'cant extract any stats of this slot';
     return {
         slotName: slotName,
         itemPower: itemPower,

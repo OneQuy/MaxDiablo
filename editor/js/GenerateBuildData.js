@@ -30,11 +30,13 @@ var GenerateBuildData = function () {
             var slotCards = [];
             for (var a = 0; a < buildDirs.length; a++) {
                 var slotFileName = slotFileNames[a];
+                if (!slotFileName || !slotFileName.includes('.txt'))
+                    continue;
                 var path = tiersDirPath + tierDirName + '/' + buildDirName + '/' + slotFileName;
                 var str = fs.readFileSync(path, { encoding: 'utf8', flag: 'r' });
-                var slotCardRes = (0, ExtractSlotCardFromHTML_1.ExtractSlotCardFromHTML)(str);
+                var slotCardRes = (0, ExtractSlotCardFromHTML_1.ExtractSlotCardFromHTML)(str, true);
                 if (typeof slotCardRes === 'string')
-                    return 'can extract file: ' + path + ', error: ' + slotCardRes;
+                    (0, Utils_NodeJS_1.LogRed)('can extract file: ' + path + ', error: ' + slotCardRes);
                 else
                     slotCards.push(slotCardRes);
             }
@@ -48,6 +50,7 @@ var GenerateBuildData = function () {
             builds: builds
         });
     }
+    fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
     return tiers;
 };
 exports.GenerateBuildData = GenerateBuildData;

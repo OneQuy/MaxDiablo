@@ -14,6 +14,8 @@ export enum SlotName {
     Crossbow = 'Crossbow',
     TwoHandedMace = 'Two-Handed Mace',
     TwoHandedSword = 'Two-Handed Sword',
+    Axe = 'Axe',
+    Totem = 'Totem',    
 } // Note when add new: if name is too long, add too extract slot name hardcoded (scr/OCRUtils.tsx) 
 
 export type Stat = {

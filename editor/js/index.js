@@ -9,5 +9,5 @@ var Utils_NodeJS_1 = require("./Utils_NodeJS");
 var res = (0, GenerateBuildData_1.GenerateBuildData)();
 if (typeof res === 'string')
     (0, Utils_NodeJS_1.LogRed)('error: ' + res);
-else
-    console.log(JSON.stringify(res, null, 1));
+// else
+//     console.log(JSON.stringify(res, null, 1));

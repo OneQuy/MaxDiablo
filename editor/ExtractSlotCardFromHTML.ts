@@ -3,7 +3,7 @@
 import parse from "node-html-parser";
 import { SlotCard, SlotName, Stat } from "./Types";
 
-export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
+export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtractStat: boolean): SlotCard | string {
     const root = parse(htmlString);
 
     if (!root)
@@ -31,9 +31,13 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
 
     let slotName: SlotName | undefined = undefined
 
-    for (let i in SlotName) {
-        if (name.includes(i)) {
-            slotName = i as SlotName
+    const names = Object.values(SlotName)
+
+    for (let i = 0; i < names.length; i++) {
+        const namee = names[i]
+
+        if (name.includes(namee)) {
+            slotName = namee as SlotName
             break
         }
     }
@@ -46,8 +50,8 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
 
     const statRaws = root.querySelectorAll('.d4t-list-affix.d4-color-gray')
 
-    if (statRaws.length < 2) {
-        return 'not enought stats line of .d4t-list-affix.d4-color-gray'
+    if (statRaws.length <= 0) {
+        return 'Zero stat, not enought stats line of .d4t-list-affix.d4-color-gray'
     }
 
     const stats: Stat[] = []
@@ -90,7 +94,10 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
         const value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS)
 
         if (Number.isNaN(value)) {
-            return 'cant extract value of stat of line: ' + line
+            if (ignoreLineCantExtractStat)
+                continue
+            else
+                return 'cant extract value of stat of line: ' + line
         }
 
         // extract name stat
@@ -108,7 +115,10 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
         nameStat = nameStat.trim()
 
         if (nameStat.length <= 0) {
-            return 'cant extract name of stat of line: ' + line
+            if (ignoreLineCantExtractStat)
+                continue
+            else
+                return 'cant extract name of stat of line: ' + line
         }
 
         // extract range
@@ -122,9 +132,16 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
             min = SplitNumberInText(rangeArrS[0])
             max = SplitNumberInText(rangeArrS[1])
         }
+        else if (rangeArrS && rangeArrS.length === 1) {
+            min = SplitNumberInText(rangeArrS[0])
+            max = SplitNumberInText(rangeArrS[0])
+        }
 
         if (min === -1 || max === -1 || min > max) {
-            return 'cant extract range of stat of line: ' + line
+            if (ignoreLineCantExtractStat)
+                continue
+            else
+                return 'cant extract range of stat of line: ' + line
         }
 
         // validate & return
@@ -137,6 +154,9 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
             value
         })
     }
+
+    if (ignoreLineCantExtractStat && stats.length <= 0)
+        return 'cant extract any stats of this slot'
 
     return {
         slotName,

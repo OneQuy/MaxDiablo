@@ -28,6 +28,7 @@ import { SlotCard } from './scr/Types';
 
 // const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
 const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
+const jsonPackage = require('./package.json')
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
@@ -178,7 +179,7 @@ function App(): JSX.Element {
       {/* title */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo [IV] Senpai</Text>
-        <Text style={{ fontSize: 15, color: 'white' }}>(version 0.0.1)</Text>
+        <Text style={{ fontSize: 15, color: 'white' }}>(v{jsonPackage['version']})</Text>
       </View>
       <ScrollView style={{ marginHorizontal: Outline.Margin }}>
         {/* select photo btns */}

@@ -13,6 +13,8 @@ var GenerateBuildData = function () {
     for (var i = 0; i < tierDirs.length; i++) {
         // tier name
         var tierDirName = tierDirs[i];
+        if (tierDirName === 'Data.json')
+            continue;
         var arrTier = tierDirName.split(' ');
         if (arrTier.length !== 2)
             return 'this folder doesnt follow the rule of Tier + X name: ' + tiersDirPath + tierDirName;
@@ -51,6 +53,6 @@ var GenerateBuildData = function () {
         });
     }
     fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
-    return tiers;
+    return;
 };
 exports.GenerateBuildData = GenerateBuildData;

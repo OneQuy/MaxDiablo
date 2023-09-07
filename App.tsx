@@ -134,7 +134,8 @@ function App(): JSX.Element {
       url: 'https://cloudlabs-image-ocr.p.rapidapi.com/ocr/recognizeUrl',
       headers: {
         'content-type': 'application/json',
-        'X-RapidAPI-Key': '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a',
+        // 'X-RapidAPI-Key': '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a', // onequy
+        'X-RapidAPI-Key': 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01', // mquy
         'X-RapidAPI-Host': 'cloudlabs-image-ocr.p.rapidapi.com'
       },
       data: {
@@ -189,7 +190,7 @@ function App(): JSX.Element {
           </TouchableOpacity>
         </View>
         {/* user upload image info */}
-        <View style={{ height: windowSize.height * 0.4, marginTop: Outline.Gap, flexDirection: 'row', borderColor: 'white', borderWidth: 1 }}>
+        <View style={{ height: windowSize.height * 0.4, marginTop: Outline.Gap, flexDirection: 'row' }}>
           {/* image */}
           <View style={{ flex: 1 }}>
             {
@@ -221,7 +222,9 @@ function App(): JSX.Element {
           }
         </View>
         <Text style={{ color: 'white' }}>{status}</Text>
-        <Button title='[dev] log stats from text OCR in Clipboard' onPress={onPressLogStatsFromTextOCRInClipboard} />
+        <TouchableOpacity onPress={onPressLogStatsFromTextOCRInClipboard}>
+          <Text style={{color: 'gray'}}>[dev] log stats from text OCR in Clipboard</Text>
+        </TouchableOpacity>
         <Button title='[dev] copy ocr result' onPress={onPressCopyOCRResult} />
       </ScrollView>
     </SafeAreaView>

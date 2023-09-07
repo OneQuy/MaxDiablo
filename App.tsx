@@ -3,6 +3,7 @@ import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 import {
+  ActivityIndicator,
   Alert,
   Button,
   Image,
@@ -103,6 +104,7 @@ function App(): JSX.Element {
   const onSelectedImg = useCallback(async (path: string) => {
     slotCardRef.current = undefined
     userImgUri.current = path
+    ocrResult.current = ''
 
     setStatus('Uploading...')
 
@@ -115,8 +117,6 @@ function App(): JSX.Element {
       setStatus('Upload failed: ' + ToCanPrint(uplodaErr))
       return
     }
-    else
-      console.log('success upload', tempFilePath);
 
     const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tempFilePath)
 
@@ -125,8 +125,6 @@ function App(): JSX.Element {
       setStatus('GetURL Failed: ' + ToCanPrint(getURLRes.error))
       return
     }
-    else
-      console.log('get file url success', getURLRes.url);
 
     await detectFromImgUrl(getURLRes.url)
   }, [])
@@ -223,10 +221,16 @@ function App(): JSX.Element {
               </View>
           }
         </View>
-        <View>
-          <Text style={{ color: 'white' }}>{status}</Text>
-        </View>
-        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressLogStatsFromTextOCRInClipboard}>
+        {/* status */}
+        {
+          userImgUri.current === '' || ocrResult.current ? undefined :
+          <View style={{ gap: Outline.Gap, marginTop: Outline.Gap, alignItems: 'center' }}>
+            <ActivityIndicator color={'tomato'} />
+            <Text style={{ color: 'white' }}>{status}</Text>
+          </View>
+        }
+        {/* dev btns */}
+        <TouchableOpacity style={{ marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
           <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>

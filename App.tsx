@@ -25,6 +25,9 @@ import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { SlotCard } from './scr/Types';
 
+// const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
+const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
+
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const userImgUri = useRef('')
@@ -134,8 +137,7 @@ function App(): JSX.Element {
       url: 'https://cloudlabs-image-ocr.p.rapidapi.com/ocr/recognizeUrl',
       headers: {
         'content-type': 'application/json',
-        // 'X-RapidAPI-Key': '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a', // onequy
-        'X-RapidAPI-Key': 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01', // mquy
+        'X-RapidAPI-Key': OcrApiKey,
         'X-RapidAPI-Host': 'cloudlabs-image-ocr.p.rapidapi.com'
       },
       data: {

@@ -35,6 +35,8 @@ function App(): JSX.Element {
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
 
+  const tmparr = [1, 2, 3, 4, 5, 6]
+
   const onPressUpload = useCallback(async () => {
     try {
       const response = await openPicker({
@@ -224,9 +226,32 @@ function App(): JSX.Element {
         {/* status */}
         {
           userImgUri.current === '' || ocrResult.current ? undefined :
-          <View style={{ gap: Outline.Gap, marginTop: Outline.Gap, alignItems: 'center' }}>
-            <ActivityIndicator color={'tomato'} />
-            <Text style={{ color: 'white' }}>{status}</Text>
+            <View style={{ gap: Outline.Gap, marginTop: Outline.Gap, alignItems: 'center' }}>
+              <ActivityIndicator color={'tomato'} />
+              <Text style={{ color: 'white' }}>{status}</Text>
+            </View>
+        }
+        {
+          <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
+            <View style={{ backgroundColor: 'tomato', padding: 10, borderRadius: 10 }} >
+              <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>GOOD</Text>
+            </View>
+          </View>
+        }
+        {
+          <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+            {
+              tmparr.map((item, index) => {
+                return <View key={item} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
+                  <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>Build Name</Text>
+                  <View style={{ gap: Outline.Gap }}>
+                    <Text style={{ color: 'white' }}>15% Damage [5-10]%</Text>
+                    <Text style={{ color: 'white' }}>15% Damage [5-10]%</Text>
+                    <Text style={{ color: 'white' }}>15% Damage [5-10]%</Text>
+                  </View>
+                </View>
+              })
+            }
           </View>
         }
         {/* dev btns */}

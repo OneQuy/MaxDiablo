@@ -11,10 +11,22 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
 
     // extract name
 
+    const itemPowerText = root.querySelector('.d4-color-gray')?.text;
+
+    if (!itemPowerText) {
+        return 'missing d4-color-gray (item power)'
+    }
+
+    const itemPower = SplitNumberInText(itemPowerText)
+
+    if (Number.isNaN(itemPower)) {
+        return 'cant parse item power'
+    }
+
     const name = root.querySelector('.d4t-sub-title')?.text;
 
     if (!name) {
-        return 'missing d4t-sub-title'
+        return 'missing d4t-sub-title (slot name)'
     }
 
     let slotName: SlotName | undefined = undefined
@@ -128,6 +140,7 @@ export function ExtractSlotCardFromHTML(htmlString: string): SlotCard | string {
 
     return {
         slotName,
+        itemPower,
         stats: stats
     } as SlotCard
 }

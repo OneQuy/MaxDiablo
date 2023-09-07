@@ -5,14 +5,22 @@ exports.ExtractSlotCardFromHTML = void 0;
 var node_html_parser_1 = require("node-html-parser");
 var Types_1 = require("./Types");
 function ExtractSlotCardFromHTML(htmlString) {
-    var _a;
+    var _a, _b;
     var root = (0, node_html_parser_1["default"])(htmlString);
     if (!root)
         return '[ne]';
     // extract name
-    var name = (_a = root.querySelector('.d4t-sub-title')) === null || _a === void 0 ? void 0 : _a.text;
+    var itemPowerText = (_a = root.querySelector('.d4-color-gray')) === null || _a === void 0 ? void 0 : _a.text;
+    if (!itemPowerText) {
+        return 'missing d4-color-gray (item power)';
+    }
+    var itemPower = SplitNumberInText(itemPowerText);
+    if (Number.isNaN(itemPower)) {
+        return 'cant parse item power';
+    }
+    var name = (_b = root.querySelector('.d4t-sub-title')) === null || _b === void 0 ? void 0 : _b.text;
     if (!name) {
-        return 'missing d4t-sub-title';
+        return 'missing d4t-sub-title (slot name)';
     }
     var slotName = undefined;
     for (var i in Types_1.SlotName) {
@@ -97,6 +105,7 @@ function ExtractSlotCardFromHTML(htmlString) {
     }
     return {
         slotName: slotName,
+        itemPower: itemPower,
         stats: stats
     };
 }

@@ -223,11 +223,15 @@ function App(): JSX.Element {
               </View>
           }
         </View>
-        <Text style={{ color: 'white' }}>{status}</Text>
-        <TouchableOpacity onPress={onPressLogStatsFromTextOCRInClipboard}>
-          <Text style={{color: 'gray'}}>[dev] log stats from text OCR in Clipboard</Text>
+        <View>
+          <Text style={{ color: 'white' }}>{status}</Text>
+        </View>
+        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressLogStatsFromTextOCRInClipboard}>
+          <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
         </TouchableOpacity>
-        <Button title='[dev] copy ocr result' onPress={onPressCopyOCRResult} />
+        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
+          <Text style={{ color: 'gray' }}>[dev] copy ocr result</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )

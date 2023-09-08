@@ -28,6 +28,7 @@ import { SlotCard } from './scr/Types';
 
 // const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
 const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
+
 const jsonPackage = require('./package.json')
 
 function App(): JSX.Element {

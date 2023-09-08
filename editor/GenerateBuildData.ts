@@ -95,9 +95,9 @@ export const GenerateBuildData = (printBeauty = false): string | undefined => {
     console.log('tier count: ' + tiers.length);
 
     if (printBeauty)
-        fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
+        fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers, null, 1));
     else
-        fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers));
+        fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers));
 
     return
 }

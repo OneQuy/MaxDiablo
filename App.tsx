@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -30,6 +30,8 @@ import { SlotCard } from './scr/Types';
 const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
 
 const jsonPackage = require('./package.json')
+
+const demoText = 'THE TALENT\nAncestral Rare Wand\n795 Item Power\n1,126 Damage Per Second (+1126)\n[751-1,127] Damage per Hit\n1.20 Attacks per Second (Very Fast\nWeapon)\n+ +10.0% Lucky Hit Chance [10.0]%\n+23.5% Damage to Slowed Enemies\n[16.5-23.5]%\n+ +15.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +18.5% Core Skill Damage [12.5-\n19.5]%\n• +44 Intelligence +[38-52]\nRequires Level 80\nUnlocks new look on salvage\nSell Value: 24,995\nDurability: 100/100'
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
@@ -133,6 +135,18 @@ function App(): JSX.Element {
     await detectFromImgUrl(getURLRes.url)
   }, [])
 
+  const onGotOcrResultText = useCallback(async (result: string) => {
+    ocrResult.current = JSON.stringify(result)
+    const extractRes = ExtractSlotCard(result)
+
+    if (typeof extractRes === 'object') {
+      slotCardRef.current = extractRes
+      setStatus('SUCCESS')
+    }
+    else
+      setStatus('FAIL: ' + extractRes)
+  }, [])
+
   const detectFromImgUrl = useCallback(async (imgUrl: string) => {
     const options = {
       method: 'POST',
@@ -151,27 +165,22 @@ function App(): JSX.Element {
 
     try {
       const response = await axios.request(options);
-      ocrResult.current = response.data
       const result = response.data?.result
 
       if (!result)
         throw 'No have result'
 
-      const extractRes = ExtractSlotCard(result)
-
-      if (typeof extractRes === 'object') {
-        slotCardRef.current = extractRes
-
-        await Clipboard.setString(JSON.stringify(extractRes, null, 1))
-
-        setStatus('SUCCESS')
-      }
-      else
-        setStatus('FAIL: ' + extractRes)
+      onGotOcrResultText(result)
     } catch (error) {
       console.error(error);
       setStatus('OCR Failed: ' + ToCanPrint(error))
     }
+  }, [])
+
+  // init once 
+
+  useEffect(() => {
+    onGotOcrResultText(demoText)
   }, [])
 
   return (

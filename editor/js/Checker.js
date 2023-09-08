@@ -28,4 +28,6 @@ var countDecimal = function (n) {
     var arr = txt.split('.');
     if (arr.length === 2 && arr[1].length > 1)
         console.log(txt);
+    else
+        console.log(n);
 };

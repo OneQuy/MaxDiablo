@@ -12,10 +12,11 @@ var GenerateBuildData = function () {
     var tiers = [];
     var countBuilds = 0;
     var countSlots = 0;
+    var countError = 0;
     for (var i = 0; i < tierDirs.length; i++) {
         // tier name
         var tierDirName = tierDirs[i];
-        if (tierDirName === 'Data.json')
+        if (tierDirName.includes('.')) // this is file
             continue;
         var arrTier = tierDirName.split(' ');
         if (arrTier.length !== 2)
@@ -30,6 +31,8 @@ var GenerateBuildData = function () {
         var builds = [];
         for (var j = 0; j < buildDirs.length; j++) {
             var buildDirName = buildDirs[j]; // also build name
+            if (buildDirName.includes('.')) // this is file
+                continue;
             var slotFileNames = fs.readdirSync(tiersDirPath + tierDirName + '/' + buildDirName);
             var slotCards = [];
             for (var a = 0; a < buildDirs.length; a++) {
@@ -39,8 +42,10 @@ var GenerateBuildData = function () {
                 var path = tiersDirPath + tierDirName + '/' + buildDirName + '/' + slotFileName;
                 var str = fs.readFileSync(path, { encoding: 'utf8', flag: 'r' });
                 var slotCardRes = (0, ExtractSlotCardFromHTML_1.ExtractSlotCardFromHTML)(str, true);
-                if (typeof slotCardRes === 'string')
+                if (typeof slotCardRes === 'string') {
+                    countError++;
                     (0, Utils_NodeJS_1.LogRed)('can extract file: ' + path + ', error: ' + slotCardRes);
+                }
                 else
                     slotCards.push(slotCardRes);
             }
@@ -56,6 +61,7 @@ var GenerateBuildData = function () {
             builds: builds
         });
     }
+    console.log('slot error count: ' + countError);
     console.log('slot count: ' + countSlots);
     console.log('build count: ' + countBuilds);
     console.log('tier count: ' + tiers.length);

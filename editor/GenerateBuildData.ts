@@ -13,15 +13,17 @@ export const GenerateBuildData = (): string | undefined => {
         LogRed('not found any tier dir in ' + tiersDirPath)
 
     const tiers: Tier[] = []
+    
     let countBuilds = 0
     let countSlots = 0
+    let countError = 0
 
     for (let i = 0; i < tierDirs.length; i++) {
         // tier name
 
         const tierDirName = tierDirs[i]
 
-        if (tierDirName === 'Data.json')
+        if (tierDirName.includes('.')) // this is file
             continue
 
         const arrTier = tierDirName.split(' ')
@@ -46,6 +48,9 @@ export const GenerateBuildData = (): string | undefined => {
         for (let j = 0; j < buildDirs.length; j++) {
             const buildDirName = buildDirs[j] // also build name
 
+            if (buildDirName.includes('.')) // this is file
+                continue
+
             const slotFileNames = fs.readdirSync(tiersDirPath + tierDirName + '/' + buildDirName)
 
             const slotCards: SlotCard[] = []
@@ -60,8 +65,10 @@ export const GenerateBuildData = (): string | undefined => {
                 const str = fs.readFileSync(path, { encoding: 'utf8', flag: 'r' });
                 const slotCardRes = ExtractSlotCardFromHTML(str, true)
 
-                if (typeof slotCardRes === 'string')
+                if (typeof slotCardRes === 'string') {
+                    countError++
                     LogRed('can extract file: ' + path + ', error: ' + slotCardRes)
+                }
                 else
                     slotCards.push(slotCardRes)
             }
@@ -82,6 +89,7 @@ export const GenerateBuildData = (): string | undefined => {
         })
     }
 
+    console.log('slot error count: ' + countError);
     console.log('slot count: ' + countSlots);
     console.log('build count: ' + countBuilds);
     console.log('tier count: ' + tiers.length);

@@ -24,7 +24,7 @@ import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { SlotCard, Tier } from './scr/Types';
+import { Build, SlotCard, Stat, Tier } from './scr/Types';
 
 // const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
 const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
@@ -39,8 +39,7 @@ function App(): JSX.Element {
   const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
-
-  const tmparr = [1, 2]
+  const suitBuilds = useRef<[string, SlotCard][]>()
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -136,12 +135,53 @@ function App(): JSX.Element {
     await detectFromImgUrl(getURLRes.url)
   }, [])
 
+  const findSuitBuilds = useCallback(() => {
+    if (!slotCardRef.current)
+      return
+
+    suitBuilds.current = []
+
+    for (let itier = 0; itier < buildsData.length; itier++) {
+      const tier = buildsData[itier]
+
+      for (let ibuild = 0; ibuild < tier.builds.length; ibuild++) {
+        const build = tier.builds[ibuild]
+
+        for (let islot = 0; islot < build.slots.length; islot++) {
+          const slot = build.slots[islot]
+
+          if (slot.slotName !== slotCardRef.current.slotName)
+            continue
+
+          // @ts-ignore
+          const statEquals = slot.stats.filter(stat => slotCardRef.current.stats.findIndex(a => a.name === stat.name) >= 0)
+
+          if (statEquals.length > 0) {
+            console.log('statEquals: ' + statEquals.length, ', suit build: ' + build.name, ', tier: ' + tier.name);
+
+            suitBuilds.current.push([build.name, slot])
+          }
+        }
+      }
+    }
+  }, [])
+
+  const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
+    if (!slotCardRef.current)
+      return 'white'
+
+    const idx= slotCardRef.current.stats.findIndex(i => i.name === stat)
+
+    return idx >= 0 ? 'tomato' : 'white'
+  }, [])
+
   const onGotOcrResultText = useCallback(async (result: string) => {
     ocrResult.current = JSON.stringify(result)
     const extractRes = ExtractSlotCard(result)
 
     if (typeof extractRes === 'object') {
       slotCardRef.current = extractRes
+      findSuitBuilds()
       setStatus('SUCCESS')
     }
     else
@@ -247,26 +287,29 @@ function App(): JSX.Element {
         {
           <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
             <View style={{ width: 150, alignItems: 'center', backgroundColor: 'tomato', padding: 10, borderRadius: 10 }} >
-              <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>GOOD</Text>
+              <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>...</Text>
             </View>
           </View>
         }
         {/* builds suit */}
         {
-          <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
-            {
-              tmparr.map((item, index) => {
-                return <View key={item} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
-                  <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>Build Name</Text>
-                  <View style={{ gap: Outline.Gap }}>
-                    <Text style={{ color: 'white' }}>15% Damage [5-10]%</Text>
-                    <Text style={{ color: 'white' }}>15% Damage [5-10]%</Text>
-                    <Text style={{ color: 'white' }}>15% Damage [5-10]%</Text>
+          !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
+            <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+              {
+                suitBuilds.current.map(([buildName, slot], index) => {
+                  return <View key={buildName + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
+                    <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{buildName}</Text>
+                    <View style={{ gap: Outline.Gap }}>
+                      {
+                        slot.stats.map((stat, index) => {
+                          return <Text key={stat.name + index} style={{ color: GetStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]%</Text>
+                        })
+                      }
+                    </View>
                   </View>
-                </View>
-              })
-            }
-          </View>
+                })
+              }
+            </View>
         }
         {/* dev btns */}
         <TouchableOpacity style={{ marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>

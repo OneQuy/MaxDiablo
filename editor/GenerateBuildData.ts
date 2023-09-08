@@ -6,14 +6,14 @@ const fs = require('fs')
 
 const tiersDirPath = './editor/builddata/'
 
-export const GenerateBuildData = (): string | undefined => {
+export const GenerateBuildData = (printBeauty = false): string | undefined => {
     const tierDirs = fs.readdirSync(tiersDirPath)
 
     if (tierDirs.length <= 0)
         LogRed('not found any tier dir in ' + tiersDirPath)
 
     const tiers: Tier[] = []
-    
+
     let countBuilds = 0
     let countSlots = 0
     let countError = 0
@@ -93,7 +93,11 @@ export const GenerateBuildData = (): string | undefined => {
     console.log('slot count: ' + countSlots);
     console.log('build count: ' + countBuilds);
     console.log('tier count: ' + tiers.length);
-    
-    fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
+
+    if (printBeauty)
+        fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
+    else
+        fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers));
+
     return
 }

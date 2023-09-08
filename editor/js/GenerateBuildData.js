@@ -5,7 +5,8 @@ var ExtractSlotCardFromHTML_1 = require("./ExtractSlotCardFromHTML");
 var Utils_NodeJS_1 = require("./Utils_NodeJS");
 var fs = require('fs');
 var tiersDirPath = './editor/builddata/';
-var GenerateBuildData = function () {
+var GenerateBuildData = function (printBeauty) {
+    if (printBeauty === void 0) { printBeauty = false; }
     var tierDirs = fs.readdirSync(tiersDirPath);
     if (tierDirs.length <= 0)
         (0, Utils_NodeJS_1.LogRed)('not found any tier dir in ' + tiersDirPath);
@@ -65,7 +66,10 @@ var GenerateBuildData = function () {
     console.log('slot count: ' + countSlots);
     console.log('build count: ' + countBuilds);
     console.log('tier count: ' + tiers.length);
-    fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
+    if (printBeauty)
+        fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers, null, 1));
+    else
+        fs.writeFileSync('./editor/builddata/Data.json', JSON.stringify(tiers));
     return;
 };
 exports.GenerateBuildData = GenerateBuildData;

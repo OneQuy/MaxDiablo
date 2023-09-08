@@ -233,13 +233,15 @@ function App(): JSX.Element {
               <Text style={{ color: 'white' }}>{status}</Text>
             </View>
         }
+        {/* rating result text */}
         {
           <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
-            <View style={{ backgroundColor: 'tomato', padding: 10, borderRadius: 10 }} >
+            <View style={{ width: 150, alignItems: 'center', backgroundColor: 'tomato', padding: 10, borderRadius: 10 }} >
               <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>GOOD</Text>
             </View>
           </View>
         }
+        {/* builds suit */}
         {
           <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
             {

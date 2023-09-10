@@ -1,6 +1,20 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
+function FixCloseSqrBracket(text: string): string {
+    for (let index = 1; index < text.length; index++) {
+        if (text[index] === '1' &&
+            text[index + 1] === '%' &&
+            text[index - 1] >= '0' && text[index - 1] <= '9') {
+            text = StringReplaceCharAt(text, index, ']')
+            console.log('fix bracket', index);
+            
+        }
+    }
+
+    return text
+}
+
 export function ExtractSlotCard(text: string): SlotCard | string {
     // console.log('----------------');
     // console.log(text);
@@ -11,6 +25,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     if (!text)
         return 'text to regconize is null'
 
+    // fix miss close sqr bracket line
+
+    text = FixCloseSqrBracket(text)
+
+    // split lines
+
     let lines = text.split('\n')
 
     if (lines.length <= 1)
@@ -18,12 +38,6 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
     if (lines.length <= 1)
         return 'text to regconize is not enough lines: ' + lines.length
-
-
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
 
     // extract item power
 
@@ -39,7 +53,7 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     }
 
     if (Number.isNaN(itemPower)) {
-        return 'cant extract ItemPower' 
+        return 'cant extract ItemPower'
     }
 
     // find name slot
@@ -86,7 +100,14 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'cant extract SlotName'
     }
 
-    // merge close bracket line
+    // console.log('trước merge================');
+
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
+
+    // merge square bracket line (logic: merge current line to previous line)
 
     for (let index = 1; index < lines.length; index++) {
         const line = lines[index];
@@ -124,32 +145,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         }
     }
 
-    // fix miss close sqr bracket line
+    // console.log('sau mergeeeee================');
 
-    for (let index = 1; index < lines.length; index++) {
-        // +12.5% Vulnerable Damage [7.0- 14.01%
-
-        const line = lines[index];
-
-        const openSqrBracketIdx = line.indexOf('[')
-        const closeSqrBracketIdx = line.indexOf(']')
-
-        if (openSqrBracketIdx >= 0 && closeSqrBracketIdx < 0) { // need to fix
-            let fixed = false
-
-            for (let i = line.length - 1; i > openSqrBracketIdx; i--) {
-                if (line[i] === '1') { // this '1' is close bracket
-                    fixed = true
-                    lines[index] = StringReplaceCharAt(line, i, ']')
-                    break
-                }
-            }
-
-            if (!fixed) {
-                return 'this line can not be fixed close bracket: ' + line
-            }
-        }
-    }
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
 
     // remove empty lines 
 
@@ -323,3 +324,31 @@ const IsIgnoredLine = (line: string) => {
     else
         return false
 }
+
+
+// fix miss close sqr bracket line
+
+// for (let index = 1; index < lines.length; index++) {
+//     // +12.5% Vulnerable Damage [7.0- 14.01%
+
+//     const line = lines[index];
+
+//     const openSqrBracketIdx = line.indexOf('[')
+//     const closeSqrBracketIdx = line.indexOf(']')
+
+//     if (openSqrBracketIdx >= 0 && closeSqrBracketIdx < 0) { // need to fix
+//         let fixed = false
+
+//         for (let i = line.length - 1; i > openSqrBracketIdx; i--) {
+//             if (line[i] === '1') { // this '1' is close bracket
+//                 fixed = true
+//                 lines[index] = StringReplaceCharAt(line, i, ']')
+//                 break
+//             }
+//         }
+
+//         if (!fixed) {
+//             return 'this line can not be fixed close bracket: ' + line
+//         }
+//     }
+// }

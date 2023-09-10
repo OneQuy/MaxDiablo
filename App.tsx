@@ -69,8 +69,8 @@ function App(): JSX.Element {
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
     const res = ExtractSlotCard(await Clipboard.getString())
 
+    console.log(JSON.stringify(res))
     console.log(JSON.stringify(res, null, 1));
-
   }, [])
 
   const onPressTakeCamera = useCallback(async () => {

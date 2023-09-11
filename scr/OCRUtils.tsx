@@ -7,8 +7,7 @@ function FixCloseSqrBracket(text: string): string {
             text[index + 1] === '%' &&
             text[index - 1] >= '0' && text[index - 1] <= '9') {
             text = StringReplaceCharAt(text, index, ']')
-            console.log('fix bracket', index);
-            
+            // console.log('fix bracket', index);
         }
     }
 

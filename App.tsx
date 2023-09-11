@@ -187,6 +187,8 @@ function App(): JSX.Element {
     else {
       rateText.current = 'TRASH'
     }
+
+    rateText.current = 'GOOD'
   }, [])
 
   const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -219,7 +221,7 @@ function App(): JSX.Element {
     }
     else { // fail
       setStatus('')
-      
+
       Alert.alert(
         'Lỗi không thể phân tích hình', 
         'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + extractRes)
@@ -326,8 +328,8 @@ function App(): JSX.Element {
         {
           !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
             <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
-              <View style={{ width: 150, alignItems: 'center', backgroundColor: 'tomato', padding: 10, borderRadius: 10 }} >
-                <Text style={{ color: GetRateTextColor(), fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
+              <View style={{ alignItems: 'center', backgroundColor: GetRateTextColor(), padding: 10, borderRadius: 10 }} >
+                <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
               </View>
             </View>
         }

@@ -39,7 +39,8 @@ function App(): JSX.Element {
   const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
-  const suitBuilds = useRef<[string, SlotCard][]>()
+  const rateText = useRef('...')
+  const suitBuilds = useRef<[Tier, Build, SlotCard, number][]>()
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -109,6 +110,7 @@ function App(): JSX.Element {
     slotCardRef.current = undefined
     userImgUri.current = path
     ocrResult.current = ''
+    suitBuilds.current = undefined
 
     setStatus('Uploading...')
 
@@ -117,16 +119,24 @@ function App(): JSX.Element {
     const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
 
     if (uplodaErr) {
-      console.error('upload file fail', uplodaErr);
-      setStatus('Upload failed: ' + ToCanPrint(uplodaErr))
+      setStatus('')
+
+      Alert.alert(
+        'Lỗi không thể upload hình để xử lý', 
+        'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr))
+
       return
     }
 
     const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tempFilePath)
 
     if (getURLRes.error) {
-      console.error('FirebaseStorage_GetDownloadURLAsync', getURLRes.error);
-      setStatus('GetURL Failed: ' + ToCanPrint(getURLRes.error))
+      setStatus('')
+
+      Alert.alert(
+        'Lỗi lấy url ảnh', 
+        'Mã lỗi: ' + ToCanPrint(getURLRes.error))
+
       return
     }
 
@@ -138,6 +148,7 @@ function App(): JSX.Element {
       return
 
     suitBuilds.current = []
+    const linesMatchIsGood = 3
 
     for (let itier = 0; itier < buildsData.length; itier++) {
       const tier = buildsData[itier]
@@ -154,13 +165,27 @@ function App(): JSX.Element {
           // @ts-ignore
           const statEquals = slot.stats.filter(stat => slotCardRef.current.stats.findIndex(a => a.name === stat.name) >= 0)
 
-          if (statEquals.length > 2) {
+          if (statEquals.length >= linesMatchIsGood) {
             // console.log('statEquals: ' + statEquals.length, ', suit build: ' + build.name, ', tier: ' + tier.name);
 
-            suitBuilds.current.push([build.name, slot])
+            suitBuilds.current.push([tier, build, slot, statEquals.length])
           }
         }
       }
+    }
+
+    if (suitBuilds.current.length > 0) {
+      const idx = suitBuilds.current.findIndex(i => i[3] > linesMatchIsGood)
+
+      if (idx >= 0) {
+        rateText.current = 'PERFECT'
+      }
+      else {
+        rateText.current = 'GOOD'
+      }
+    }
+    else {
+      rateText.current = 'TRASH'
     }
   }, [])
 
@@ -168,22 +193,37 @@ function App(): JSX.Element {
     if (!slotCardRef.current)
       return 'white'
 
-    const idx= slotCardRef.current.stats.findIndex(i => i.name === stat)
+    const idx = slotCardRef.current.stats.findIndex(i => i.name === stat)
 
     return idx >= 0 ? 'tomato' : 'white'
+  }, [])
+
+  const GetRateTextColor = useCallback(() => {
+    if (rateText.current === 'PERFECT')
+      return 'tomato'
+
+    if (rateText.current === 'GOOD')
+      return 'yellow'
+
+    return 'gray'
   }, [])
 
   const onGotOcrResultText = useCallback(async (result: string) => {
     ocrResult.current = JSON.stringify(result)
     const extractRes = ExtractSlotCard(result)
 
-    if (typeof extractRes === 'object') {
+    if (typeof extractRes === 'object') { // success
       slotCardRef.current = extractRes
       findSuitBuilds()
       setStatus('SUCCESS')
     }
-    else
-      setStatus('FAIL: ' + extractRes)
+    else { // fail
+      setStatus('')
+      
+      Alert.alert(
+        'Lỗi không thể phân tích hình', 
+        'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + extractRes)
+    }
   }, [])
 
   const detectFromImgUrl = useCallback(async (imgUrl: string) => {
@@ -207,12 +247,13 @@ function App(): JSX.Element {
       const result = response.data?.result
 
       if (!result)
-        throw 'No have result'
+        throw 'OCR have no result'
 
       onGotOcrResultText(result)
     } catch (error) {
-      console.error(error);
-      setStatus('OCR Failed: ' + ToCanPrint(error))
+      Alert.alert(
+        'Lỗi không thể phân tích hình', 
+        'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + ToCanPrint(error))
     }
   }, [])
 
@@ -283,20 +324,21 @@ function App(): JSX.Element {
         }
         {/* rating result text */}
         {
-          <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
-            <View style={{ width: 150, alignItems: 'center', backgroundColor: 'tomato', padding: 10, borderRadius: 10 }} >
-              <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>...</Text>
+          !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
+            <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
+              <View style={{ width: 150, alignItems: 'center', backgroundColor: 'tomato', padding: 10, borderRadius: 10 }} >
+                <Text style={{ color: GetRateTextColor(), fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
+              </View>
             </View>
-          </View>
         }
         {/* builds suit */}
         {
           !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
             <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
               {
-                suitBuilds.current.map(([buildName, slot], index) => {
-                  return <View key={buildName + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
-                    <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{buildName}</Text>
+                suitBuilds.current.map(([tier, build, slot, statsMatchedCount], index) => {
+                  return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
+                    <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{build.name}</Text>
                     <View style={{ gap: Outline.Gap }}>
                       {
                         slot.stats.map((stat, index) => {

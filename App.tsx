@@ -122,7 +122,7 @@ function App(): JSX.Element {
       setStatus('')
 
       Alert.alert(
-        'Lỗi không thể upload hình để xử lý', 
+        'Lỗi không thể upload hình để xử lý',
         'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr))
 
       return
@@ -134,7 +134,7 @@ function App(): JSX.Element {
       setStatus('')
 
       Alert.alert(
-        'Lỗi lấy url ảnh', 
+        'Lỗi lấy url ảnh',
         'Mã lỗi: ' + ToCanPrint(getURLRes.error))
 
       return
@@ -146,6 +146,8 @@ function App(): JSX.Element {
   const findSuitBuilds = useCallback(() => {
     if (!slotCardRef.current)
       return
+
+    // find suits
 
     suitBuilds.current = []
     const linesMatchIsGood = 3
@@ -174,7 +176,24 @@ function App(): JSX.Element {
       }
     }
 
+    // rate
+
     if (suitBuilds.current.length > 0) {
+
+      // sort 
+
+      suitBuilds.current.sort((a, b) => {
+        if (a[3] < b[3]) {
+          return 1;
+        } else if (a[3] > b[3]) {
+          return -1;
+        }
+
+        return 0;
+      })
+
+      // rate
+      
       const idx = suitBuilds.current.findIndex(i => i[3] > linesMatchIsGood)
 
       if (idx >= 0) {
@@ -221,7 +240,7 @@ function App(): JSX.Element {
       setStatus('')
 
       Alert.alert(
-        'Lỗi không thể phân tích hình', 
+        'Lỗi không thể phân tích hình',
         'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + extractRes)
     }
   }, [])
@@ -252,7 +271,7 @@ function App(): JSX.Element {
       onGotOcrResultText(result)
     } catch (error) {
       Alert.alert(
-        'Lỗi không thể phân tích hình', 
+        'Lỗi không thể phân tích hình',
         'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + ToCanPrint(error))
     }
   }, [])

@@ -111,6 +111,7 @@ function App(): JSX.Element {
     userImgUri.current = path
     ocrResult.current = ''
     suitBuilds.current = undefined
+    rateText.current = '...'
 
     setStatus('Uploading...')
 
@@ -343,9 +344,9 @@ function App(): JSX.Element {
         }
         {/* rating result text */}
         {
-          !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
+          // !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
             <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
-              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', backgroundColor: GetRateTextColor(), padding: 10, borderRadius: 10 }} >
+              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : GetRateTextColor(), padding: 10, borderRadius: 10 }} >
                 <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
               </View>
             </View>

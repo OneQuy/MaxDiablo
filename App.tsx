@@ -154,7 +154,7 @@ function App(): JSX.Element {
           // @ts-ignore
           const statEquals = slot.stats.filter(stat => slotCardRef.current.stats.findIndex(a => a.name === stat.name) >= 0)
 
-          if (statEquals.length > 0) {
+          if (statEquals.length > 2) {
             // console.log('statEquals: ' + statEquals.length, ', suit build: ' + build.name, ', tier: ' + tier.name);
 
             suitBuilds.current.push([build.name, slot])

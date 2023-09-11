@@ -77,7 +77,7 @@ function App(): JSX.Element {
     const camRequestRes = await RequestCameraPermissionAsync()
 
     if (camRequestRes !== true) {
-      Clipboard.setString('cam req ' + ToCanPrint(camRequestRes))
+      Alert.alert('Thiếu quyền truy cập Camera!', 'Vui lòng cấp quyền truy cập')
       return
     }
 
@@ -86,8 +86,6 @@ function App(): JSX.Element {
       cameraType: 'back',
       mediaType: 'photo'
     } as CameraOptions)
-
-    Clipboard.setString(ToCanPrint(result))
 
     if (!result || !result.assets)
       return

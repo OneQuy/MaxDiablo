@@ -345,7 +345,7 @@ function App(): JSX.Element {
         {
           !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
             <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
-              <View style={{ alignItems: 'center', backgroundColor: GetRateTextColor(), padding: 10, borderRadius: 10 }} >
+              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', backgroundColor: GetRateTextColor(), padding: 10, borderRadius: 10 }} >
                 <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
               </View>
             </View>

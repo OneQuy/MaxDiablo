@@ -187,8 +187,6 @@ function App(): JSX.Element {
     else {
       rateText.current = 'TRASH'
     }
-
-    rateText.current = 'GOOD'
   }, [])
 
   const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -205,7 +203,7 @@ function App(): JSX.Element {
       return 'tomato'
 
     if (rateText.current === 'GOOD')
-      return 'yellow'
+      return 'gold'
 
     return 'gray'
   }, [])

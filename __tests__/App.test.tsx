@@ -61,3 +61,14 @@ test('text 4', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 });
+
+// BONEBREAKER OF RETRIBUTION
+
+test('text 5', () => {
+  const text = 'BONEBREAKER OF\nRETRIBUTION\nAncestral Legendary Two-\nHanded Mace\n820+25 Item Power\n◆ Upgrades: 5/5\n2,741 Damage Per Second\n→ [2,436 - 3,654] Damage per Hit\n0.90 Attacks per Second (Slow\nWeapon)\n+94.5% Overpower Damage [94.5]%\n+42.0% Vulnerable Damage [21.0 -\n42.0]%\n+ +52.5% Critical Strike Damage [31.5 -\n52.5]%\n+156 Strength [114-156]\n+84 All Stats [60 - 84]\n★ Distant enemies have a 8% chance to\nbe Stunned for 2 seconds when they\nhit you. You deal 40%[x] [20-40]%\nincreased damage to Stunned\nenemies.\nAsnert unlocked by completing'
+  const expected = '{"slotName":"Two-Handed Mace","itemPower":820,"stats":[{"name":"Damage Per Second","min":2436,"max":3654,"isPercent":false,"value":2741},{"name":"Overpower Damage","min":94.5,"max":94.5,"isPercent":true,"value":94.5},{"name":"Vulnerable Damage","min":21,"max":42,"isPercent":true,"value":42},{"name":"Critical Strike Damage","min":31.5,"max":52.5,"isPercent":true,"value":52.5},{"name":"Strength","min":114,"max":156,"isPercent":false,"value":156},{"name":"All Stats","min":60,"max":84,"isPercent":false,"value":84}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+});

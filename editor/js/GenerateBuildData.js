@@ -31,7 +31,7 @@ var GenerateBuildData = function (printBeauty) {
             (0, Utils_NodeJS_1.LogRed)('not found any build dirs in ' + tiersDirPath + tierDirName);
         var builds = [];
         for (var j = 0; j < buildDirs.length; j++) {
-            var buildDirName = buildDirs[j]; // also build name
+            var buildDirName = buildDirs[j]; // also build raw name
             if (buildDirName.includes('.')) // this is file
                 continue;
             var slotFileNames = fs.readdirSync(tiersDirPath + tierDirName + '/' + buildDirName);
@@ -51,8 +51,16 @@ var GenerateBuildData = function (printBeauty) {
                     slotCards.push(slotCardRes);
             }
             countSlots += slotCards.length;
+            // fix build name
+            var buildName = buildDirName.replace('Endgame', '');
+            buildName = buildName.replace('Guide', '');
+            buildName = buildName.replace('Build', '');
+            buildName = buildName.replace('endgame', '');
+            buildName = buildName.replace('guide', '');
+            buildName = buildName.replace('build', '');
+            buildName = buildName.trim();
             builds.push({
-                name: buildDirName,
+                name: buildName,
                 slots: slotCards
             });
         }

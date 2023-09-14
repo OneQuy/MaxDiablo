@@ -46,7 +46,7 @@ export const GenerateBuildData = (printBeauty = false): string | undefined => {
         const builds: Build[] = []
 
         for (let j = 0; j < buildDirs.length; j++) {
-            const buildDirName = buildDirs[j] // also build name
+            const buildDirName = buildDirs[j] // also build raw name
 
             if (buildDirName.includes('.')) // this is file
                 continue
@@ -75,8 +75,20 @@ export const GenerateBuildData = (printBeauty = false): string | undefined => {
 
             countSlots += slotCards.length
 
+            // fix build name
+
+            let buildName = buildDirName.replace('Endgame', '')
+            buildName = buildName.replace('Guide', '')
+            buildName = buildName.replace('Build', '')
+            
+            buildName = buildName.replace('endgame', '')
+            buildName = buildName.replace('guide', '')
+            buildName = buildName.replace('build', '')
+            
+            buildName = buildName.trim()
+
             builds.push({
-                name: buildDirName,
+                name: buildName,
                 slots: slotCards
             })
         }

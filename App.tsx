@@ -241,12 +241,6 @@ function App(): JSX.Element {
     return 'gray'
   }, [])
 
-  const GetShowNameOfRawBuildName = useCallback((rawName: string) => {
-    rawName = rawName.replace('Endgame', '')
-    rawName = rawName.replace('Guide', '')
-    return rawName.trim()
-  }, [])
-
   const onGotOcrResultText = useCallback(async (result: string) => {
     ocrResult.current = JSON.stringify(result)
     const extractRes = ExtractSlotCard(result)
@@ -385,7 +379,7 @@ function App(): JSX.Element {
                 suitBuilds.current.map(([tier, build, slot, statsMatchedCount], index) => {
                   return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
                     {/* build name  */}
-                    <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{GetShowNameOfRawBuildName(build.name)}</Text>
+                    <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{build.name}</Text>
                     {/* tier & slot name */}
                     <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
                       <Text style={{ color: 'tomato', borderColor: 'tomato', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>

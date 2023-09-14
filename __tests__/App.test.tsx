@@ -72,3 +72,14 @@ test('text 5', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 });
+
+// HAVOC VOW
+
+test('text 6', () => {
+  const text = 'HAVOC VOW\nAncestral Rare Ring\n774 Itern Power\n*\n+\n24.8% Cold Resistance [24.8]%\n24.8% Lightning Resistance [24.81%\n+613 Maximum Life [306-664]\n+16.5% Critical Strike Damage [10.5\n17.5]%\n+20.0% Damage to Close Enemies [16.5 -\n23.5]%\n+10.0% Barrier Generation [7.0- 14.0]%\nEmpty Devious malignant socket\nTake\n+Link\nSHIFT Compare\n-\nRequires Level 80\nSell Value: 23,852'
+  const expected = '{"slotName":"Ring","itemPower":774,"stats":[{"name":"Cold Resistance","min":24.8,"max":24.8,"isPercent":true,"value":24.8},{"name":"Lightning Resistance","min":24.8,"max":24.8,"isPercent":true,"value":24.8},{"name":"Maximum Life","min":306,"max":664,"isPercent":false,"value":613},{"name":"Critical Strike Damage","min":10.5,"max":17.5,"isPercent":true,"value":16.5},{"name":"Damage to Close Enemies","min":16.5,"max":23.5,"isPercent":true,"value":20},{"name":"Barrier Generation","min":7,"max":14,"isPercent":true,"value":10}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+});

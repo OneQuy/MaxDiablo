@@ -310,7 +310,9 @@ function App(): JSX.Element {
         <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo [IV] Senpai</Text>
         <Text style={{ fontSize: 15, color: 'white' }}>(v{jsonPackage['version']})</Text>
       </View>
-      <ScrollView style={{ marginHorizontal: Outline.Margin }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginHorizontal: Outline.Margin }}>
         {/* select photo btns */}
         <Text style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
         <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>

@@ -118,11 +118,11 @@ function App(): JSX.Element {
 
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
-      
+
       Alert.alert(
         'File không tồn tại để upload',
         'Path: ' + path)
-              
+
       return
     }
 
@@ -330,9 +330,9 @@ function App(): JSX.Element {
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={{ color: 'tomato', borderColor: 'tomato', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slotCardRef.current.slotName}</Text>
-                  <View style={{ flex: 1}} />
+                  <View style={{ flex: 1 }} />
                 </View>
-                
+
                 <ScrollView contentContainerStyle={{ gap: Outline.Gap, marginTop: Outline.Margin }}>
                   {
                     slotCardRef.current.stats.map((item, index) => {
@@ -375,7 +375,14 @@ function App(): JSX.Element {
               {
                 suitBuilds.current.map(([tier, build, slot, statsMatchedCount], index) => {
                   return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
+                    {/* build name  */}
                     <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{build.name}</Text>
+                    {/* tier & slot name */}
+                    <View style={{flexDirection: 'row', gap: Outline.Gap}}>
+                      <Text style={{ color: 'tomato', borderColor: 'tomato', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
+                      <Text style={{ color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                      <View style={{ flex: 1}} />
+                    </View>
                     <View style={{ gap: Outline.Gap }}>
                       {
                         slot.stats.map((stat, index) => {

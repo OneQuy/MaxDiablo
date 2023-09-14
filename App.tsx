@@ -240,7 +240,7 @@ function App(): JSX.Element {
 
     return 'gray'
   }, [])
-  
+
   const GetShowNameOfRawBuildName = useCallback((rawName: string) => {
     rawName = rawName.replace('Endgame', '')
     rawName = rawName.replace('Guide', '')
@@ -322,24 +322,25 @@ function App(): JSX.Element {
           </TouchableOpacity>
         </View>
         {/* user upload image info */}
-        <View style={{ height: windowSize.height * 0.4, marginTop: Outline.Gap, flexDirection: 'row' }}>
+        <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
           {/* image */}
           <View style={{ flex: 1 }}>
             {
               userImgUri.current === '' ? undefined :
-                <Image style={{ width: '100%', height: '100%' }} resizeMode='contain' source={{ uri: userImgUri.current }} />
+                <Image style={{ width: '100%', height: windowSize.height * 0.4, }} resizeMode='contain' source={{ uri: userImgUri.current }} />
             }
           </View>
           {/* info */}
           {
             !slotCardRef.current ? undefined :
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
+                {/* title */}
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={{ color: 'tomato', borderColor: 'tomato', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slotCardRef.current.slotName}</Text>
                   <View style={{ flex: 1 }} />
                 </View>
-
-                <ScrollView contentContainerStyle={{ gap: Outline.Gap, marginTop: Outline.Margin }}>
+                {/* stats */}
+                <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
                   {
                     slotCardRef.current.stats.map((item, index) => {
                       return <View key={index}>
@@ -353,7 +354,7 @@ function App(): JSX.Element {
                       </View>
                     })
                   }
-                </ScrollView>
+                </View>
               </View>
           }
         </View>
@@ -384,10 +385,10 @@ function App(): JSX.Element {
                     {/* build name  */}
                     <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{GetShowNameOfRawBuildName(build.name)}</Text>
                     {/* tier & slot name */}
-                    <View style={{flexDirection: 'row', gap: Outline.Gap}}>
+                    <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
                       <Text style={{ color: 'tomato', borderColor: 'tomato', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
                       <Text style={{ color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
-                      <View style={{ flex: 1}} />
+                      <View style={{ flex: 1 }} />
                     </View>
                     <View style={{ gap: Outline.Gap }}>
                       {

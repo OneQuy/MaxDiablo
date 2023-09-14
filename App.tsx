@@ -25,14 +25,16 @@ import { FontSize, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, SlotCard, Stat, Tier } from './scr/Types';
+import { IsExistedAsync } from './scr/common/FileUtils';
 
 // const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
-const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
+// const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
+const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong ly
 
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')
 
-const demoText = 'THE TALENT\nAncestral Rare Wand\n795 Item Power\n1,126 Damage Per Second (+1126)\n[751-1,127] Damage per Hit\n1.20 Attacks per Second (Very Fast\nWeapon)\n+ +10.0% Lucky Hit Chance [10.0]%\n+23.5% Damage to Slowed Enemies\n[16.5-23.5]%\n+ +15.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +18.5% Core Skill Damage [12.5-\n19.5]%\n• +44 Intelligence +[38-52]\nRequires Level 80\nUnlocks new look on salvage\nSell Value: 24,995\nDurability: 100/100'
+// const demoText = 'THE TALENT\nAncestral Rare Wand\n795 Item Power\n1,126 Damage Per Second (+1126)\n[751-1,127] Damage per Hit\n1.20 Attacks per Second (Very Fast\nWeapon)\n+ +10.0% Lucky Hit Chance [10.0]%\n+23.5% Damage to Slowed Enemies\n[16.5-23.5]%\n+ +15.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +18.5% Core Skill Damage [12.5-\n19.5]%\n• +44 Intelligence +[38-52]\nRequires Level 80\nUnlocks new look on salvage\nSell Value: 24,995\nDurability: 100/100'
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
@@ -64,6 +66,7 @@ function App(): JSX.Element {
       }
     }
     catch (e) {
+      console.error('catch' + e);
     }
   }, [])
 
@@ -112,6 +115,16 @@ function App(): JSX.Element {
     ocrResult.current = ''
     suitBuilds.current = undefined
     rateText.current = '...'
+
+    if (!await IsExistedAsync(path, false)) {
+      setStatus('')
+      
+      Alert.alert(
+        'File không tồn tại để upload',
+        'Path: ' + path)
+              
+      return
+    }
 
     setStatus('Uploading...')
 
@@ -194,7 +207,7 @@ function App(): JSX.Element {
       })
 
       // rate
-      
+
       const idx = suitBuilds.current.findIndex(i => i[3] > linesMatchIsGood)
 
       if (idx >= 0) {
@@ -345,11 +358,11 @@ function App(): JSX.Element {
         {/* rating result text */}
         {
           // !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
-            <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
-              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : GetRateTextColor(), padding: 10, borderRadius: 10 }} >
-                <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
-              </View>
+          <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
+            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : GetRateTextColor(), padding: 10, borderRadius: 10 }} >
+              <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
             </View>
+          </View>
         }
         {/* builds suit */}
         {

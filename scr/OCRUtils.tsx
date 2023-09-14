@@ -1,5 +1,46 @@
 import { SlotCard, SlotName, Stat } from "./Types";
-import { IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
+import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
+
+function MergeLines(lines: string[]): string[] { // (logic: merge current line to previous line)
+    for (let index = 1; index < lines.length; index++) {
+        let line = lines[index];
+
+        const openSqrBracketIdx = line.indexOf('[')
+        const closeSqrBracketIdx = line.indexOf(']')
+
+        const openSqrBracketIdx_PreviousLine = lines[index - 1].indexOf('[')
+        const closeSqrBracketIdx_PreviousLine = lines[index - 1].indexOf(']')
+
+        let needMerge = false
+
+        if (openSqrBracketIdx < 0 && closeSqrBracketIdx >= 0) { // -0.8] // 17.5]% (miss - sign: [10.5 17.5]%)
+            needMerge = true
+        }
+        else if (openSqrBracketIdx >= 0) { // Form [0.7-0.8] // [0.7-0.8]%
+            let haveAnyNumBefore = false
+
+            for (let i = openSqrBracketIdx - 1; i >= 0; i--) {
+                if (!Number.isNaN(Number.parseFloat(line[i]))) {
+                    haveAnyNumBefore = true
+                    break
+                }
+            }
+
+            if (!haveAnyNumBefore)
+                needMerge = true
+        }
+        else if (openSqrBracketIdx_PreviousLine >= 0 && closeSqrBracketIdx_PreviousLine < 0) {
+            needMerge = true
+        }
+
+        if (needMerge) {
+            lines[index - 1] += ' ' + line
+            lines[index] = ''
+        }
+    }
+
+    return lines;
+}
 
 function FixCloseSqrBracket(text: string): string {
     for (let index = 1; index < text.length; index++) {
@@ -19,7 +60,7 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     // console.log(text);
     // console.log('----------------');
 
-    const isLog = false
+    const isLog = true
 
     if (!text)
         return 'text to regconize is null'
@@ -39,12 +80,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'text to regconize is not enough lines: ' + lines.length
 
 
-    console.log('================');
+    // console.log('================');
 
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index]
-        console.log(line);
-    }
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
 
     // extract item power
 
@@ -121,43 +162,9 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     //     console.log(line);
     // }
 
-    // merge square bracket line (logic: merge current line to previous line)
+    // merge square bracket line
 
-    for (let index = 1; index < lines.length; index++) {
-        const line = lines[index];
-
-        const openSqrBracketIdx = line.indexOf('[')
-        const closeSqrBracketIdx = line.indexOf(']')
-
-        const openSqrBracketIdx_PreviousLine = lines[index - 1].indexOf('[')
-        const closeSqrBracketIdx_PreviousLine = lines[index - 1].indexOf(']')
-
-        let needMerge = false
-
-        if (openSqrBracketIdx < 0 && closeSqrBracketIdx >= 0) // -0.8]
-            needMerge = true
-        else if (openSqrBracketIdx >= 0) { // Form [0.7-0.8] // [0.7-0.8]%
-            let haveAnyNumBefore = false
-
-            for (let i = openSqrBracketIdx - 1; i >= 0; i--) {
-                if (!Number.isNaN(Number.parseFloat(line[i]))) {
-                    haveAnyNumBefore = true
-                    break
-                }
-            }
-
-            if (!haveAnyNumBefore)
-                needMerge = true
-        }
-        else if (openSqrBracketIdx_PreviousLine >= 0 && closeSqrBracketIdx_PreviousLine < 0) {
-            needMerge = true
-        }
-
-        if (needMerge) {
-            lines[index - 1] += ' ' + line
-            lines[index] = ''
-        }
-    }
+    lines = MergeLines(lines)
 
     // console.log('sau mergeeeee================');
 
@@ -251,15 +258,15 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
         if (openSqrBracketIdx >= 0 && closeSqrBracketIdx >= 0) {
             const s = line.substring(openSqrBracketIdx)
-            const rangeArrS = s.split('-')
-
-            if (rangeArrS && rangeArrS.length === 2) {
-                min = SplitNumberInText(rangeArrS[0])
-                max = SplitNumberInText(rangeArrS[1])
+            const floats = ExtractAllNumbersInText(s)
+            
+            if (floats.length === 2) {
+                min = floats[0]
+                max = Math.abs(floats[1])
             }
-            else if (rangeArrS && rangeArrS.length === 1) {
-                min = SplitNumberInText(rangeArrS[0])
-                max = SplitNumberInText(rangeArrS[0])
+            else if (floats.length === 1) {
+                min = floats[0]
+                max = min
             }
         }
 

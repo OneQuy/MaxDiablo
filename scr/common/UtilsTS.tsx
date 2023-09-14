@@ -300,7 +300,7 @@ export const IsNumType = (o: any) => {
 // string utils ---------------------------
 
 export function StringReplaceCharAt(str: string, index: number, replacement: string) {
-    if (index > str.length - 1) 
+    if (index > str.length - 1)
         return str
 
     return str.substring(0, index) + replacement + str.substring(index + 1);
@@ -342,6 +342,17 @@ export const SplitNumberInText = (text: string) => {
     }
 
     return Number.parseFloat(numS)
+}
+
+export const ExtractAllNumbersInText = (text: string): number[] => {
+    const regex = /[+-]?\d+(\.\d+)?/g;
+    let floats = text.match(regex)?.map(function (v) { return parseFloat(v); });
+    
+    if (!floats)
+        return []
+
+    floats = floats.filter(i => IsNumType(i))
+    return floats
 }
 
 // other utils ---------------------------
@@ -402,7 +413,7 @@ export const RequestCameraPermissionAsync = async () => {
     try {
         if (Platform.OS !== 'android')
             return true
-        
+
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.CAMERA,
             {
@@ -417,7 +428,7 @@ export const RequestCameraPermissionAsync = async () => {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             return true
         } else {
-           return false
+            return false
         }
     } catch (err) {
         return err

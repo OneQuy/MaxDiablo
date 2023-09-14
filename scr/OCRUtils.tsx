@@ -38,6 +38,14 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     if (lines.length <= 1)
         return 'text to regconize is not enough lines: ' + lines.length
 
+
+    console.log('================');
+
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index]
+        console.log(line);
+    }
+
     // extract item power
 
     let itemPower: number = NaN
@@ -45,7 +53,7 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     for (let index = 1; index < lines.length; index++) {
         const line = lines[index]
 
-        if (line.includes('Item Power')) {
+        if (line.includes('Item Power') || line.includes('Itern Power')) {
             itemPower = SplitNumberInText(line)
             break
         }
@@ -54,6 +62,13 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     if (Number.isNaN(itemPower)) {
         return 'cant extract ItemPower'
     }
+
+    // console.log('trước find name================');
+
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
 
     // find name slot
 

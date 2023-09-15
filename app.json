@@ -1,4 +1,8 @@
 {
   "name": "MaxDiablo",
-  "displayName": "MaxDiablo"
+  "displayName": "MaxDiablo",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-9208244284687724~9986250431",
+    "ios_app_id": "ca-app-pub-9208244284687724~3105981467"
+  }
 }

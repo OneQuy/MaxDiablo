@@ -26,6 +26,7 @@ import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, SlotCard, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
+import { CheckAndInitAdmob } from './scr/common/Admob';
 
 // const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
 // const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
@@ -293,7 +294,9 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
-    onGotOcrResultText(demoText)
+    // onGotOcrResultText(demoText)
+
+    CheckAndInitAdmob();
   }, [])
 
   return (

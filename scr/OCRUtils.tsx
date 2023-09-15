@@ -248,6 +248,9 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
             continue
         }
+        else if (nameStat.includes('Damage Per Second')) {
+            continue
+        }
 
         // range
 

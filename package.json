@@ -1,13 +1,13 @@
 {
   "name": "diablosenpai",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "builda": "cd android && ./gradlew assembleRelease",
+    "builda": "node editor/increasepackageversion && cd android && ./gradlew assembleRelease",
     "tscr": "tsc editor/index.ts --outDir ./editor/js && node editor/js",
     "test": "jest"
   },

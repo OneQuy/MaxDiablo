@@ -3,6 +3,7 @@
   "displayName": "MaxDiablo",
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-9208244284687724~9986250431",
-    "ios_app_id": "ca-app-pub-9208244284687724~3105981467"
+    "ios_app_id": "ca-app-pub-9208244284687724~3105981467",
+    "user_tracking_usage_description": "This identifier will be used to deliver personalized ads to you."
   }
 }

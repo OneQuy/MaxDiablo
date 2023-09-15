@@ -26,7 +26,15 @@ import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, SlotCard, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
-import { CheckAndInitAdmob } from './scr/common/Admob';
+import { CheckAndInitAdmobAsync } from './scr/common/Admob';
+import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = true ? TestIds.INTERSTITIAL : (Platform.OS === 'android' ? 'ca-app-pub-9208244284687724/8105396391' : 'ca-app-pub-9208244284687724/4249911866');
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
 
 // const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
 // const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
@@ -35,7 +43,7 @@ const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')
 
-const demoText = 'THE TALENT\nAncestral Rare Wand\n795 Item Power\n1,126 Damage Per Second (+1126)\n[751-1,127] Damage per Hit\n1.20 Attacks per Second (Very Fast\nWeapon)\n+ +10.0% Lucky Hit Chance [10.0]%\n+23.5% Damage to Slowed Enemies\n[16.5-23.5]%\n+ +15.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +18.5% Core Skill Damage [12.5-\n19.5]%\n• +44 Intelligence +[38-52]\nRequires Level 80\nUnlocks new look on salvage\nSell Value: 24,995\nDurability: 100/100'
+// const demoText = 'THE TALENT\nAncestral Rare Wand\n795 Item Power\n1,126 Damage Per Second (+1126)\n[751-1,127] Damage per Hit\n1.20 Attacks per Second (Very Fast\nWeapon)\n+ +10.0% Lucky Hit Chance [10.0]%\n+23.5% Damage to Slowed Enemies\n[16.5-23.5]%\n+ +15.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +18.5% Core Skill Damage [12.5-\n19.5]%\n• +44 Intelligence +[38-52]\nRequires Level 80\nUnlocks new look on salvage\nSell Value: 24,995\nDurability: 100/100'
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
@@ -101,6 +109,10 @@ function App(): JSX.Element {
       return
 
     onSelectedImg(path)
+  }, [])
+
+  const onPressShowAds = useCallback(async () => {
+    interstitial.show()
   }, [])
 
   const onPressCopyOCRResult = useCallback(async () => {
@@ -296,7 +308,17 @@ function App(): JSX.Element {
   useEffect(() => {
     // onGotOcrResultText(demoText)
 
-    CheckAndInitAdmob();
+    CheckAndInitAdmobAsync();
+
+    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      console.log('loaded ads')
+    });
+
+    // Start loading the interstitial straight away
+    interstitial.load();
+
+    // Unsubscribe from events on unmount
+    return unsubscribe;
   }, [])
 
   return (
@@ -407,6 +429,9 @@ function App(): JSX.Element {
         </TouchableOpacity>
         <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
           <Text style={{ color: 'gray' }}>[dev] copy ocr result</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressShowAds}>
+          <Text style={{ color: 'gray' }}>[dev] show ads</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

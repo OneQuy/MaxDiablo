@@ -1,10 +1,10 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
-const isLog = true
+const isLog = false
 
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
-    for (let i = 0; i < lines.length;  i++) {
+    for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
 
         let idxCloseBracket = line.indexOf(']%')
@@ -32,11 +32,11 @@ function FixLinesAfterMerge(lines: string[]): string[] {
 
         // +30.0% Critical Strike Damage with Imbued Skills (21.0-35.0]% (wrong bracket)
 
-        if (openSqrBracketIdx < 0 && 
+        if (openSqrBracketIdx < 0 &&
             closeSqrBracketIdx > 0 &&
             openBracketIdx > 0 &&
             openBracketIdx < closeSqrBracketIdx) {
-                lines[index] = StringReplaceCharAt(line, openBracketIdx, '[')
+            lines[index] = StringReplaceCharAt(line, openBracketIdx, '[')
         }
     }
 
@@ -78,7 +78,7 @@ function MergeLines(lines: string[]): string[] { // (logic: merge previous line 
         if (needMerge) {
             // lines[index - 1] += ' ' + line
             // lines[index] = ''
-            
+
             lines[index] = lines[index - 1] + ' ' + line
             lines[index - 1] = ''
         }
@@ -91,7 +91,6 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
     let nameStat = ''
 
     for (let i = firstCharIdx; i < line.length; i++) {
-        // if (IsChar(line[i]) || line[i] === ' ') {
         if (line[i] !== '[') {
             nameStat += line[i]
         }
@@ -99,7 +98,25 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
             break
     }
 
+    // trim 
+
     nameStat = nameStat.trim()
+
+    // remove others but char after name. Ex: Strength +
+
+    for (let i = nameStat.length - 1; i >= 0; i--) {
+        if (IsChar(nameStat[i])) {
+            break
+        }
+
+        nameStat = StringReplaceCharAt(nameStat, i, '')
+    }
+
+    // trim 
+
+    nameStat = nameStat.trim()
+
+    // others
 
     if (nameStat.length <= 0) {
         if (isLog)
@@ -118,7 +135,7 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
     if (innerNum.length > 0) {
         nameStat = nameStat.replace(innerNum[0].toString(), 'X')
     }
-    
+
     // fix Thom
 
     if (nameStat.includes('Your Thom')) {
@@ -193,12 +210,13 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     if (lines.length <= 1)
         return 'text to regconize is not enough lines: ' + lines.length
 
+    if (isLog) {
+        console.log('================');
 
-    console.log('================');
-
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index]
-        console.log(line);
+        for (let index = 0; index < lines.length; index++) {
+            const line = lines[index]
+            console.log(line);
+        }
     }
 
     // extract item power
@@ -269,11 +287,13 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'cant extract SlotName'
     }
 
-    console.log('trước merge================');
+    if (isLog) {
+        console.log('trước merge================');
 
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index]
-        console.log(line);
+        for (let index = 0; index < lines.length; index++) {
+            const line = lines[index]
+            console.log(line);
+        }
     }
 
     // remove [4]. Ex: +16.0% Damage for 4 Seconds After Dodging an Attack [14.0-21.0]% [4]
@@ -284,15 +304,17 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
     lines = MergeLines(lines)
 
-    console.log('sau mergeeeee================');
+    if (isLog) {
+        console.log('sau mergeeeee================');
 
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index]
-        console.log(line);
+        for (let index = 0; index < lines.length; index++) {
+            const line = lines[index]
+            console.log(line);
+        }
     }
 
     // fix lines after merge
-    
+
     lines = FixLinesAfterMerge(lines)
 
     // remove empty lines 

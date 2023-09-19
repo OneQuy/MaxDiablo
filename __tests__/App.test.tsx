@@ -94,3 +94,14 @@ test('text 7', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 });
+
+// DISTINGUISHED FAZE
+
+test('text 8', () => {
+  const text = 'Bookmarks Profiles Tab Window Help\n(3) Facebook\n(3) Facebook\n2483325008492673&set=g.762479998939657\nmes fb X 9gag tmp google\nDISTINGUISHED\nFAZE\nAncestral Rare Ring\n761 Item Power\nD\n24.4% Cold Resistance [24.4] % (\n+24.4%)\n24.4% Shadow Resistance\n[24.4]% (+24.4%)\ntoolsdevimo\n+14.0% Vulnerable Damage [7.0\n- 14.0]% (-7.0%)\n+4.6% Critical Strike Chance\n[1.8-5.0] % (+4.6%)\n◆ +16.0% Imbued Skill Damage\n[10.5-17.5] % (+16.0%)\n11.5% Resource Generation\n[5.0-12.0] % (+11.5%)\nEmpty Brutal malignant socket\nProperties lost when equipped:\n34.7% Lightning Resistance\n34.7% Fire Resistance\n+5.1% Lucky Hit Chance\nW\nX\nO\n8\n1\n1'
+  const expected = '{"slotName":"Ring","itemPower":761,"stats":[{"name":"Cold Resistance","min":24.4,"max":24.4,"isPercent":true,"value":24.4},{"name":"Shadow Resistance","min":24.4,"max":24.4,"isPercent":true,"value":24.4},{"name":"Vulnerable Damage","min":7,"max":14,"isPercent":true,"value":14},{"name":"Critical Strike Chance","min":1.8,"max":5,"isPercent":true,"value":4.6},{"name":"Imbued Skill Damage","min":10.5,"max":17.5,"isPercent":true,"value":16},{"name":"Resource Generation","min":5,"max":12,"isPercent":true,"value":11.5}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+});

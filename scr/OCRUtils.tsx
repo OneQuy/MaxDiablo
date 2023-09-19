@@ -251,6 +251,7 @@ export function ExtractSlotCard(text: string): SlotCard | string {
             }
         }
 
+        /* Golems Inherit +4.4% of Your Thorns []% */
         const value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS)
 
         if (!IsNumType(value)) {

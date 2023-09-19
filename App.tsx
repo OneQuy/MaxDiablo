@@ -29,12 +29,12 @@ import { IsExistedAsync } from './scr/common/FileUtils';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
-const adUnitId = true ? TestIds.INTERSTITIAL : (Platform.OS === 'android' ? 'ca-app-pub-9208244284687724/8105396391' : 'ca-app-pub-9208244284687724/4249911866');
+// const adUnitId = true ? TestIds.INTERSTITIAL : (Platform.OS === 'android' ? 'ca-app-pub-9208244284687724/8105396391' : 'ca-app-pub-9208244284687724/4249911866');
 
-const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ['fashion', 'clothing'],
-});
+// const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+//   requestNonPersonalizedAdsOnly: true,
+//   keywords: ['fashion', 'clothing'],
+// });
 
 // const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
 // const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
@@ -110,7 +110,7 @@ function App(): JSX.Element {
   }, [])
 
   const onPressShowAds = useCallback(async () => {
-    interstitial.show()
+    // interstitial.show()
   }, [])
 
   const onPressCopyOCRResult = useCallback(async () => {
@@ -308,15 +308,15 @@ function App(): JSX.Element {
 
     CheckAndInitAdmobAsync();
 
-    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-      console.log('loaded ads')
-    });
+    // const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+    //   console.log('loaded ads')
+    // });
 
-    // Start loading the interstitial straight away
-    interstitial.load();
+    // // Start loading the interstitial straight away
+    // interstitial.load();
 
-    // Unsubscribe from events on unmount
-    return unsubscribe;
+    // // Unsubscribe from events on unmount
+    // return unsubscribe;
   }, [])
 
   return (

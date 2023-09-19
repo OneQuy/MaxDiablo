@@ -1,7 +1,7 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
-const isLog = true
+const isLog = false
 
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     for (let i = 0; i < lines.length;  i++) {
@@ -248,12 +248,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'cant extract SlotName'
     }
 
-    console.log('trước merge================');
+    // console.log('trước merge================');
 
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index]
-        console.log(line);
-    }
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
 
     // remove [4]. Ex: +16.0% Damage for 4 Seconds After Dodging an Attack [14.0-21.0]% [4]
 
@@ -263,12 +263,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
     lines = MergeLines(lines)
 
-    console.log('sau mergeeeee================');
+    // console.log('sau mergeeeee================');
 
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index]
-        console.log(line);
-    }
+    // for (let index = 0; index < lines.length; index++) {
+    //     const line = lines[index]
+    //     console.log(line);
+    // }
 
     // remove empty lines 
 
@@ -409,31 +409,3 @@ const IsIgnoredLine = (line: string) => {
     else
         return false
 }
-
-
-// fix miss close sqr bracket line
-
-// for (let index = 1; index < lines.length; index++) {
-//     // +12.5% Vulnerable Damage [7.0- 14.01%
-
-//     const line = lines[index];
-
-//     const openSqrBracketIdx = line.indexOf('[')
-//     const closeSqrBracketIdx = line.indexOf(']')
-
-//     if (openSqrBracketIdx >= 0 && closeSqrBracketIdx < 0) { // need to fix
-//         let fixed = false
-
-//         for (let i = line.length - 1; i > openSqrBracketIdx; i--) {
-//             if (line[i] === '1') { // this '1' is close bracket
-//                 fixed = true
-//                 lines[index] = StringReplaceCharAt(line, i, ']')
-//                 break
-//             }
-//         }
-
-//         if (!fixed) {
-//             return 'this line can not be fixed close bracket: ' + line
-//         }
-//     }
-// }

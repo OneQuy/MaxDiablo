@@ -43,8 +43,6 @@ const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')
 
-// const demoText = 'THE TALENT\nAncestral Rare Wand\n795 Item Power\n1,126 Damage Per Second (+1126)\n[751-1,127] Damage per Hit\n1.20 Attacks per Second (Very Fast\nWeapon)\n+ +10.0% Lucky Hit Chance [10.0]%\n+23.5% Damage to Slowed Enemies\n[16.5-23.5]%\n+ +15.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +18.5% Core Skill Damage [12.5-\n19.5]%\n• +44 Intelligence +[38-52]\nRequires Level 80\nUnlocks new look on salvage\nSell Value: 24,995\nDurability: 100/100'
-
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const userImgUri = useRef('')

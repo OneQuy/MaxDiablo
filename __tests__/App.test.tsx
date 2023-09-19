@@ -83,3 +83,14 @@ test('text 6', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 });
+
+// PLAGUE TALISMAN
+
+test('text 7', () => {
+  const text = 'PLAGUE TALISMAN\nAncestral Rare Amulet\n740 Item Power\n17.6% Resistance to All Elements\n[17.6]%\n• 4.8% Cooldown Reduction [4.2 - 7.01%\n◆ +24.0% Movement Speed for 4\nSeconds After Killing an Elite [14.0-\n28.0]%[4]\n◆ +2 Ranks of the Deadly Venom\nPassive [1 -2] (Rogue Only)\n+16.0% Damage for 4 Seconds After\nDodging an Attack [14.0-21.0]% [4]\nEmpty Vicious malignant socket\nRequires Level 80\nSell Value: 22,048'
+  const expected = '{"slotName":"Amulet","itemPower":740,"stats":[{"name":"Resistance to All Elements","min":17.6,"max":17.6,"isPercent":true,"value":17.6},{"name":"Cooldown Reduction","min":4.2,"max":7,"isPercent":true,"value":4.8},{"name":"Movement Speed for X Seconds After Killing an Elite","min":14,"max":28,"isPercent":true,"value":24},{"name":"Ranks of the Deadly Venom Passive","min":1,"max":2,"isPercent":false,"value":2},{"name":"Damage for X Seconds After Dodging an Attack","min":14,"max":21,"isPercent":true,"value":16}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+});

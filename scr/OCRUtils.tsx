@@ -1,6 +1,8 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
+const isLog = true
+
 function MergeLines(lines: string[]): string[] { // (logic: merge current line to previous line)
     for (let index = 1; index < lines.length; index++) {
         let line = lines[index];
@@ -42,6 +44,38 @@ function MergeLines(lines: string[]): string[] { // (logic: merge current line t
     return lines;
 }
 
+function ExtractRange(line: string): [number, number] | undefined {
+    const openSqrBracketIdx = line.indexOf('[')
+    const closeSqrBracketIdx = line.indexOf(']')
+    let min = -1
+    let max = -1
+
+    if (openSqrBracketIdx >= 0 && closeSqrBracketIdx >= 0) {
+        const s = line.substring(openSqrBracketIdx)
+        const floats = ExtractAllNumbersInText(s)
+
+        if (floats.length >= 2) {
+            min = floats[0]
+            max = Math.abs(floats[1])
+
+            console.log('floats.lengthhhhh ' + floats.length);
+        }
+        else if (floats.length === 1) {
+            min = floats[0]
+            max = min
+        }
+    }
+
+    if (!IsNumType(min) || !IsNumType(max) || min === -1 || max === -1 || min > max) {
+        if (isLog)
+            console.log('[log extract] cant get range of line: ' + line);
+
+        return undefined
+    }
+
+    return [min, max]
+}
+
 function FixCloseSqrBracket(text: string): string {
     for (let index = 1; index < text.length; index++) {
         if (text[index] === '1' &&
@@ -59,8 +93,6 @@ export function ExtractSlotCard(text: string): SlotCard | string {
     // console.log('----------------');
     // console.log(text);
     // console.log('----------------');
-
-    const isLog = true
 
     if (!text)
         return 'text to regconize is null'
@@ -155,23 +187,23 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'cant extract SlotName'
     }
 
-    // console.log('trước merge================');
+    console.log('trước merge================');
 
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index]
+        console.log(line);
+    }
 
     // merge square bracket line
 
     lines = MergeLines(lines)
 
-    // console.log('sau mergeeeee================');
+    console.log('sau mergeeeee================');
 
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index]
+        console.log(line);
+    }
 
     // remove empty lines 
 
@@ -254,29 +286,9 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
         // range
 
-        const openSqrBracketIdx = line.indexOf('[')
-        const closeSqrBracketIdx = line.indexOf(']')
-        let min = -1
-        let max = -1
+        const range = ExtractRange(line)
 
-        if (openSqrBracketIdx >= 0 && closeSqrBracketIdx >= 0) {
-            const s = line.substring(openSqrBracketIdx)
-            const floats = ExtractAllNumbersInText(s)
-            
-            if (floats.length === 2) {
-                min = floats[0]
-                max = Math.abs(floats[1])
-            }
-            else if (floats.length === 1) {
-                min = floats[0]
-                max = min
-            }
-        }
-
-        if (!IsNumType(min) || !IsNumType(max) || min === -1 || max === -1 || min > max) {
-            if (isLog)
-                console.log('[log extract] cant get range of line: ' + line);
-
+        if (!range) {
             continue
         }
 
@@ -284,8 +296,8 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
         stats.push({
             name: nameStat,
-            min,
-            max,
+            min: range[0],
+            max: range[1],
             isPercent: line.includes('%'),
             value
         })

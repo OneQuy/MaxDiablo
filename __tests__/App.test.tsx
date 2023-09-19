@@ -116,3 +116,14 @@ test('text 9', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 });
+
+// STRIDER'S BRAND
+
+test('text 10', () => {
+  const text = 'ose\n%\n-6.01\nX\nSTRIDERS BRAND\nAncestral Rare Pants\n804 Item Power\n804 Armor (-40)\nWhile Injured, Your Potion Also\nGrants 30% Movement Speed for 2\nSeconds [30]%\n60 of 78\n+2 Potion Capacity [2-3]\n12.0% Damage Reduction from\nEnemies That Are Poisoned [5.0-\n12.01%\n30.5% Damage Reduction while\nInjured [17.5-31.51%\n8.6% Dodge Chance Against Close\nEnemies (4.4-8.61%\nEmpty Socket\nEmpty Socket\n\"Hieu Nguyenip\n2d\n50,882\n41 + Link\nLike\nRequires Level 80\nDruid\nSell Value: 21,244\nDurability: 100/100\nHide Comparison\nQuân 50k max 3/4 cho a e druid nào cần nè !!!!\n2\nX\nSP\nNo Tit\nP\nMateria\nAttac\n7,24\nArmor\n6,70\nLife\n17,08\nStrength\nIntelligence\nWillpower\nDexterity\nश्र\n4 comm\nment'
+  const expected = '{"slotName":"Pants","itemPower":804,"stats":[{"name":"Potion Capacity","min":2,"max":3,"isPercent":false,"value":2},{"name":"Damage Reduction from Enemies That Are Poisoned","min":5,"max":12,"isPercent":true,"value":12},{"name":"Damage Reduction while Injured","min":17.5,"max":31.5,"isPercent":true,"value":30.5},{"name":"Dodge Chance Against Close Enemies","min":4.4,"max":8.6,"isPercent":true,"value":8.6}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+});

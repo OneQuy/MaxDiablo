@@ -23,4 +23,6 @@ var SlotName;
     SlotName["Staff"] = "Staff";
     SlotName["Mace"] = "Mace";
     SlotName["Bow"] = "Bow";
+    SlotName["Polearm"] = "Polearm";
+    SlotName["Scythe"] = "Scythe";
 })(SlotName = exports.SlotName || (exports.SlotName = {})); // Note when add new: if name is too long, add too extract slot name hardcoded (scr/OCRUtils.tsx) 

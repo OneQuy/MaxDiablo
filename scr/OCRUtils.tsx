@@ -91,7 +91,7 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
     let nameStat = ''
 
     for (let i = firstCharIdx; i < line.length; i++) {
-        if (line[i] !== '[') {
+        if (line[i] !== '[' && line[i] !== '(') {
             nameStat += line[i]
         }
         else

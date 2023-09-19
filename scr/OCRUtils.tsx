@@ -55,8 +55,11 @@ function MergeLines(lines: string[]): string[] { // (logic: merge current line t
         }
 
         if (needMerge) {
-            lines[index - 1] += ' ' + line
-            lines[index] = ''
+            // lines[index - 1] += ' ' + line
+            // lines[index] = ''
+            
+            lines[index] = lines[index - 1] + ' ' + line
+            lines[index - 1] = ''
         }
     }
 

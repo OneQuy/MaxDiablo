@@ -44,6 +44,47 @@ function MergeLines(lines: string[]): string[] { // (logic: merge current line t
     return lines;
 }
 
+function ExtractNameStat(firstCharIdx: number, line: string): string | undefined {
+    let nameStat = ''
+
+    for (let i = firstCharIdx; i < line.length; i++) {
+        // if (IsChar(line[i]) || line[i] === ' ') {
+        if (line[i] !== '[') {
+            nameStat += line[i]
+        }
+        else
+            break
+    }
+
+    nameStat = nameStat.trim()
+
+    if (nameStat.length <= 0) {
+        if (isLog)
+            console.log('[log extract] cant get name stat of line: ' + line);
+
+        return undefined
+    }
+    else if (nameStat.includes('Damage Per Second')) {
+        return undefined
+    }
+
+    // Golems Inherit +4.4% of Your Thorns []%
+
+    const innerNum = ExtractAllNumbersInText(nameStat)
+
+    if (innerNum.length > 0) {
+        nameStat = nameStat.replace(innerNum[0].toString(), 'X')
+    }
+    
+    // fix Thom
+    
+    if (nameStat.includes('Your Thom')) {
+        nameStat = nameStat.replace('Your Thom', 'Your Thorn')
+    }
+
+    return nameStat
+}
+
 function ExtractRange(line: string): [number, number] | undefined {
     const openSqrBracketIdx = line.indexOf('[')
     const closeSqrBracketIdx = line.indexOf(']')
@@ -263,27 +304,10 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
         // extract name stat
 
-        let nameStat = ''
+        let nameStat = ExtractNameStat(firstCharIdx, line)
 
-        for (let i = firstCharIdx; i < line.length; i++) {
-            if (IsChar(line[i]) || line[i] === ' ') {
-                nameStat += line[i]
-            }
-            else
-                break
-        }
-
-        nameStat = nameStat.trim()
-
-        if (nameStat.length <= 0) {
-            if (isLog)
-                console.log('[log extract] cant get name stat of line: ' + line);
-
+        if (!nameStat)
             continue
-        }
-        else if (nameStat.includes('Damage Per Second')) {
-            continue
-        }
 
         // range
 

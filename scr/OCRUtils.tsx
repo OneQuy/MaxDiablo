@@ -22,7 +22,7 @@ function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     return lines
 }
 
-function MergeLines(lines: string[]): string[] { // (logic: merge current line to previous line)
+function MergeLines(lines: string[]): string[] { // (logic: merge previous line to current line)
     for (let index = 1; index < lines.length; index++) {
         let line = lines[index];
 

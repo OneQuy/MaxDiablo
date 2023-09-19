@@ -3,6 +3,25 @@ import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumber
 
 const isLog = true
 
+function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
+    for (let i = 0; i < lines.length;  i++) {
+        const line = lines[i]
+
+        let idxCloseBracket = line.indexOf(']%')
+        const isPercent = idxCloseBracket >= 0
+
+        if (idxCloseBracket < 0)
+            idxCloseBracket = line.indexOf(']')
+
+        if (idxCloseBracket < 0)
+            continue
+
+        lines[i] = line.substring(0, idxCloseBracket + (isPercent ? 2 : 1))
+    }
+
+    return lines
+}
+
 function MergeLines(lines: string[]): string[] { // (logic: merge current line to previous line)
     for (let index = 1; index < lines.length; index++) {
         let line = lines[index];
@@ -77,7 +96,7 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
     }
     
     // fix Thom
-    
+
     if (nameStat.includes('Your Thom')) {
         nameStat = nameStat.replace('Your Thom', 'Your Thorn')
     }
@@ -98,8 +117,6 @@ function ExtractRange(line: string): [number, number] | undefined {
         if (floats.length >= 2) {
             min = floats[0]
             max = Math.abs(floats[1])
-
-            console.log('floats.lengthhhhh ' + floats.length);
         }
         else if (floats.length === 1) {
             min = floats[0]
@@ -234,6 +251,10 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         const line = lines[index]
         console.log(line);
     }
+
+    // remove [4]. Ex: +16.0% Damage for 4 Seconds After Dodging an Attack [14.0-21.0]% [4]
+
+    lines = RemoveTextAfterCloseSquareBracket(lines)
 
     // merge square bracket line
 

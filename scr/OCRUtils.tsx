@@ -1,7 +1,7 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
-const isLog = false
+const isLog = true
 
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     for (let i = 0; i < lines.length;  i++) {
@@ -20,6 +20,27 @@ function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     }
 
     return lines
+}
+
+function FixLinesAfterMerge(lines: string[]): string[] {
+    for (let index = 1; index < lines.length; index++) {
+        let line = lines[index];
+
+        const openSqrBracketIdx = line.indexOf('[')
+        const closeSqrBracketIdx = line.indexOf(']')
+        const openBracketIdx = line.indexOf('(')
+
+        // +30.0% Critical Strike Damage with Imbued Skills (21.0-35.0]% (wrong bracket)
+
+        if (openSqrBracketIdx < 0 && 
+            closeSqrBracketIdx > 0 &&
+            openBracketIdx > 0 &&
+            openBracketIdx < closeSqrBracketIdx) {
+                lines[index] = StringReplaceCharAt(line, openBracketIdx, '[')
+        }
+    }
+
+    return lines;
 }
 
 function MergeLines(lines: string[]): string[] { // (logic: merge previous line to current line)
@@ -173,12 +194,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'text to regconize is not enough lines: ' + lines.length
 
 
-    // console.log('================');
+    console.log('================');
 
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index]
+        console.log(line);
+    }
 
     // extract item power
 
@@ -248,12 +269,12 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'cant extract SlotName'
     }
 
-    // console.log('trước merge================');
+    console.log('trước merge================');
 
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index]
+        console.log(line);
+    }
 
     // remove [4]. Ex: +16.0% Damage for 4 Seconds After Dodging an Attack [14.0-21.0]% [4]
 
@@ -263,12 +284,16 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
     lines = MergeLines(lines)
 
-    // console.log('sau mergeeeee================');
+    console.log('sau mergeeeee================');
 
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index]
+        console.log(line);
+    }
+
+    // fix lines after merge
+    
+    lines = FixLinesAfterMerge(lines)
 
     // remove empty lines 
 

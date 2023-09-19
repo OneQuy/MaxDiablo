@@ -105,3 +105,14 @@ test('text 8', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 });
+
+// RUMBLING EAGLE
+
+test('text 9', () => {
+  const text = 'RUMBLING EAGLE\nAncestral Rare Crossbow\n766 Item Power\n2,010 Damage Per Second (\n-295)\n[1,787-2,681] Damage per Hit\n0.90 Attacks per Second (Slow\nWeapon)\n◆ +14.0% Vulnerable Damage\n[14.0]%\n+28.0% Vulnerable Damage [14.0\n- 28.01%\n+45.0% Damage to Close\nEnemies [33.0-47.01%\n+39.0 % Core Skill Damage [25.0-\n39.01%\n+30.0% Critical Strike Damage\nwith Imbued Skills (21.0-35.01%\nEmpty Socket\nRequires Level 80\nRogue\nSell Value: 27,325\nScroll Down\n100/100'
+  const expected = '{"slotName":"Crossbow","itemPower":766,"stats":[{"name":"Vulnerable Damage","min":14,"max":14,"isPercent":true,"value":14},{"name":"Vulnerable Damage","min":14,"max":28,"isPercent":true,"value":28},{"name":"Damage to Close Enemies","min":33,"max":47,"isPercent":true,"value":45},{"name":"Core Skill Damage","min":25,"max":39,"isPercent":true,"value":39},{"name":"Critical Strike Damage with Imbued Skills","min":21,"max":35,"isPercent":true,"value":30}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+});

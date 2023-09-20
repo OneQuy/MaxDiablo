@@ -5,6 +5,7 @@ var fs = require('fs');
 var Check = function () {
     var text = fs.readFileSync('./assets/BuildsData.json');
     var buildsData = JSON.parse(text);
+    var loop = 0;
     for (var itier = 0; itier < buildsData.length; itier++) {
         var tier = buildsData[itier];
         for (var ibuild = 0; ibuild < tier.builds.length; ibuild++) {
@@ -13,19 +14,19 @@ var Check = function () {
                 var slot = build.slots[islot];
                 for (var istat = 0; istat < slot.stats.length; istat++) {
                     var stat = slot.stats[istat];
-                    countDecimal(stat.min);
-                    countDecimal(stat.max);
-                    countDecimal(stat.value);
+                    if (stat.name.includes('Movement Speed'))
+                        console.log(stat.name);
+                    loop++;
                 }
             }
         }
     }
-    console.log('done');
+    console.log('done', loop);
 };
 exports.Check = Check;
-var countDecimal = function (n) {
-    var txt = n.toString();
-    var arr = txt.split('.');
-    if (arr.length === 2 && arr[1].length > 1)
-        console.log(txt);
-};
+// const countDecimal = (n: number) => {
+//     let txt = n.toString()
+//     let arr = txt.split('.')
+//     if (arr.length === 2 && arr[1].length > 1)
+//         console.log(txt);
+// }

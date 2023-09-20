@@ -6,7 +6,8 @@ export const Check = () => {
     const text = fs.readFileSync('./assets/BuildsData.json');
 
     const buildsData: Tier[] = JSON.parse(text)
-    
+    let loop = 0;
+
     for (let itier = 0; itier < buildsData.length; itier++) {
         const tier = buildsData[itier]
 
@@ -19,22 +20,23 @@ export const Check = () => {
                 for (let istat = 0; istat < slot.stats.length; istat++) {
                     const stat = slot.stats[istat]
 
-                    countDecimal(stat.min)
-                    countDecimal(stat.max)
-                    countDecimal(stat.value)
+                    if (stat.name.includes('Movement Speed'))
+                        console.log(stat.name);
+
+                    loop++
                 }
             }
         }
     }
 
-    console.log('done');
-    
+    console.log('done', loop);
+
 }
 
-const countDecimal = (n: number) => {
-    let txt = n.toString()
-    let arr = txt.split('.')
+// const countDecimal = (n: number) => {
+//     let txt = n.toString()
+//     let arr = txt.split('.')
 
-    if (arr.length === 2 && arr[1].length > 1)
-        console.log(txt);
-}
+//     if (arr.length === 2 && arr[1].length > 1)
+//         console.log(txt);
+// }

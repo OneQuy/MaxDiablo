@@ -14,10 +14,20 @@ var GenerateSlot = function (text) {
         name: Types_1.ClassName.AllClasses,
         stats: []
     };
+    var isImpliciting = false;
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i].trim();
+        if (line === 'Implicit') {
+            isImpliciting = true;
+            continue;
+        }
         var className = IsValidClassName(line);
+        if (isImpliciting && className === undefined) {
+            console.log('aaaa', line);
+            continue;
+        }
         if (className !== undefined) { // this line is class name 
+            isImpliciting = false;
             curClass = {
                 name: className,
                 stats: []
@@ -138,7 +148,6 @@ var GetStat = function (line) {
     }
     else { // case brackets in the between
         name = line.replace(statS, 'X');
-        console.log(name, 'bbb===>', line);
     }
     return {
         name: name,

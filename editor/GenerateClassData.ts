@@ -18,12 +18,26 @@ export const GenerateSlot = (text: string): Classs[] | string => {
         stats: []
     }
 
+    let isImpliciting = false
+
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim()
+        if (line === 'Implicit') {
+            isImpliciting = true
+            continue
+        }
 
         const className = IsValidClassName(line)
 
+        if (isImpliciting && className === undefined) {
+            console.log('aaaa', line);
+            
+            continue
+        }
+
         if (className !== undefined) { // this line is class name 
+            isImpliciting = false
+
             curClass = {
                 name: className,
                 stats: []
@@ -184,8 +198,6 @@ const GetStat = (line: string): Stat | undefined => {
     }
     else { // case brackets in the between
         name = line.replace(statS, 'X')
-
-        console.log(name, 'bbb===>', line);        
     }
 
     return {

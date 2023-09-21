@@ -26,12 +26,12 @@ export const GenerateSlot = (text: string): Classs[] | string => {
             isImpliciting = true
             continue
         }
+        else if (line.includes('Crowd Control Duration Lucky Hit'))
+            continue
 
         const className = IsValidClassName(line)
 
         if (isImpliciting && className === undefined) {
-            console.log('aaaa', line);
-            
             continue
         }
 

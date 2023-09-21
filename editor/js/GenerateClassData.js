@@ -21,9 +21,10 @@ var GenerateSlot = function (text) {
             isImpliciting = true;
             continue;
         }
+        else if (line.includes('Crowd Control Duration Lucky Hit'))
+            continue;
         var className = IsValidClassName(line);
         if (isImpliciting && className === undefined) {
-            console.log('aaaa', line);
             continue;
         }
         if (className !== undefined) { // this line is class name 

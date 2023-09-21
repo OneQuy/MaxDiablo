@@ -145,15 +145,17 @@ const GetStat = (line: string): Stat | undefined => {
     // [4.4 - 10.0]% Lucky Hit Chance while You Have a Barrier
     // [358 - 776] Maximum Life
     // [7.0 - 14.0]% Damage for 4 Seconds After Picking Up a Blood Orb
+    // Lucky Hit: Up to a 5% Chance to Restore [7.0 - 14.0]% Primary Resource 
 
-    const firstCharIdx = FirstCharIdx(line)
+    const openBracketIdx = line.indexOf('[')
+    const closeBracketIdx = line.indexOf(']')
 
-    if (firstCharIdx < 0)
+    if (openBracketIdx < 0 || closeBracketIdx < 0 || openBracketIdx >= closeBracketIdx)
         return undefined
 
     // stats
 
-    const statS = line.substring(0, firstCharIdx - 1)
+    const statS = line.substring(openBracketIdx, closeBracketIdx + 1)
 
     const nums = ExtractAllNumbersInText(statS)
 
@@ -162,14 +164,28 @@ const GetStat = (line: string): Stat | undefined => {
 
     // name stat
 
-    let name = line.substring(firstCharIdx)
-    const innerNum = ExtractAllNumbersInText(name)
+    let name = ''
 
-    if (innerNum.length === 1) {
-        name = name.replace(innerNum[0].toString(), 'X')
+    if (openBracketIdx === 0) { // case bracket at front of line
+        const firstCharIdx = FirstCharIdx(line)
+
+        if (firstCharIdx < 0)
+            return undefined
+
+        let name = line.substring(firstCharIdx)
+        const innerNum = ExtractAllNumbersInText(name)
+
+        if (innerNum.length === 1) {
+            name = name.replace(innerNum[0].toString(), 'X')
+        }
+        else if (innerNum.length > 1) {
+            return undefined
+        }
     }
-    else if (innerNum.length > 1) {
-        return undefined
+    else { // case brackets in the between
+        name = line.replace(statS, 'X')
+
+        console.log(name, 'bbb===>', line);        
     }
 
     return {

@@ -111,22 +111,34 @@ var GetStat = function (line) {
     // [4.4 - 10.0]% Lucky Hit Chance while You Have a Barrier
     // [358 - 776] Maximum Life
     // [7.0 - 14.0]% Damage for 4 Seconds After Picking Up a Blood Orb
-    var firstCharIdx = FirstCharIdx(line);
-    if (firstCharIdx < 0)
+    // Lucky Hit: Up to a 5% Chance to Restore [7.0 - 14.0]% Primary Resource 
+    var openBracketIdx = line.indexOf('[');
+    var closeBracketIdx = line.indexOf(']');
+    if (openBracketIdx < 0 || closeBracketIdx < 0 || openBracketIdx >= closeBracketIdx)
         return undefined;
     // stats
-    var statS = line.substring(0, firstCharIdx - 1);
+    var statS = line.substring(openBracketIdx, closeBracketIdx + 1);
     var nums = (0, Utils_NodeJS_1.ExtractAllNumbersInText)(statS);
     if (nums.length !== 2)
         return undefined;
     // name stat
-    var name = line.substring(firstCharIdx);
-    var innerNum = (0, Utils_NodeJS_1.ExtractAllNumbersInText)(name);
-    if (innerNum.length === 1) {
-        name = name.replace(innerNum[0].toString(), 'X');
+    var name = '';
+    if (openBracketIdx === 0) { // case bracket at front of line
+        var firstCharIdx = FirstCharIdx(line);
+        if (firstCharIdx < 0)
+            return undefined;
+        var name_1 = line.substring(firstCharIdx);
+        var innerNum = (0, Utils_NodeJS_1.ExtractAllNumbersInText)(name_1);
+        if (innerNum.length === 1) {
+            name_1 = name_1.replace(innerNum[0].toString(), 'X');
+        }
+        else if (innerNum.length > 1) {
+            return undefined;
+        }
     }
-    else if (innerNum.length > 1) {
-        return undefined;
+    else { // case brackets in the between
+        name = line.replace(statS, 'X');
+        console.log(name, 'bbb===>', line);
     }
     return {
         name: name,

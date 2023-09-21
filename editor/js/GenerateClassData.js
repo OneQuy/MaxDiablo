@@ -138,10 +138,10 @@ var GetStat = function (line) {
         var firstCharIdx = FirstCharIdx(line);
         if (firstCharIdx < 0)
             return undefined;
-        var name_1 = line.substring(firstCharIdx);
-        var innerNum = (0, Utils_NodeJS_1.ExtractAllNumbersInText)(name_1);
+        name = line.substring(firstCharIdx);
+        var innerNum = (0, Utils_NodeJS_1.ExtractAllNumbersInText)(name);
         if (innerNum.length === 1) {
-            name_1 = name_1.replace(innerNum[0].toString(), 'X');
+            name = name.replace(innerNum[0].toString(), 'X');
         }
         else if (innerNum.length > 1) {
             return undefined;

@@ -186,7 +186,7 @@ const GetStat = (line: string): Stat | undefined => {
         if (firstCharIdx < 0)
             return undefined
 
-        let name = line.substring(firstCharIdx)
+        name = line.substring(firstCharIdx)
         const innerNum = ExtractAllNumbersInText(name)
 
         if (innerNum.length === 1) {

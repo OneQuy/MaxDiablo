@@ -21,11 +21,15 @@ export enum SlotName {
     Bow = 'Bow',
     Polearm = 'Polearm',
     Scythe = 'Scythe',
+
+    H1Weapon = '1h Weapon',
+    H2Weapon = '2h Weapon',
+    Offhand = 'Offhand',
 } // Note when add new: if name is too long, add too extract slot name hardcoded (scr/OCRUtils.tsx) 
 
 export type Stat = {
     name: string,
-    value: number
+    value: number,
     min: number,
     max: number,
     isPercent: boolean
@@ -45,4 +49,25 @@ export type Build = {
 export type Tier = {
     name: string,
     builds: Build[]
+}
+
+// class data ================
+
+export enum ClassName {
+    AllClasses = 'All Classes',
+    Barbarian = 'Barbarian',
+    Druid = 'Druid',
+    Necromancer = 'Necromancer',
+    Rogue = 'Rogue',
+    Sorcerer = 'Sorcerer',
+} 
+
+export type Classs = {
+    name: ClassName,
+    stats: Stat[]
+}
+
+export type SlotOfClasses = {
+    name: string,
+    classes: Classs[]
 }

@@ -1,5 +1,3 @@
-// const { parse } = require('node-html-parser');
-
 import parse from "node-html-parser";
 import { SlotCard, SlotName, Stat } from "./Types";
 

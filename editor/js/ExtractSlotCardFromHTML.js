@@ -1,5 +1,4 @@
 "use strict";
-// const { parse } = require('node-html-parser');
 exports.__esModule = true;
 exports.ExtractSlotCardFromHTML = void 0;
 var node_html_parser_1 = require("node-html-parser");

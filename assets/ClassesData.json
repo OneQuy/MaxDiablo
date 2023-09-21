@@ -1,0 +1,4550 @@
+[
+ {
+  "name": "Helm",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Barrier Generation",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Basic Skill Attack Speed",
+      "min": 4.4,
+      "max": 10,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Cold Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Crowd Control Duration",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Fire Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Healing Received",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Life On Kill",
+      "min": 60,
+      "max": 143,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Life Regeneration while Not Damaged Recently",
+      "min": 60,
+      "max": 143,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lightning Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance while You Have a Barrier",
+      "min": 4.4,
+      "max": 10,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Life",
+      "min": 358,
+      "max": 776,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Poison Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shadow Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Total Armor",
+      "min": 2,
+      "max": 4.8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Damage while Berserking",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Fury",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Death Blow",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Rupture",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Steel Grasp",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Maximum Spirit",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Poison Creeper",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Ravens",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Wolves",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Damage for X Seconds After Picking Up a Blood Orb",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Essence",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Decrepify",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Iron Maiden",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Maximum Energy",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Cold Imbuement",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Poison Imbuement",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Shadow Imbuement",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Maximum Mana",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Hydra",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Ice Blades",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Lightning Spear",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Chest Armor",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Barrier Generation",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Cold Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Control Impaired Duration Reduction",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage",
+      "min": 4.4,
+      "max": 10,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Close Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Distant Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Fire Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Life On Kill",
+      "min": 60,
+      "max": 143,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lightning Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Life",
+      "min": 358,
+      "max": 776,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Poison Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shadow Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Thorns",
+      "min": 418,
+      "max": 836,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Total Armor",
+      "min": 2,
+      "max": 4.8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ultimate Skill Damage",
+      "min": 14,
+      "max": 21,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Brawling Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Bleeding",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Dual-Wielded Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Skills that Swap to New Weapons",
+      "min": 21,
+      "max": 35,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Two-Handed Bludgeoning Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Two-Handed Slashing Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage with Two-Handed Bludgeoning Weapons",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Challenging Shout",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Ground Stomp",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Iron Skin",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Rallying Cry",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Weapon Mastery Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Companion Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Poisoned",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage whiile in Human Form",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage while Shapeshifted",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Earth Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage with Werebear Skills",
+      "min": 21,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Poison Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Blood Howl",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Cyclone Armor",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Debilitating Roar",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Earthen Bulwark",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Storm Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Werebear Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Werewolf Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Blood Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Bone Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage for X Seconds After Picking Up a Blood Orb",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Affected By Shadow Damage Over Time Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Darkness Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Minion Life",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shadow Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Summoning Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Cutthroat Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Poisoned",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Dual-Wielded Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Ranged Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Skills that Swap to New Weapons",
+      "min": 21,
+      "max": 35,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Imbued Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Imbuement Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Marksman Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Poison Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shadow Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Trap Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Cold Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Conjuration Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Burning",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fire Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Frost Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Pyromancy Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shock Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Gloves",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Attack Speed",
+      "min": 4.4,
+      "max": 10,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance",
+      "min": 1.8,
+      "max": 5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance Against Injured Enemies",
+      "min": 3,
+      "max": 8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Injured Enemies",
+      "min": 21,
+      "max": 35,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance",
+      "min": 3.2,
+      "max": 6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Physical Damage Over Time",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Double Swing",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Hammer of the Ancients",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Rend",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Upheaval",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Whirlwind",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Earth Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage with Werewolf Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Landslide",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Lightning Storm",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Pulverize",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Shred",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Tornado",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Storm Skill Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Bone Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Blight",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Blood Lance",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Blood Surge",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Bone Spear",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Sever",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Shadow Damage Over Time",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Attack Speed for X seconds after Dodging an Attack",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage with Imbued Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Barrage",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Flurry",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Penetrating Shot",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Rapid Fire",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Twisting Blades",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Trap Skill Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Fire Damage Over Time",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Chain Lightning",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Charged Bolts",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Fireball",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Frozen Orb",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Ice Shards",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Incinerate",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Pants",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Control Impaired Duration Reduction",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage for X seconds After Killing an Elite",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Close Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Distant Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Injured",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Dodge Chance",
+      "min": 3,
+      "max": 5.8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dodge Chance Against Close Enemies",
+      "min": 4.4,
+      "max": 8.6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Healing Received",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Life Regeneration while Not Damaged Recently",
+      "min": 60,
+      "max": 143,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Maximum Life",
+      "min": 358,
+      "max": 776,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Potion Capacity",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Potion Drop Rate",
+      "min": 12,
+      "max": 26,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Thorns",
+      "min": 418,
+      "max": 836,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Total Armor",
+      "min": 2,
+      "max": 4.8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Berserking Duration",
+      "min": 14,
+      "max": 21,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Bleeding",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Charge",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Kick",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Leap",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of War Cry",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Damage Reduction from Enemies that are Poisoned",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Boulder",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Hurricane",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Rabies",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Trample",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Total Armor while in Werebear Form",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Damage Reduction from Affected By Shadow Damage Over Time Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Minion Life",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Blood Mist",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Bone Prison",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Corpse Explosion",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Damage Reduction from Enemies that are Poisoned",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Imbuement Skill Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Concealment",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Dark Shroud",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Poison Trap",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Smoke Grenade",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Crackling Energy Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Burning",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Ball Lightning",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Blizzard",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Firewall",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Meteor",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Boots",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Cold Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Injured",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Dodge Chance",
+      "min": 3,
+      "max": 5.8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dodge Chance Against Distant Enemies",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fire Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lightning Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Movement Speed",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Movement Speed for X Seconds After Killing an Elite",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Poison Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shadow Resistance",
+      "min": 24.5,
+      "max": 45.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shrine Buff Duration",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Slow Duration Reduction",
+      "min": 13,
+      "max": 20,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Berserking Duration",
+      "min": 14,
+      "max": 21,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fury Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Spirit Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Total Armor while in Werewolf Form",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Blood Orb Healing",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Essence Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Bone Spirit",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Corpse Tendrils",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Energy Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Caltrops",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Dash",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Shadow Step",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Crackling Energy Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Mana Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Flame Shield",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Frost Nova",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Ice Armor",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of Teleport",
+      "min": 2,
+      "max": 3,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Amulet",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "Control Impaired Duration Reduction",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance Against Injured Enemies",
+      "min": 3,
+      "max": 8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Crowd Control Duration",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage",
+      "min": 4.4,
+      "max": 10,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage for X seconds After Killing an Elite",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Close Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Distant Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Injured",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dodge Chance",
+      "min": 3,
+      "max": 5.8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance while You Have a Barrier",
+      "min": 3.2,
+      "max": 6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Movement Speed",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Movement Speed for X Seconds After Killing an Elite",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shrine Buff Duration",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Slow Duration Reduction",
+      "min": 13,
+      "max": 20,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Thorns",
+      "min": 418,
+      "max": 836,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Total Armor",
+      "min": 2,
+      "max": 4.8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ultimate Skill Damage",
+      "min": 14,
+      "max": 21,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Berserking Duration",
+      "min": 14,
+      "max": 21,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Brawling Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Dual-Wielded Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Skills that Swap to New Weapons",
+      "min": 21,
+      "max": 35,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Two-Handed Bludgeoning Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Two-Handed Slashing Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fury Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage with Two-Handed Bludgeoning Weapons",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage Over Time",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Brawling Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Defensive Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Weapon Mastery Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Brute Force Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Counteroffensive Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Cut to the Bone Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Heavy Handed Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the No Mercy Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Outburst Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Slaying Strike Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Tough as Nails Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Wallop Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Weapon Mastery Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Companion Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage whiile in Human Form",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage while Shapeshifted",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Earth Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage with Werebear Skills",
+      "min": 21,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Companion Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Defensive Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Wrath Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Call of the Wild Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Crushing Earth Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Defiance Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Envenom Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Natural Disaster Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Nature's Reach Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Quickshift Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Resonance Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Stone Guard Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Toxic Claws Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Wild Impulses Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Spirit Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Storm Skill Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Storm Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Total Armor while in Werebear Form",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Total Armor while in Werewolf Form",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Werebear Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Werewolf Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Blood Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Bone Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Affected By Shadow Damage Over Time Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Darkness Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Essence Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Minion Attack Speed",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Corpse Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Curse Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Macabre Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Amplify Damage Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Coalesced Blood Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Compound Fracture Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Death's Reach Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Evulsion Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Fueled by Death Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Gloom Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Hellbent Commander Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Imperfectly Balanced Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Terror Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Tides of Blood Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Shadow Damage Over Time",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Summoning Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Attack Speed for X seconds after Dodging an Attack",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Cutthroat Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Poisoned",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Dual-Wielded Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Ranged Weapons",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage with Skills that Swap to New Weapons",
+      "min": 21,
+      "max": 35,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Energy Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Imbuement Skill Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Imbuement Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Marksman Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Rank of All Agility Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Rank of All Imbuement Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Subterfuge Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Deadly Venom Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Exploit Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Frigid Finesse Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Impetus Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Malice Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Weapon Mastery Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Trap Skill Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Trap Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Conjuration Skill Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fire Damage Over Time",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Frost Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Mana Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Pyromancy Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Conjuration Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Defensive Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of All Mastery Skills",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Conjuration Mastery Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Devouring Blaze Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Elemental Dominance Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Endless Pyre Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Glass Cannon Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Hoarfrost Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Icy Touch Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Inner Flames Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Permafrost Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Ranks of the Shocking Impact Passive",
+      "min": 1,
+      "max": 2,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Shock Skill Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Ring",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "Barrier Generation",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance",
+      "min": 1.8,
+      "max": 5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Over Time",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Close Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Crowd Controlled Enemies",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Distant Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Injured Enemies",
+      "min": 21,
+      "max": 35,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Slowed Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Stunned Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Life Regeneration while Not Damaged Recently",
+      "min": 60,
+      "max": 143,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance",
+      "min": 3.2,
+      "max": 6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Life",
+      "min": 358,
+      "max": 776,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Resource Generation",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Vulnerable Damage",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Damage to Bleeding Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage while Berserking",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Fury",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Earth Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage with Werewolf Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Poisoned Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Spirit",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Poison Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Blood Orb Healing",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage with Bone Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage for X Seconds After Picking Up a Blood Orb",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Affected by Shadow Damage Over Time Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Essence",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Maximum Minion Life",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shadow Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Cold Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage with Imbued Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Chilled Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Dazed Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Enemies Affected by Trap Skills",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Frozen Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Poisoned Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Imbued Skill Damage",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Energy",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Physical Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Poison Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Shadow Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Cold Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Crackling Energy Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Burning Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Chilled Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Frozen Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fire Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Mana",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "1h Weapon",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 20,
+      "max": 28,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Basic Skill Damage",
+      "min": 18.5,
+      "max": 39.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Core Skill Damage",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Over Time",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Close Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Crowd Controlled Enemies",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Distant Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Injured Enemies",
+      "min": 21,
+      "max": 35,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Slowed Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Stunned Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage",
+      "min": 21,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ultimate Skill Damage",
+      "min": 14,
+      "max": 21,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Vulnerable Damage",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Damage to Bleeding Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage while Berserking",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 38,
+      "max": 52,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Earth Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage with Werewolf Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Poisoned Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage with Werebear Skills",
+      "min": 21,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 38,
+      "max": 52,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Bone Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Affected by Shadow Damage Over Time Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 38,
+      "max": 52,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Imbued Skills",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Chilled Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Dazed Enemies",
+      "min": 16.5,
+      "max": 23.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Enemies Affected by Trap Skills",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Frozen Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Poisoned Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 38,
+      "max": 52,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Core Skill Damage",
+      "min": 12.5,
+      "max": 19.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Burning Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Chilled Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Frozen Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 38,
+      "max": 52,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "2h Weapon",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 40,
+      "max": 56,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Basic Skill Damage",
+      "min": 37,
+      "max": 79,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Core Skill Damage",
+      "min": 25,
+      "max": 39,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Over Time",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Close Enemies",
+      "min": 33,
+      "max": 47,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Crowd Controlled Enemies",
+      "min": 10,
+      "max": 24,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Distant Enemies",
+      "min": 33,
+      "max": 47,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Injured Enemies",
+      "min": 42,
+      "max": 70,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Slowed Enemies",
+      "min": 33,
+      "max": 47,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Stunned Enemies",
+      "min": 33,
+      "max": 47,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage",
+      "min": 42,
+      "max": 84,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Ultimate Skill Damage",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Vulnerable Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Barbarian",
+    "stats": [
+     {
+      "name": "Damage to Bleeding Enemies",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage while Berserking",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 98,
+      "max": 126,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Earth Skills",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Damage with Werewolf Skills",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Poisoned Enemies",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Overpower Damage with Werebear Skills",
+      "min": 42,
+      "max": 84,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 98,
+      "max": 126,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Bone Skills",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Affected by Shadow Damage Over Time Enemies",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 98,
+      "max": 126,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Rogue",
+    "stats": [
+     {
+      "name": "Critical Strike Damage with Imbued Skills",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Chilled Enemies",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Dazed Enemies",
+      "min": 33,
+      "max": 47,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Enemies Affected by Trap Skills",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Frozen Enemies",
+      "min": 19,
+      "max": 33,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Poisoned Enemies",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 98,
+      "max": 126,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Core Skill Damage",
+      "min": 25,
+      "max": 39,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Burning Enemies",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Chilled Enemies",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage to Frozen Enemies",
+      "min": 19,
+      "max": 33,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 98,
+      "max": 126,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lightning Critical Strike Damage",
+      "min": 28,
+      "max": 42,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Offhand",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Barrier Generation",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Basic Skill Attack Speed",
+      "min": 4.4,
+      "max": 10,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Basic Skill Damage",
+      "min": 18.5,
+      "max": 39.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance",
+      "min": 1.8,
+      "max": 5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance Against Injured Enemies",
+      "min": 3,
+      "max": 8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Healing Received",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Life On Kill",
+      "min": 60,
+      "max": 143,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance",
+      "min": 3.2,
+      "max": 6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance while You Have a Barrier",
+      "min": 3.2,
+      "max": 6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Resource Generation",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Druid",
+    "stats": [
+     {
+      "name": "Damage Reduction from Enemies That Are Poisoned",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Spirit Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Blood Orb Healing",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage for X Seconds After Picking Up a Blood Orb",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Affected By Shadow Damage Over Time Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Essence Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Minion Life",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Sorcerer",
+    "stats": [
+     {
+      "name": "Crackling Energy Damage",
+      "min": 14,
+      "max": 28,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Enemies That Are Burning",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Mana Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Shield",
+  "classes": [
+   {
+    "name": "All Classes",
+    "stats": [
+     {
+      "name": "All Stats",
+      "min": 10,
+      "max": 18,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Barrier Generation",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Basic Skill Attack Speed",
+      "min": 4.4,
+      "max": 10,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Basic Skill Damage",
+      "min": 18.5,
+      "max": 39.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Cooldown Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance",
+      "min": 1.8,
+      "max": 5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Critical Strike Chance Against Injured Enemies",
+      "min": 3,
+      "max": 8,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction",
+      "min": 3.1,
+      "max": 7.3,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Close Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Distant Enemies",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Dexterity",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Healing Received",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Intelligence",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Life On Kill",
+      "min": 60,
+      "max": 143,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance",
+      "min": 3.2,
+      "max": 6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Lucky Hit Chance while You Have a Barrier",
+      "min": 3.2,
+      "max": 6,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Life",
+      "min": 358,
+      "max": 776,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Resistance to All Elements",
+      "min": 9.5,
+      "max": 16.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Resource Generation",
+      "min": 5,
+      "max": 12,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Strength",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Thorns",
+      "min": 418,
+      "max": 836,
+      "isPercent": false,
+      "value": -1
+     },
+     {
+      "name": "Willpower",
+      "min": 28,
+      "max": 42,
+      "isPercent": false,
+      "value": -1
+     }
+    ]
+   },
+   {
+    "name": "Necromancer",
+    "stats": [
+     {
+      "name": "Blood Orb Healing",
+      "min": 10.5,
+      "max": 17.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage for X Seconds After Picking Up a Blood Orb",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction from Affected By Shadow Damage Over Time Enemies",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Damage Reduction while Fortified",
+      "min": 4.9,
+      "max": 10.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Essence Cost Reduction",
+      "min": 4.2,
+      "max": 7,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Fortify Generation",
+      "min": 15,
+      "max": 22,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Maximum Minion Life",
+      "min": 17.5,
+      "max": 31.5,
+      "isPercent": true,
+      "value": -1
+     },
+     {
+      "name": "Minion Attack Speed",
+      "min": 7,
+      "max": 14,
+      "isPercent": true,
+      "value": -1
+     }
+    ]
+   }
+  ]
+ }
+]

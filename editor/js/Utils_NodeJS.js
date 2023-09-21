@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.GetParamExcludesDefaults = exports.GetParam = exports.IsParamExist = exports.LogYellow = exports.LogGreen = exports.LogRed = void 0;
+exports.ExtractAllNumbersInText = exports.GetParamExcludesDefaults = exports.GetParam = exports.IsParamExist = exports.LogYellow = exports.LogGreen = exports.LogRed = void 0;
 // https://en.m.wikipedia.org/wiki/ANSI_escape_code#Colors:~:text=Eclipse%20Terminal-,30,-40
 function LogRed() {
     var msg = [];
@@ -68,3 +68,12 @@ function GetParamExcludesDefaults(excludeKey) {
     }
 }
 exports.GetParamExcludesDefaults = GetParamExcludesDefaults;
+var ExtractAllNumbersInText = function (text) {
+    var _a;
+    var regex = /[+-]?\d+(\.\d+)?/g;
+    var floats = (_a = text.match(regex)) === null || _a === void 0 ? void 0 : _a.map(function (v) { return parseFloat(v); });
+    if (!floats)
+        return [];
+    return floats;
+};
+exports.ExtractAllNumbersInText = ExtractAllNumbersInText;

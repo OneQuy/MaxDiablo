@@ -68,6 +68,6 @@ export type Classs = {
 }
 
 export type SlotOfClasses = {
-    name: string,
+    name: SlotName,
     classes: Classs[]
 }

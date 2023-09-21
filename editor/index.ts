@@ -10,14 +10,18 @@ const main = () => {
         if (typeof res === 'string')
             LogRed('error: ' + res)
         else
-            LogGreen('Success')
-
+            LogGreen('success')
     }
     else if (IsParamExist('check')) {
         Check()
     }
     else if (IsParamExist('class')) {
-        GenerateClassData()
+        const res = GenerateClassData()
+
+        if (typeof res === 'string')
+            LogRed(res)
+        else
+            LogGreen('success')
     }
 }
 

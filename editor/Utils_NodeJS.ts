@@ -58,3 +58,13 @@ export function GetParamExcludesDefaults(excludeKey: string) {
         return cur;
    }
 }
+
+export const ExtractAllNumbersInText = (text: string): number[] => {
+    const regex = /[+-]?\d+(\.\d+)?/g;
+    let floats = text.match(regex)?.map(function (v) { return parseFloat(v); });
+    
+    if (!floats)
+        return []
+    
+    return floats
+}

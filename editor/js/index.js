@@ -10,13 +10,17 @@ var main = function () {
         if (typeof res === 'string')
             (0, Utils_NodeJS_1.LogRed)('error: ' + res);
         else
-            (0, Utils_NodeJS_1.LogGreen)('Success');
+            (0, Utils_NodeJS_1.LogGreen)('success');
     }
     else if ((0, Utils_NodeJS_1.IsParamExist)('check')) {
         (0, Checker_1.Check)();
     }
     else if ((0, Utils_NodeJS_1.IsParamExist)('class')) {
-        (0, GenerateClassData_1.GenerateClassData)();
+        var res = (0, GenerateClassData_1.GenerateClassData)();
+        if (typeof res === 'string')
+            (0, Utils_NodeJS_1.LogRed)(res);
+        else
+            (0, Utils_NodeJS_1.LogGreen)('success');
     }
 };
 main();

@@ -514,9 +514,9 @@ function App(): JSX.Element {
           // !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
           <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
             <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : GetRateTextColorForSuitBuild(), padding: 10, borderRadius: 10 }} >
-              <Text style={{ color: 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
+              <Text style={{ color: rateText.current === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
             </View>
-            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{RoundNumber(totalScore.current * 10, 1)}/10</Text>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{totalScore.current >= 0 ? RoundNumber(totalScore.current * 10, 1) : 0}/10</Text>
           </View>
         }
         {/* builds suit */}

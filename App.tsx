@@ -273,7 +273,7 @@ function App(): JSX.Element {
 
     // start find
 
-    const resultArr: [Stat, Classs, Stat][] = []
+    const resultArr: [Stat, Classs, Stat][] = [] // user stat, class, class data stat
 
     for (let istat = 0; istat < userSlot.stats.length; istat++) {
       const stat = userSlot.stats[istat]
@@ -296,7 +296,7 @@ function App(): JSX.Element {
     // rate
 
     resultArr.forEach(element => {
-      console.log(element[0].name, element[1].name, element[2].length);
+      console.log(element[0].name, element[1].name);
     });
   }, [])
 
@@ -324,7 +324,7 @@ function App(): JSX.Element {
     const extractRes = ExtractSlotCard(result)
 
     if (typeof extractRes === 'object') { // success
-      slotCardRef.current = extractRes
+      slotCardRef.current = FilterStats(extractRes)
       findSuitBuilds()
       rate()
       setStatus('SUCCESS')
@@ -505,6 +505,25 @@ function App(): JSX.Element {
 }
 
 export default App;
+
+const FilterStats = (slot: SlotCard) : SlotCard => {
+  for (let i = 0; i < slot.stats.length; i++) {
+    for (let a = i + 1; a < slot.stats.length; a++) {
+      if (slot.stats[i].name === slot.stats[a].name) {
+        slot.stats[i].name = 'hihi'
+        // console.log('remmmm', slot.stats[a].name, slot.stats[i].min, slot.stats[i].max);
+      }
+    } 
+  }
+
+  // console.log('a', slot.stats.length);
+  
+  slot.stats = slot.stats.filter(i => i.name !== 'hihi')
+
+  // console.log('b', slot.stats.length);
+
+  return slot
+}
 
 const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {
   //   1 hand weapon : wand, sword, dagger, axe, mace

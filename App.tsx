@@ -46,11 +46,6 @@ const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json')
 
-// core skill
-// crit dam
-// all stat
-// vernerbla
-
 const DefaultGoodStats = [
   'Core Skill Damage',
   'Critical Strike Damage',

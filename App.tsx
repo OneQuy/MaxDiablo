@@ -24,10 +24,10 @@ import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, SlotCard, Stat, Tier } from './scr/Types';
+import { Build, Classs, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
-import { CheckAndInitAdmobAsync } from './scr/common/Admob';
-import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
+// import { CheckAndInitAdmobAsync } from './scr/common/Admob';
+// import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
 // const adUnitId = true ? TestIds.INTERSTITIAL : (Platform.OS === 'android' ? 'ca-app-pub-9208244284687724/8105396391' : 'ca-app-pub-9208244284687724/4249911866');
 
@@ -42,6 +42,7 @@ const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong
 
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')
+const classesData: SlotOfClasses[] = require('./assets/ClassesData.json')
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
@@ -78,10 +79,13 @@ function App(): JSX.Element {
   }, [])
 
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
-    const res = ExtractSlotCard(await Clipboard.getString())
+    const txt = await Clipboard.getString()
+    const res = ExtractSlotCard(txt)
 
     console.log(JSON.stringify(res))
     console.log(JSON.stringify(res, null, 1));
+
+    onGotOcrResultText(txt)
   }, [])
 
   const onPressTakeCamera = useCallback(async () => {
@@ -233,6 +237,56 @@ function App(): JSX.Element {
     }
   }, [])
 
+  const rate = useCallback(() => {
+    if (!slotCardRef.current)
+      return
+    
+    const userSlot = slotCardRef.current
+    
+    let slotOfClasses = classesData.find(slot => slot.name === userSlot.slotName)
+
+    if (!slotOfClasses) {
+      const convertName = ConvertSlotNameToShortSlotName(userSlot.slotName)
+
+      slotOfClasses = classesData.find(slot => slot.name === convertName)
+
+      console.log('aaa', convertName);
+    }
+    
+    if (slotOfClasses === undefined) {
+      Alert.alert(
+        'Lỗi không rate',
+        'Không thể rate cho slot: ' + userSlot.slotName)
+
+      return
+    }
+
+    // start find
+
+    const resultArr: [Stat, Classs, Stat[]][] = []
+
+    for (let istat = 0; istat < userSlot.stats.length; istat++) {
+      const stat = userSlot.stats[istat]
+
+      for (let iclass = 0; iclass < slotOfClasses.classes.length; iclass++) {
+        const classs = slotOfClasses.classes[iclass]
+
+        const findStats = classs.stats.filter(istat => stat.name === istat.name) 
+
+        if (findStats.length > 0) {
+          resultArr.push([stat, classs, findStats])
+
+          if (findStats.length > 1)
+            console.log('wowwwww', findStats.length);
+        }
+      }
+    }
+
+    resultArr.forEach(element => {
+      console.log(element[0].name, element[1].name, element[2].length);
+    });
+  }, [])
+
   const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
     if (!slotCardRef.current)
       return 'white'
@@ -259,6 +313,7 @@ function App(): JSX.Element {
     if (typeof extractRes === 'object') { // success
       slotCardRef.current = extractRes
       findSuitBuilds()
+      rate()
       setStatus('SUCCESS')
     }
     else { // fail
@@ -306,7 +361,7 @@ function App(): JSX.Element {
   useEffect(() => {
     // onGotOcrResultText(demoText)
 
-    CheckAndInitAdmobAsync();
+    // CheckAndInitAdmobAsync();
 
     // const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
     //   console.log('loaded ads')
@@ -437,3 +492,35 @@ function App(): JSX.Element {
 }
 
 export default App;
+
+const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {
+  //   1 hand weapon : wand, sword, dagger, axe, mace
+  //   2 hand weapon: crossbow, twohandedmace, twohandedsword, staff, bow, scythe, polearm
+  //   offhand: focus, shield, totem
+
+  switch (name) {
+    case SlotName.Wand:
+    case SlotName.Sword:
+    case SlotName.Dagger:
+    case SlotName.Axe:
+    case SlotName.Mace:
+      return SlotName.H1Weapon
+
+    case SlotName.Crossbow:
+    case SlotName.TwoHandedMace:
+    case SlotName.TwoHandedSword:
+    case SlotName.Staff:
+    case SlotName.Bow:
+    case SlotName.Scythe:
+    case SlotName.Polearm:
+      return SlotName.H2Weapon
+
+    case SlotName.Focus:
+    case SlotName.Shield:
+    case SlotName.Totem:
+      return SlotName.Offhand
+
+    default:
+      return name
+  }
+}

@@ -257,8 +257,8 @@ function App(): JSX.Element {
 
     // find in DefaultGoodStats 
 
-    let statsForRating: Stat[] = userSlot.stats.filter(i => DefaultGoodStats.includes(i.name))
-    
+    const userGoodStats: Stat[] = userSlot.stats.filter(i => DefaultGoodStats.includes(i.name))
+
     // find in class data
 
     let slotOfClasses = classesData.find(slot => slot.name === userSlot.slotName)
@@ -279,7 +279,7 @@ function App(): JSX.Element {
 
     // start find
 
-    const resultArr: [Stat, Classs, Stat][] = [] // user stat, class, class data stat
+    const statsForRating: [Stat, Classs | undefined, Stat | undefined][] = [] // user stat, class, class data stat
 
     for (let istat = 0; istat < userSlot.stats.length; istat++) {
       const stat = userSlot.stats[istat]
@@ -290,8 +290,8 @@ function App(): JSX.Element {
         const findStats = classs.stats.filter(istat => stat.name === istat.name)
 
         if (findStats.length > 0) {
-          resultArr.push([stat, classs, findStats[0]])
-
+          statsForRating.push([stat, classs, findStats[0]])
+          
           if (findStats.length > 1) {
             Alert.alert('lollllll woowwwww   ' + stat.name + ', ' + classs.name)
           }
@@ -299,13 +299,19 @@ function App(): JSX.Element {
       }
     }
 
+    // append default good stats
+
+    userGoodStats.forEach(stat => {
+      if (statsForRating.findIndex(tuple => tuple[0].name === stat.name) < 0) {
+        statsForRating.push([stat, undefined, undefined])
+      }
+    })
+
     // rate
 
-    resultArr.forEach(element => {
-      console.log(element[0].name, element[1].name);
+    statsForRating.forEach(element => {
+      console.log(element[0].name, element[1]?.name);
     });
-
-    // check result
   }, [])
 
   const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -335,7 +341,9 @@ function App(): JSX.Element {
       slotCardRef.current = FilterStats(extractRes)
       findSuitBuilds()
       rate()
-      setStatus('SUCCESS')
+
+      // setStatus('SUCCESS')
+      setStatus(Math.random().toString())
     }
     else { // fail
       setStatus('')
@@ -514,18 +522,18 @@ function App(): JSX.Element {
 
 export default App;
 
-const FilterStats = (slot: SlotCard) : SlotCard => {
+const FilterStats = (slot: SlotCard): SlotCard => {
   for (let i = 0; i < slot.stats.length; i++) {
     for (let a = i + 1; a < slot.stats.length; a++) {
       if (slot.stats[i].name === slot.stats[a].name) {
         slot.stats[i].name = 'hihi'
         // console.log('remmmm', slot.stats[a].name, slot.stats[i].min, slot.stats[i].max);
       }
-    } 
+    }
   }
 
   // console.log('a', slot.stats.length);
-  
+
   slot.stats = slot.stats.filter(i => i.name !== 'hihi')
 
   // console.log('b', slot.stats.length);

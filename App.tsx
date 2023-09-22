@@ -26,6 +26,8 @@ import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Classs, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
+import { statfs } from 'fs';
+import { RoundNumber } from './scr/common/Utils';
 // import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 // import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
@@ -63,6 +65,8 @@ function App(): JSX.Element {
   const ocrResult = useRef('')
   const rateText = useRef('...')
   const suitBuilds = useRef<[Tier, Build, SlotCard, number][]>()
+  const statsForRating = useRef<[Stat, Classs | undefined, Stat | undefined, number][]>([]) // user stat, class, class data stat, rate score
+  const totalScore = useRef(-1)
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -232,20 +236,6 @@ function App(): JSX.Element {
 
         return 0;
       })
-
-      // rate
-
-      const idx = suitBuilds.current.findIndex(i => i[3] > linesMatchIsGood)
-
-      if (idx >= 0) {
-        rateText.current = 'PERFECT'
-      }
-      else {
-        rateText.current = 'GOOD'
-      }
-    }
-    else {
-      rateText.current = 'TRASH'
     }
   }, [])
 
@@ -279,7 +269,7 @@ function App(): JSX.Element {
 
     // start find
 
-    const statsForRating: [Stat, Classs | undefined, Stat | undefined][] = [] // user stat, class, class data stat
+    statsForRating.current = []
 
     for (let istat = 0; istat < userSlot.stats.length; istat++) {
       const stat = userSlot.stats[istat]
@@ -290,10 +280,11 @@ function App(): JSX.Element {
         const findStats = classs.stats.filter(istat => stat.name === istat.name)
 
         if (findStats.length > 0) {
-          statsForRating.push([stat, classs, findStats[0]])
-          
+          statsForRating.current.push([stat, classs, findStats[0], -1])
+
           if (findStats.length > 1) {
-            Alert.alert('lollllll woowwwww   ' + stat.name + ', ' + classs.name)
+            Alert.alert('Errorrrr   ' + stat.name + ', ' + classs.name)
+            return
           }
         }
       }
@@ -302,16 +293,49 @@ function App(): JSX.Element {
     // append default good stats
 
     userGoodStats.forEach(stat => {
-      if (statsForRating.findIndex(tuple => tuple[0].name === stat.name) < 0) {
-        statsForRating.push([stat, undefined, undefined])
+      if (statsForRating.current.findIndex(tuple => tuple[0].name === stat.name) < 0) {
+        statsForRating.current.push([stat, undefined, undefined, -1])
       }
     })
 
     // rate
 
-    statsForRating.forEach(element => {
-      console.log(element[0].name, element[1]?.name);
+    totalScore.current = 0
+
+    for (let i = 0; i < statsForRating.current.length; i++) {
+      const [userStat, classs, classStat, score] = statsForRating.current[i]
+
+      if (classStat) {
+        if (userStat.min !== classStat.min)
+          console.log('min diff', userStat.min, classStat.min);
+
+        if (userStat.max !== classStat.max)
+          console.log('max diff', userStat.max, classStat.max);
+
+        if (userStat.name !== classStat.name)
+          console.log('nameeee diff', userStat.name, classStat.name);
+      }
+
+      if (userStat.max === userStat.min)
+        statsForRating.current[i][3] = 1
+      else
+        statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
+
+      totalScore.current += statsForRating.current[i][3]
+    };
+
+    statsForRating.current.forEach(([userStat, classs, classStat, score]) => {
+      console.log(userStat.name, classs?.name, score);
     });
+
+    if (totalScore.current !== 0) {
+      totalScore.current = totalScore.current / statsForRating.current.length
+      console.log('total score', totalScore.current);
+    }
+    else
+      totalScore.current = -1
+
+    rateText.current = GetRateColor(totalScore.current)[1]
   }, [])
 
   const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -323,14 +347,35 @@ function App(): JSX.Element {
     return idx >= 0 ? 'tomato' : 'white'
   }, [])
 
-  const GetRateTextColor = useCallback(() => {
-    if (rateText.current === 'PERFECT')
-      return 'tomato'
+  const GetRateColor = useCallback((score: number) => {
+    if (score === 1) // perfect
+      return ['tomato', 'PERFECT']
+    else if (score >= 2 / 3) // good
+      return ['gold', 'GOOD']
+    else if (score >= 1 / 3) // fair
+      return ['white', 'FAIR']
+    else // trash
+      return ['dodgerblue', 'TRASH']
+  }, [])
 
-    if (rateText.current === 'GOOD')
-      return 'gold'
+  const GetRateStatColor = useCallback((statName: string) => {
+    if (!slotCardRef.current)
+      return 'green'
 
-    return 'gray'
+    if (!statsForRating.current || statsForRating.current.length === 0)
+      return 'green'
+
+    const stat = statsForRating.current.find(i => i[0].name === statName)
+
+    if (stat !== undefined) {
+      return GetRateColor(stat[3])[0]
+    }
+    else
+      return 'dimgray'
+  }, [])
+
+  const GetRateTextColorForSuitBuild = useCallback(() => {
+    return GetRateColor(totalScore.current)[0]
   }, [])
 
   const onGotOcrResultText = useCallback(async (result: string) => {
@@ -445,13 +490,13 @@ function App(): JSX.Element {
                 {/* stats */}
                 <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
                   {
-                    slotCardRef.current.stats.map((item, index) => {
+                    slotCardRef.current.stats.map((stat, index) => {
                       return <View key={index}>
-                        <Text style={{ color: 'white' }}>{item.name}</Text>
+                        <Text style={{ color: GetRateStatColor(stat.name) }}>{stat.name}</Text>
                         <Text style={{ color: 'white' }}>
-                          {item.value}{item.isPercent ? '%' : ''}
+                          {stat.value}{stat.isPercent ? '%' : ''}
                           <Text style={{ color: 'gray' }}>
-                            {'  '}[{item.min}-{item.max}]
+                            {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
                           </Text>
                         </Text>
                       </View>
@@ -472,10 +517,11 @@ function App(): JSX.Element {
         {/* rating result text */}
         {
           // !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
-          <View style={{ marginTop: Outline.Gap, alignItems: 'center' }}>
-            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : GetRateTextColor(), padding: 10, borderRadius: 10 }} >
-              <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
+          <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : GetRateTextColorForSuitBuild(), padding: 10, borderRadius: 10 }} >
+              <Text style={{ color: 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
             </View>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{RoundNumber(totalScore.current * 10, 1)}/10</Text>
           </View>
         }
         {/* builds suit */}

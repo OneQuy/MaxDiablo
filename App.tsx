@@ -44,6 +44,18 @@ const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json')
 
+// core skill
+// crit dam
+// all stat
+// vernerbla
+
+const DefaultGoodStats = [
+  'Core Skill Damage',
+  'Critical Strike Damage',
+  'All Stats',
+  'Vulnerable Damage',
+]
+
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const userImgUri = useRef('')
@@ -240,19 +252,17 @@ function App(): JSX.Element {
   const rate = useCallback(() => {
     if (!slotCardRef.current)
       return
-    
+
     const userSlot = slotCardRef.current
-    
+
     let slotOfClasses = classesData.find(slot => slot.name === userSlot.slotName)
 
     if (!slotOfClasses) {
       const convertName = ConvertSlotNameToShortSlotName(userSlot.slotName)
 
       slotOfClasses = classesData.find(slot => slot.name === convertName)
-
-      console.log('aaa', convertName);
     }
-    
+
     if (slotOfClasses === undefined) {
       Alert.alert(
         'Lỗi không rate',
@@ -263,7 +273,7 @@ function App(): JSX.Element {
 
     // start find
 
-    const resultArr: [Stat, Classs, Stat[]][] = []
+    const resultArr: [Stat, Classs, Stat][] = []
 
     for (let istat = 0; istat < userSlot.stats.length; istat++) {
       const stat = userSlot.stats[istat]
@@ -271,16 +281,19 @@ function App(): JSX.Element {
       for (let iclass = 0; iclass < slotOfClasses.classes.length; iclass++) {
         const classs = slotOfClasses.classes[iclass]
 
-        const findStats = classs.stats.filter(istat => stat.name === istat.name) 
+        const findStats = classs.stats.filter(istat => stat.name === istat.name)
 
         if (findStats.length > 0) {
-          resultArr.push([stat, classs, findStats])
+          resultArr.push([stat, classs, findStats[0]])
 
-          if (findStats.length > 1)
-            console.log('wowwwww', findStats.length);
+          if (findStats.length > 1) {
+            Alert.alert('lollllll woowwwww   ' + stat.name + ', ' + classs.name)
+          }
         }
       }
     }
+
+    // rate
 
     resultArr.forEach(element => {
       console.log(element[0].name, element[1].name, element[2].length);

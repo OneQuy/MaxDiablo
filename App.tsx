@@ -38,9 +38,9 @@ import { RoundNumber } from './scr/common/Utils';
 //   keywords: ['fashion', 'clothing'],
 // });
 
-// const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
+const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
 // const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
-const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong ly
+// const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong ly 22/09
 
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')

@@ -28,6 +28,7 @@ import { Build, Classs, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { statfs } from 'fs';
 import { RoundNumber } from './scr/common/Utils';
+import { stringify } from 'querystring';
 // import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 // import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
@@ -419,9 +420,21 @@ function App(): JSX.Element {
 
       onGotOcrResultText(result)
     } catch (error) {
-      Alert.alert(
-        'Lỗi không thể phân tích hình',
-        'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + ToCanPrint(error))
+      const serror = JSON.stringify(error);
+
+      if (serror.includes('429')) {
+        Alert.alert(
+          'Lỗi không thể phân tích hình',
+          'Vượt lượt phân tích.')
+      }
+      else {
+        Alert.alert(
+          'Lỗi không thể phân tích hình',
+          'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + ToCanPrint(error))
+      }
+      
+      userImgUri.current = ''
+      setStatus('')
     }
   }, [])
 

@@ -255,6 +255,12 @@ function App(): JSX.Element {
 
     const userSlot = slotCardRef.current
 
+    // find in DefaultGoodStats 
+
+    let statsForRating: Stat[] = userSlot.stats.filter(i => DefaultGoodStats.includes(i.name))
+    
+    // find in class data
+
     let slotOfClasses = classesData.find(slot => slot.name === userSlot.slotName)
 
     if (!slotOfClasses) {
@@ -298,6 +304,8 @@ function App(): JSX.Element {
     resultArr.forEach(element => {
       console.log(element[0].name, element[1].name);
     });
+
+    // check result
   }, [])
 
   const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {

@@ -359,13 +359,13 @@ function App(): JSX.Element {
 
   const GetRateColor = useCallback((score: number) => {
     if (score === 1) // perfect
-      return ['tomato', 'PERFECT']
+      return ['tomato', 'TUYỆT PHẨM!']
     else if (score >= 2 / 3) // good
-      return ['gold', 'GOOD']
+      return ['gold', 'RẤT TỐT']
     else if (score >= 1 / 3) // fair
-      return ['white', 'FAIR']
+      return ['white', 'TỐT']
     else // trash
-      return ['dodgerblue', 'TRASH']
+      return ['dodgerblue', 'TẦM THƯỜNG']
   }, [])
 
   const GetRateStatColor = useCallback((statName: string) => {

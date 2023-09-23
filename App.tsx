@@ -513,11 +513,13 @@ function App(): JSX.Element {
                 <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
                   {
                     slotCardRef.current.stats.map((stat, index) => {
+                      const color = GetRateStatColor(stat.name)
+
                       return <View key={index}>
-                        <Text style={{ color: GetRateStatColor(stat.name) }}>{stat.name}</Text>
-                        <Text style={{ color: 'white' }}>
+                        <Text style={{ color }}>{stat.name}</Text>
+                        <Text style={{ color }}>
                           {stat.value}{stat.isPercent ? '%' : ''}
-                          <Text style={{ color: 'gray' }}>
+                          <Text style={{ color }}>
                             {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
                           </Text>
                         </Text>

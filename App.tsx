@@ -297,39 +297,53 @@ function App(): JSX.Element {
     // rate
 
     totalScore.current = 0
+    let logDiff = ''
 
     for (let i = 0; i < statsForRating.current.length; i++) {
       const [userStat, classs, classStat, score] = statsForRating.current[i]
 
+      // log diff
+
       if (classStat) {
         if (userStat.min !== classStat.min)
-          console.log('min diff', userStat.min, classStat.min);
+          logDiff += ('\nmin diff ' + userStat.min + ', ' + classStat.min + ', ' + userStat.name);
 
         if (userStat.max !== classStat.max)
-          console.log('max diff', userStat.max, classStat.max);
-
-        if (userStat.name !== classStat.name)
-          console.log('nameeee diff', userStat.name, classStat.name);
+          logDiff += ('\nmax diff ' + userStat.max + ', ' + classStat.max + ', ' + userStat.name);
       }
+
+      // this stat score
 
       if (userStat.max === userStat.min)
         statsForRating.current[i][3] = 1
       else
-        statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
+      
+      statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
+
+      // sum score
 
       totalScore.current += statsForRating.current[i][3]
     };
+
+    if (logDiff !== '') {
+      Alert.alert('Có khác biệt tham số với ClassData', logDiff)
+    }
+
+    // log
 
     statsForRating.current.forEach(([userStat, classs, classStat, score]) => {
       console.log(userStat.name, classs?.name, score);
     });
 
+    // total score / 10
     if (totalScore.current !== 0) {
       totalScore.current = totalScore.current / statsForRating.current.length
       console.log('total score', totalScore.current);
     }
     else
       totalScore.current = -1
+
+    // rate text
 
     rateText.current = GetRateColor(totalScore.current)[1]
   }, [])
@@ -432,7 +446,7 @@ function App(): JSX.Element {
           'Lỗi không thể phân tích hình',
           'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + ToCanPrint(error))
       }
-      
+
       userImgUri.current = ''
       setStatus('')
     }

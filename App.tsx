@@ -514,7 +514,7 @@ function App(): JSX.Element {
                   <View style={{ flex: 1 }} />
                 </View>
                 {/* item power */}
-                <Text style={{ marginTop: Outline.Gap / 2, color: 'white', fontSize: FontSize.Normal }}>
+                <Text style={{ marginTop: Outline.Gap / 2, color: 'white', fontSize: FontSize.Small }}>
                   Item Power: {slotCardRef.current.itemPower}
                 </Text>
                 {/* stats */}
@@ -524,7 +524,7 @@ function App(): JSX.Element {
                       const color = GetRateStatColor(stat.name)
 
                       return <View key={index}>
-                        <Text style={{ color }}>{stat.name}</Text>
+                        <Text style={{ color, fontWeight: '500' }}>{stat.name}</Text>
                         <Text style={{ color }}>
                           {stat.value}{stat.isPercent ? '%' : ''}
                           <Text style={{ color }}>

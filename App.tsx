@@ -345,7 +345,7 @@ function App(): JSX.Element {
 
     // rate text
 
-    rateText.current = GetRateColor(totalScore.current)[1]
+    rateText.current = GetRateTypeByScore(totalScore.current)[1]
   }, [])
 
   const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -357,7 +357,7 @@ function App(): JSX.Element {
     return idx >= 0 ? 'tomato' : 'white'
   }, [])
 
-  const GetRateColor = useCallback((score: number) => {
+  const GetRateTypeByScore = useCallback((score: number) => {
     score = RoundNumber(score, 1)
 
     if (score >= 1) // perfect
@@ -370,6 +370,22 @@ function App(): JSX.Element {
       return ['dodgerblue', 'TẦM THƯỜNG']
   }, [])
 
+  const GetScoreOfStat = useCallback((statName: string, x10: boolean) => {
+    if (!statsForRating.current || statsForRating.current.length === 0)
+      return 0
+
+    const stat = statsForRating.current.find(i => i[0].name === statName)
+
+    if (stat !== undefined) {
+      if (x10)
+        return RoundNumber(stat[3] * 10, 1)
+      else
+        return stat[3]
+    }
+    else
+      return 0
+  }, [])
+  
   const GetRateStatColor = useCallback((statName: string) => {
     if (!slotCardRef.current)
       return 'green'
@@ -380,14 +396,14 @@ function App(): JSX.Element {
     const stat = statsForRating.current.find(i => i[0].name === statName)
 
     if (stat !== undefined) {
-      return GetRateColor(stat[3])[0]
+      return GetRateTypeByScore(stat[3])[0]
     }
     else
       return 'dimgray'
   }, [])
 
   const GetRateTextColorForSuitBuild = useCallback(() => {
-    return GetRateColor(totalScore.current)[0]
+    return GetRateTypeByScore(totalScore.current)[0]
   }, [])
 
   const onGotOcrResultText = useCallback(async (result: string) => {
@@ -528,7 +544,10 @@ function App(): JSX.Element {
                         <Text style={{ color }}>
                           {stat.value}{stat.isPercent ? '%' : ''}
                           <Text style={{ color }}>
-                            {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
+                            {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
+                          </Text>
+                          <Text style={{ color: 'black', backgroundColor: color }}>
+                            {GetScoreOfStat(stat.name, true)}
                           </Text>
                         </Text>
                       </View>

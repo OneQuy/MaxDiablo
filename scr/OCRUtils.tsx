@@ -24,7 +24,7 @@ function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
 
 function FixLinesAfterMerge(lines: string[]): string[] {
     for (let index = 1; index < lines.length; index++) {
-        let line = lines[index];
+        let line = lines[index].trim();
 
         const openSqrBracketIdx = line.indexOf('[')
         const closeSqrBracketIdx = line.indexOf(']')
@@ -46,6 +46,10 @@ function FixLinesAfterMerge(lines: string[]): string[] {
             line = line.substring(1)
             lines[index] = line
         }
+
+        // final
+
+        lines[index] = line.trim()
     }
 
     return lines;

@@ -46,9 +46,10 @@ const OcrApiKey = 'c1376ba46dmshef599c0106ea350p115971jsn962df699e053' // melody
 // const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong ly 22/09
 
 const jsonPackage = require('./package.json')
-const buildsData: Tier[] = require('./assets/BuildsData.json')
-const classesData: SlotOfClasses[] = require('./assets/ClassesData.json')
-const allStatsData: string[] = require('./assets/AllStats.json')
+const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
+const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
+const allStatsData: string[] = require('./assets/AllStats.json') // for valid stat name
+const ignoredStats: string[] = require('./assets/IgnoredStats.json') // for ignoring stats
 
 const DefaultGoodStats = [
   'Core Skill Damage',
@@ -219,12 +220,9 @@ function App(): JSX.Element {
       }
     }
 
-    // rate
+    // sort
 
     if (suitBuilds.current.length > 0) {
-
-      // sort 
-
       suitBuilds.current.sort((a, b) => {
         if (a[3] < b[3]) {
           return 1;
@@ -271,6 +269,12 @@ function App(): JSX.Element {
 
     for (let istat = 0; istat < userSlot.stats.length; istat++) {
       const stat = userSlot.stats[istat]
+
+      if (stat.name.includes('Resistance') ||
+        ignoredStats.includes(stat.name)) {
+        console.log('ignoredddddddddd', stat.name);
+        continue
+      }
 
       for (let iclass = 0; iclass < slotOfClasses.classes.length; iclass++) {
         const classs = slotOfClasses.classes[iclass]
@@ -341,6 +345,7 @@ function App(): JSX.Element {
 
     if (totalScore.current !== 0) {
       totalScore.current = totalScore.current / statsForRating.current.length
+      // totalScore.current = totalScore.current / 4
       console.log('total score', totalScore.current);
     }
     else

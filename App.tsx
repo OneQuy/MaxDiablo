@@ -21,7 +21,7 @@ import { openPicker } from '@baronha/react-native-multiple-image-picker'
 import { FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
-import { FontSize, Outline, windowSize } from './scr/AppConstant';
+import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Classs, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
@@ -524,13 +524,13 @@ function App(): JSX.Element {
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
                 {/* slot name  */}
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
+                  <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
                     {slotCardRef.current.slotName}
                   </Text>
                   <View style={{ flex: 1 }} />
                 </View>
                 {/* item power */}
-                <Text style={{ marginTop: Outline.Gap / 2, color: 'white', fontSize: FontSize.Small }}>
+                <Text style={{ marginTop: Outline.Gap / 2, color: 'white' }}>
                   Item Power: {slotCardRef.current.itemPower}
                 </Text>
                 {/* stats */}
@@ -540,7 +540,7 @@ function App(): JSX.Element {
                       const color = GetRateStatColor(stat.name)
 
                       return <View key={index}>
-                        <Text style={{ color, fontWeight: '500' }}>{stat.name}</Text>
+                        <Text style={{ color, fontWeight: FontWeight.B500 }}>{stat.name}</Text>
                         <Text style={{ color }}>
                           {stat.value}{stat.isPercent ? '%' : ''}
                           <Text style={{ color }}>

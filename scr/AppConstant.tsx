@@ -8,6 +8,11 @@ export enum FontSize {
     Big = 20
 }
 
+export enum FontWeight {
+    Bold = 'bold',
+    B500 = '500'
+}
+
 export enum Outline {
     Gap = 10,
     Margin = 10

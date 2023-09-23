@@ -36,7 +36,15 @@ function FixLinesAfterMerge(lines: string[]): string[] {
             closeSqrBracketIdx > 0 &&
             openBracketIdx > 0 &&
             openBracketIdx < closeSqrBracketIdx) {
-            lines[index] = StringReplaceCharAt(line, openBracketIdx, '[')
+            line = StringReplaceCharAt(line, openBracketIdx, '[')
+            lines[index] = line
+        }
+
+        // o +36.0% Vulnerable Damage [21.0- 42.0]% (remove first o)
+
+        if (line.startsWith('o')) {
+            line = line.substring(1)
+            lines[index] = line
         }
     }
 
@@ -362,7 +370,7 @@ export function ExtractSlotCard(text: string): SlotCard | string {
 
         if (!IsNumType(value)) {
             if (isLog)
-                console.log('[log extract] cant get value of line: ' + line);
+                console.log('[log extract] cant get value of line: ' + line, ', numberS: ' + numberS);
 
             continue
         }

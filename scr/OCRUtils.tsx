@@ -1,7 +1,7 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
-const isLog = false
+const isLog = true
 
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     for (let i = 0; i < lines.length; i++) {
@@ -236,13 +236,6 @@ export function ExtractSlotCard(text: string): SlotCard | string {
         return 'cant extract ItemPower'
     }
 
-    // console.log('trước find name================');
-
-    // for (let index = 0; index < lines.length; index++) {
-    //     const line = lines[index]
-    //     console.log(line);
-    // }
-
     // find name slot
 
     let slotName: SlotName | undefined = undefined
@@ -355,8 +348,9 @@ export function ExtractSlotCard(text: string): SlotCard | string {
                 else {
                     if (numberS === '')
                         continue
-                    else if (line[i] === ',')
-                        continue
+                    else if (line[i] === ',') {
+                        numberS = '.' + numberS
+                    }
                     else
                         break
                 }

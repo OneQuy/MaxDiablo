@@ -127,3 +127,14 @@ test('text 10', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 });
+
+// THE IMPACT
+
+test('text 11', () => {
+  const text = 'ac ma\nstriay tigria tag\nều nhưc ko sedinar thì henus được tăng lên\nC\nTHE IMPACT\nAncestral Rare Two-Handed\nSword\n806+25 Item Power\n◆Upgrades: 5/5\n2,594 Damage Per Second (+233)\n[2,075-3,113] Damage per Hit\n1.00 Attacks per Second\n◆ +21.0% Critical Strike Damage\n[21.0]%\no +36.0% Vulnerable Damage [21.0-\n42.01% (+1.5%)\n+31.5% Critical Sike Damage [31.5-\n52.51% (-21.0%)\n+48.0% Core Skill Damage [37.5 -\n58.51% (-7.5%)\n+49,5% Critical Strike Damage with\nBone Skills (31.5-52.51% (+1.5%)\nProperties lost when equipped:\nSocket (2)\nlà tháng 8 năm 201\n='
+  const expected = '{"slotName":"Two-Handed Sword","itemPower":806,"stats":[{"name":"Critical Strike Damage","min":21,"max":21,"isPercent":true,"value":21},{"name":"Vulnerable Damage","min":21,"max":42,"isPercent":true,"value":36},{"name":"Critical Strike Damage","min":31.5,"max":52.5,"isPercent":true,"value":31.5},{"name":"Core Skill Damage","min":37.5,"max":58.5,"isPercent":true,"value":48},{"name":"Critical Strike Damage with Bone Skills","min":31.5,"max":52.5,"isPercent":true,"value":49.5}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+});

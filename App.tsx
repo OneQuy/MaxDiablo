@@ -635,15 +635,6 @@ const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
     if (allStatsData.includes(stat.name))
       continue
 
-    // can handle
-
-    if (stat.name.includes('Sike')) {
-      stat.name = stat.name.replace('Sike', 'Strike')
-      continue
-    }
-
-    // real weard stat
-    
     listWeirdTxt += ('[' + stat.name + ']')
     stat.name = 'hihi'
   }

@@ -154,6 +154,12 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
         nameStat = nameStat.replace('Your Thom', 'Your Thorn')
     }
 
+    // fix Sike
+
+    if (nameStat.includes('Sike')) {
+        nameStat = nameStat.replace('Sike', 'Strike')
+    }
+
     return nameStat
 }
 

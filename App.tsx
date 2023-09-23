@@ -317,8 +317,8 @@ function App(): JSX.Element {
       if (userStat.max === userStat.min)
         statsForRating.current[i][3] = 1
       else
-      
-      statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
+
+        statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
 
       // sum score
 
@@ -358,12 +358,14 @@ function App(): JSX.Element {
   }, [])
 
   const GetRateColor = useCallback((score: number) => {
-    if (score === 1) // perfect
+    score = RoundNumber(score, 1)
+
+    if (score >= 1) // perfect
       return ['tomato', 'TUYỆT PHẨM!']
-    else if (score >= 2 / 3) // good
+    else if (score >= RoundNumber(2 / 3, 1)) // good
       return ['gold', 'RẤT TỐT']
-    else if (score >= 1 / 3) // fair
-      return ['white', 'TỐT']
+    else if (score >= RoundNumber(1 / 3, 1)) // fair
+      return ['moccasin', 'TỐT']
     else // trash
       return ['dodgerblue', 'TẦM THƯỜNG']
   }, [])
@@ -504,11 +506,17 @@ function App(): JSX.Element {
           {
             !slotCardRef.current ? undefined :
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
-                {/* title */}
+                {/* slot name  */}
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: 'tomato', borderColor: 'tomato', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slotCardRef.current.slotName}</Text>
+                  <Text style={{ color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
+                    {slotCardRef.current.slotName}
+                  </Text>
                   <View style={{ flex: 1 }} />
                 </View>
+                {/* item power */}
+                <Text style={{ marginTop: Outline.Gap / 2, color: 'white', fontSize: FontSize.Normal }}>
+                  Item Power: {slotCardRef.current.itemPower}
+                </Text>
                 {/* stats */}
                 <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
                   {

@@ -547,7 +547,7 @@ function App(): JSX.Element {
                             {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
                           </Text>
                           <Text style={{ color: 'black', backgroundColor: color }}>
-                            {GetScoreOfStat(stat.name, true)}
+                            {GetScoreOfStat(stat.name, true)}/10
                           </Text>
                         </Text>
                       </View>

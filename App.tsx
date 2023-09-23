@@ -47,6 +47,7 @@ const OcrApiKey = 'c1376ba46dmshef599c0106ea350p115971jsn962df699e053' // melody
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json')
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json')
+const allStatsData: string[] = require('./assets/AllStats.json')
 
 const DefaultGoodStats = [
   'Core Skill Damage',
@@ -346,10 +347,10 @@ function App(): JSX.Element {
 
     // rate text
 
-    rateText.current = GetRateTypeByScore(totalScore.current)[1]
+    rateText.current = getRateTypeByScore(totalScore.current)[1]
   }, [])
 
-  const GetStatNameColorCompareWithBuild = useCallback((stat: string) => {
+  const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
     if (!slotCardRef.current)
       return 'white'
 
@@ -358,7 +359,7 @@ function App(): JSX.Element {
     return idx >= 0 ? 'tomato' : 'white'
   }, [])
 
-  const GetRateTypeByScore = useCallback((score: number) => {
+  const getRateTypeByScore = useCallback((score: number) => {
     score = RoundNumber(score, 1)
 
     if (score >= 1) // perfect
@@ -371,7 +372,7 @@ function App(): JSX.Element {
       return ['dodgerblue', 'TẦM THƯỜNG']
   }, [])
 
-  const GetScoreOfStat = useCallback((statName: string, x10: boolean) => {
+  const getScoreOfStat = useCallback((statName: string, x10: boolean) => {
     if (!statsForRating.current || statsForRating.current.length === 0)
       return 0
 
@@ -387,7 +388,7 @@ function App(): JSX.Element {
       return 0
   }, [])
   
-  const GetRateStatColor = useCallback((statName: string) => {
+  const getRateStatColor = useCallback((statName: string) => {
     if (!slotCardRef.current)
       return 'green'
 
@@ -397,14 +398,14 @@ function App(): JSX.Element {
     const stat = statsForRating.current.find(i => i[0].name === statName)
 
     if (stat !== undefined) {
-      return GetRateTypeByScore(stat[3])[0]
+      return getRateTypeByScore(stat[3])[0]
     }
     else
       return 'dimgray'
   }, [])
 
-  const GetRateTextColorForSuitBuild = useCallback(() => {
-    return GetRateTypeByScore(totalScore.current)[0]
+  const getRateTextColorForSuitBuild = useCallback(() => {
+    return getRateTypeByScore(totalScore.current)[0]
   }, [])
 
   const onGotOcrResultText = useCallback(async (result: string) => {
@@ -538,7 +539,7 @@ function App(): JSX.Element {
                 <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
                   {
                     slotCardRef.current.stats.map((stat, index) => {
-                      const color = GetRateStatColor(stat.name)
+                      const color = getRateStatColor(stat.name)
 
                       return <View key={index}>
                         <Text style={{ color, fontWeight: FontWeight.B500 }}>{stat.name}</Text>
@@ -548,7 +549,7 @@ function App(): JSX.Element {
                             {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
                           </Text>
                           <Text style={{ color: 'black', backgroundColor: color }}>
-                            {GetScoreOfStat(stat.name, true)}/10
+                            {getScoreOfStat(stat.name, true)}/10
                           </Text>
                         </Text>
                       </View>
@@ -570,7 +571,7 @@ function App(): JSX.Element {
         {
           // !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
           <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
-            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : GetRateTextColorForSuitBuild(), padding: 10, borderRadius: 10 }} >
+            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : getRateTextColorForSuitBuild(), padding: 10, borderRadius: 10 }} >
               <Text style={{ color: rateText.current === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
             </View>
             <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{totalScore.current >= 0 ? RoundNumber(totalScore.current * 10, 1) : 0}/10</Text>
@@ -594,7 +595,7 @@ function App(): JSX.Element {
                     <View style={{ gap: Outline.Gap }}>
                       {
                         slot.stats.map((stat, index) => {
-                          return <Text key={stat.name + index} style={{ color: GetStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]%</Text>
+                          return <Text key={stat.name + index} style={{ color: getStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]%</Text>
                         })
                       }
                     </View>

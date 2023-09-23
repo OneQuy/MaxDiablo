@@ -65,10 +65,10 @@ export const GenerateAllStatName = () => {
         }
     }
 
-    if (true)
+    // if (true)
         fs.writeFileSync('./assets/AllStats.json', JSON.stringify(arr, null, 1));
-    else
-        fs.writeFileSync('./assets/AllStats.json', JSON.stringify(arr));
+    // else
+    //     fs.writeFileSync('./assets/AllStats.json', JSON.stringify(arr));
 
     console.log('stat count', arr.length);
     console.log('loop', loop);

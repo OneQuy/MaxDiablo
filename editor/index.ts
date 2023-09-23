@@ -1,4 +1,5 @@
 import { Check } from "./Checker";
+import { GenerateAllStatName } from "./GenerateAllStatName";
 import { GenerateBuildData } from "./GenerateBuildData";
 import { GenerateClassData } from "./GenerateClassData";
 import { IsParamExist, LogGreen, LogRed } from "./Utils_NodeJS";
@@ -22,6 +23,10 @@ const main = () => {
             LogRed(res)
         else
             LogGreen('success')
+    }
+    else if (IsParamExist('stats')) {
+        const res = GenerateAllStatName()
+        LogGreen('success')
     }
 }
 

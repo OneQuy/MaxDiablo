@@ -29,6 +29,7 @@ import { IsExistedAsync } from './scr/common/FileUtils';
 import { statfs } from 'fs';
 import { RoundNumber } from './scr/common/Utils';
 import { stringify } from 'querystring';
+import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 // import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 // import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
@@ -158,7 +159,6 @@ function App(): JSX.Element {
     setStatus('Uploading...')
 
     const tempFilePath = 'tmpfile-' + Date.now()
-    FirebaseInit()
     const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
 
     if (uplodaErr) {
@@ -299,20 +299,20 @@ function App(): JSX.Element {
     // rate
 
     totalScore.current = 0
-    let logDiff = ''
+    // let logDiff = ''
 
     for (let i = 0; i < statsForRating.current.length; i++) {
       const [userStat, classs, classStat, score] = statsForRating.current[i]
 
       // log diff
 
-      if (classStat) {
-        if (userStat.min !== classStat.min)
-          logDiff += ('\nmin diff ' + userStat.min + ', ' + classStat.min + ', ' + userStat.name);
+      // if (classStat) {
+      //   if (userStat.min !== classStat.min)
+      //     logDiff += ('\nmin diff ' + userStat.min + ', ' + classStat.min + ', ' + userStat.name);
 
-        if (userStat.max !== classStat.max)
-          logDiff += ('\nmax diff ' + userStat.max + ', ' + classStat.max + ', ' + userStat.name);
-      }
+      //   if (userStat.max !== classStat.max)
+      //     logDiff += ('\nmax diff ' + userStat.max + ', ' + classStat.max + ', ' + userStat.name);
+      // }
 
       // this stat score
 
@@ -327,9 +327,9 @@ function App(): JSX.Element {
       totalScore.current += statsForRating.current[i][3]
     };
 
-    if (logDiff !== '') {
-      Alert.alert('Có khác biệt tham số với ClassData', logDiff)
-    }
+    // if (logDiff !== '') {
+    //   Alert.alert('Có khác biệt tham số với ClassData', logDiff)
+    // }
 
     // log
 
@@ -338,6 +338,7 @@ function App(): JSX.Element {
     });
 
     // total score / 10
+
     if (totalScore.current !== 0) {
       totalScore.current = totalScore.current / statsForRating.current.length
       console.log('total score', totalScore.current);
@@ -387,7 +388,7 @@ function App(): JSX.Element {
     else
       return 0
   }, [])
-  
+
   const getRateStatColor = useCallback((statName: string) => {
     if (!slotCardRef.current)
       return 'green'
@@ -410,10 +411,12 @@ function App(): JSX.Element {
 
   const onGotOcrResultText = useCallback(async (result: string) => {
     ocrResult.current = JSON.stringify(result)
-    const extractRes = ExtractSlotCard(result)
+    let extractRes = ExtractSlotCard(result)
 
     if (typeof extractRes === 'object') { // success
+      extractRes = HandleWeirdStatNames(extractRes)
       slotCardRef.current = FilterStats(extractRes)
+
       findSuitBuilds()
       rate()
 
@@ -475,6 +478,8 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
+    FirebaseInit()
+
     // onGotOcrResultText(demoText)
 
     // CheckAndInitAdmobAsync();
@@ -620,6 +625,43 @@ function App(): JSX.Element {
 }
 
 export default App;
+
+const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
+  let listWeirdTxt = ''
+
+  for (let i = 0; i < slot.stats.length; i++) {
+    const stat = slot.stats[i]
+
+    if (allStatsData.includes(stat.name))
+      continue
+
+    // can handle
+
+    if (stat.name.includes('Sike')) {
+      stat.name = stat.name.replace('Sike', 'Strike')
+      continue
+    }
+
+    // real weard stat
+    
+    listWeirdTxt += ('[' + stat.name + ']')
+    stat.name = 'hihi'
+  }
+
+  if (listWeirdTxt !== '') {
+    Alert.alert('Lỗi stat lạ (không phân tích được)!', listWeirdTxt)
+
+    // remove stat
+
+    slot.stats = slot.stats.filter(i => i.name !== 'hihi')
+
+    // send firebase
+
+    FirebaseDatabase_SetValueAsync('error_report/weird_stats/' + Date.now(), listWeirdTxt)
+  }
+
+  return slot
+}
 
 const FilterStats = (slot: SlotCard): SlotCard => {
   for (let i = 0; i < slot.stats.length; i++) {

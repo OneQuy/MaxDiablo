@@ -10,6 +10,7 @@ import { initializeApp } from 'firebase/app';
 const firebaseConfig = {
     apiKey: "AIzaSyBkiGyYzL0bNrFwffSo3dvo3LgIJwgzjXk",
     authDomain: "diablosenpai-a31ff.firebaseapp.com",
+    databaseURL: "https://diablosenpai-a31ff-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "diablosenpai-a31ff",
     storageBucket: "diablosenpai-a31ff.appspot.com",
     messagingSenderId: "658070458246",

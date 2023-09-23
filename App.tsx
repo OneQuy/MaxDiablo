@@ -39,7 +39,8 @@ import { stringify } from 'querystring';
 //   keywords: ['fashion', 'clothing'],
 // });
 
-const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
+// const OcrApiKey = '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a' // onequy
+const OcrApiKey = 'c1376ba46dmshef599c0106ea350p115971jsn962df699e053' // melodyinseconds
 // const OcrApiKey = 'cb787495e0msh402608403c87171p1d1da6jsn08135e305d01' // mquy
 // const OcrApiKey = 'b0212db20fmshab56ffa20297e43p19cf45jsn285094cfd071' // phuong ly 22/09
 

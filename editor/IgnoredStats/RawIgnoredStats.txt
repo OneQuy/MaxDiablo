@@ -1,0 +1,67 @@
+[7.0 - 14.0]% Healing Received
+[60 - 143] Life On Kill
+[24.5 - 45.5]% Lightning Resistance
+[24.5 - 45.5]% Shadow Resistance
+[24.5 - 45.5]% Cold Resistance
+[5.0 - 12.0]% Crowd Control Duration
+[24.5 - 45.5]% Fire Resistance
+[60 - 143] Life Regeneration while Not Damaged Recently
+[24.5 - 45.5]% Poison Resistance
+[14.0 - 21.0]% Ultimate Skill Damage
+[14.0 - 28.0]% Brawling Skill Damage 
+[21.0 - 35.0]% Damage with Skills that Swap to New Weapons
+[10.5 - 17.5]% Damage with Two-Handed Slashing Weapons
+[7.0 - 14.0]% Overpower Damage with Two-Handed Bludgeoning Weapons
+[14.0 - 28.0]% Weapon Mastery Skill Damage
+[10.5 - 17.5]% Damage with Dual-Wielded Weapons
+[10.5 - 17.5]% Damage with Two-Handed Bludgeoning Weapons
+[14.0 - 28.0]% Companion Skill Damage
+[10.5 - 17.5]% Damage while Shapeshifted
+[21.0 - 42.0]% Overpower Damage with Werebear Skills
+[10.5 - 17.5]% Poison Damage
+[10.5 - 17.5]% Werebear Skill Damage
+[10.5 - 17.5]% Damage while in Human Form
+[10.5 - 17.5]% Earth Skill Damage
+[10.5 - 17.5]% Lightning Damage
+[10.5 - 17.5]% Physical Damage
+[10.5 - 17.5]% Storm Skill Damage
+[10.5 - 17.5]% Werewolf Skill Damage
+[10.5 - 17.5]% Blood Skill Damage
+[10.5 - 17.5]% Bone Skill Damage
+[7.0 - 14.0]% Damage for 4 Seconds After Picking Up a Blood Orb
+[10.5 - 17.5]% Darkness Skill Damage
+[17.5 - 31.5]% Maximum Minion Life
+[10.5 - 17.5]% Physical Damage
+[10.5 - 17.5]% Shadow Damage
+[10.5 - 17.5]% Summoning Skill Damage
+[10.5 - 17.5]% Cutthroat Skill Damage
+[10.5 - 17.5]% Damage with Dual-Wielded Weapons
+[10.5 - 17.5]% Damage with Ranged Weapons
+[21.0 - 35.0]% Damage with Skills that Swap to New Weapons
+[10.5 - 17.5]% Imbued Skill Damage
+[14 - 28]% Imbuement Skill Damage
+[10.5 - 17.5]% Marksman Skill Damage
+[10.5 - 17.5]% Physical Damage
+[10.5 - 17.5]% Poison Damage
+[10.5 - 17.5]% Shadow Damage
+[10.5 - 17.5]% Trap Skill Damage
+[10.5 - 17.5]% Cold Damage
+[14.0 - 28.0]% Conjuration Skill Damage
+[10.5 - 17.5]% Fire Damage
+[10.5 - 17.5]% Frost Skill Damage
+[10.5 - 17.5]% Lightning Damage
+[10.5 - 17.5]% Pyromancy Skill Damage
+[10.5 - 17.5]% Shock Skill Damage
+Lucky Hit: Up to a [13.0 - 20.0]% Chance to Slow
+[21.0 - 35.0]% Damage to Injured Enemies
+Lucky Hit: Up to a 5% Chance to Heal [523 - 941] Life
+[5.0 - 12.0]% Control Impaired Duration Reduction
+[14.0 - 28.0]% Damage for 4 seconds After Killing an Elite
+[3.0 - 5.8]% Dodge Chance
+[7.0 - 14.0]% Healing Received
+[60 - 143] Life Regeneration while Not Damaged Recently
+[12.0 - 26.0]% Potion Drop Rate
+[5.0 - 12.0]% Shrine Buff Duration
+[13.0 - 20.0]% Slow Duration Reduction
+[4.9 - 10.5]% Dodge Chance Against Distant Enemies
+[60 - 143] Life Regeneration while Not Damaged Recently

@@ -2,6 +2,7 @@ import { Check } from "./Checker";
 import { GenerateAllStatName } from "./GenerateAllStatName";
 import { GenerateBuildData } from "./GenerateBuildData";
 import { GenerateClassData } from "./GenerateClassData";
+import { GenerateIgnoredStats } from "./GenerateIgnoredStats";
 import { IsParamExist, LogGreen, LogRed } from "./Utils_NodeJS";
 
 const main = () => {
@@ -25,7 +26,11 @@ const main = () => {
             LogGreen('success')
     }
     else if (IsParamExist('stats')) {
-        const res = GenerateAllStatName()
+        GenerateAllStatName()
+        LogGreen('success')
+    }
+    else if (IsParamExist('ignoredstats')) {
+        GenerateIgnoredStats()
         LogGreen('success')
     }
 }

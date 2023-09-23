@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.IsChar = exports.GenerateClassData = exports.GenerateSlot = void 0;
+exports.GetStatFromTypeOfClassData = exports.IsChar = exports.GenerateClassData = exports.GenerateSlot = void 0;
 var Types_1 = require("./Types");
 var Utils_NodeJS_1 = require("./Utils_NodeJS");
 var node_html_parser_1 = require("node-html-parser");
@@ -36,7 +36,7 @@ var GenerateSlot = function (text) {
             classes.push(curClass);
         }
         else { // this line is stat
-            var stat = GetStat(line);
+            var stat = (0, exports.GetStatFromTypeOfClassData)(line);
             if (stat)
                 curClass.stats.push(stat);
             else {
@@ -118,7 +118,7 @@ var FirstCharIdx = function (line) {
             break;
     return firstCharIdx;
 };
-var GetStat = function (line) {
+var GetStatFromTypeOfClassData = function (line) {
     // [4.4 - 10.0]% Lucky Hit Chance while You Have a Barrier
     // [358 - 776] Maximum Life
     // [7.0 - 14.0]% Damage for 4 Seconds After Picking Up a Blood Orb
@@ -158,3 +158,4 @@ var GetStat = function (line) {
         value: -1
     };
 };
+exports.GetStatFromTypeOfClassData = GetStatFromTypeOfClassData;

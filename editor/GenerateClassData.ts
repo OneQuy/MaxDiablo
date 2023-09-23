@@ -46,7 +46,7 @@ export const GenerateSlot = (text: string): Classs[] | string => {
             classes.push(curClass)
         }
         else { // this line is stat
-            const stat = GetStat(line)
+            const stat = GetStatFromTypeOfClassData(line)
 
             if (stat)
                 curClass.stats.push(stat)
@@ -155,7 +155,7 @@ const FirstCharIdx = (line: string): number => {
     return firstCharIdx
 }
 
-const GetStat = (line: string): Stat | undefined => {
+export const GetStatFromTypeOfClassData = (line: string): Stat | undefined => {
     // [4.4 - 10.0]% Lucky Hit Chance while You Have a Barrier
     // [358 - 776] Maximum Life
     // [7.0 - 14.0]% Damage for 4 Seconds After Picking Up a Blood Orb

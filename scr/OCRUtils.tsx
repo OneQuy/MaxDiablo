@@ -184,6 +184,21 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
         else if (floats.length === 1) {
             min = floats[0]
             max = min
+            
+            // value not between range & range only have 1 value, must split the range. 
+            // Ex: +2 Ranks of Incinerate [23] (to [2-3])
+            // Ex: [2.310] (to [2.3-10]) // ?? todo
+            // Ex: [710.5] (to [7-10.5]) // ?? todo
+
+            if (value !== min && min >= 11) {
+                const numS = min.toString()
+
+                const minS = numS.substring(0, Math.floor(numS.length / 2))
+                const maxS = numS.substring(minS.length)
+
+                min = parseFloat(minS)
+                max = parseFloat(maxS)
+            }            
         }
     }
 

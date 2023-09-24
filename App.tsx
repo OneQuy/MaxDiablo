@@ -373,16 +373,14 @@ function App(): JSX.Element {
     return idx >= 0 ? 'tomato' : 'white'
   }, [])
 
-  const getRateTypeByScore = useCallback((score: number) => {
-    score = RoundNumber(score, 1)
-
-    if (score >= 1) // perfect
+  const getRateTypeByScore = useCallback((rawFloatScore: number) => {
+    rawFloatScore = RoundNumber(rawFloatScore, 2)
+    
+    if (rawFloatScore >= 1) // perfect
       return ['tomato', 'TUYỆT PHẨM!']
-    // else if (score >= RoundNumber(2 / 3, 1)) // good
-    else if (score >= 0.75) // good
+    else if (rawFloatScore >= 0.75) // good
       return ['gold', 'RẤT TỐT']
-    // else if (score >= RoundNumber(1 / 3, 1)) // fair
-    else if (score >= 0.5) // fair
+    else if (rawFloatScore >= 0.5) // fair
       return ['moccasin', 'TỐT']
     else // trash
       return ['dodgerblue', 'TẦM THƯỜNG']

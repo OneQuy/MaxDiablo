@@ -139,6 +139,9 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
     else if (nameStat.includes('Damage Per Second')) {
         return undefined
     }
+    else if (nameStat === 'Life') { // +15% Life [10-20]%
+        return undefined
+    }
 
     // Golems Inherit +4.4% of Your Thorns []%
 

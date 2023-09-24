@@ -1,7 +1,7 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
-const isLog = true
+const isLog = false
 
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     for (let i = 0; i < lines.length; i++) {
@@ -145,6 +145,7 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
     const innerNum = ExtractAllNumbersInText(nameStat)
 
     if (innerNum.length > 0) {
+        nameStat = nameStat.replace('+' + innerNum[0].toString(), 'X')
         nameStat = nameStat.replace(innerNum[0].toString(), 'X')
     }
 

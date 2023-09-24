@@ -55,7 +55,7 @@ test('text 3', () => {
 
 test('text 4', () => {
   const text = 'ODD SIGNET\nAncestral Rare Ring\n792 Item Power\n• 25.0% Cold Resistance [25.0]%\n• 25.0% Lightning Resistance [25.01%\n• +497 Maximum Life [331-718]\n+ +17.5% Critical Strike Damage [10.5 -\n17.5]%\n+ +14.0% Barrier Generation [7.0 -\n14.01%\n• Golems Inherit +4.4% of Your Thoms\n[4.2 - 7.0]%\nEmpty Vicious malignant socket\nTake\nLink\nSHIFT\nTSHIFT Compare\nRequires Level 80\nSell Value: 24,831'
-  const expected = '{"slotName":"Ring","itemPower":792,"stats":[{"name":"Cold Resistance","min":25,"max":25,"isPercent":true,"value":25},{"name":"Lightning Resistance","min":25,"max":25,"isPercent":true,"value":25},{"name":"Maximum Life","min":331,"max":718,"isPercent":false,"value":497},{"name":"Critical Strike Damage","min":10.5,"max":17.5,"isPercent":true,"value":17.5},{"name":"Barrier Generation","min":7,"max":14,"isPercent":true,"value":14},{"name":"Golems Inherit +X% of Your Thorns","min":4.2,"max":7,"isPercent":true,"value":4.4}]}'
+  const expected = '{"slotName":"Ring","itemPower":792,"stats":[{"name":"Cold Resistance","min":25,"max":25,"isPercent":true,"value":25},{"name":"Lightning Resistance","min":25,"max":25,"isPercent":true,"value":25},{"name":"Maximum Life","min":331,"max":718,"isPercent":false,"value":497},{"name":"Critical Strike Damage","min":10.5,"max":17.5,"isPercent":true,"value":17.5},{"name":"Barrier Generation","min":7,"max":14,"isPercent":true,"value":14},{"name":"Golems Inherit X% of Your Thorns","min":4.2,"max":7,"isPercent":true,"value":4.4}]}'
 
   const card = ExtractSlotCard(text)
 

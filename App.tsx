@@ -288,6 +288,8 @@ function App(): JSX.Element {
             Alert.alert('Errorrrr   ' + stat.name + ', ' + classs.name)
             return
           }
+
+          break
         }
       }
     }
@@ -323,7 +325,6 @@ function App(): JSX.Element {
       if (userStat.max === userStat.min)
         statsForRating.current[i][3] = 1
       else
-
         statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
 
       // sum score
@@ -343,10 +344,14 @@ function App(): JSX.Element {
 
     // total score / 10
 
-    if (totalScore.current !== 0) {
-      totalScore.current = totalScore.current / statsForRating.current.length
-      // totalScore.current = totalScore.current / 4
-      console.log('total score', totalScore.current);
+    if (totalScore.current > 0) {
+      if (totalScore.current > 4)
+        totalScore.current = 4
+
+      // totalScore.current = totalScore.current / statsForRating.current.length
+      console.log('total score of 4 = ', totalScore.current);
+      console.log('final total score = ', totalScore.current / 4);
+      totalScore.current = totalScore.current / 4
     }
     else
       totalScore.current = -1
@@ -370,9 +375,11 @@ function App(): JSX.Element {
 
     if (score >= 1) // perfect
       return ['tomato', 'TUYỆT PHẨM!']
-    else if (score >= RoundNumber(2 / 3, 1)) // good
+    // else if (score >= RoundNumber(2 / 3, 1)) // good
+    else if (score >= 0.75) // good
       return ['gold', 'RẤT TỐT']
-    else if (score >= RoundNumber(1 / 3, 1)) // fair
+    // else if (score >= RoundNumber(1 / 3, 1)) // fair
+    else if (score >= 0.5) // fair
       return ['moccasin', 'TỐT']
     else // trash
       return ['dodgerblue', 'TẦM THƯỜNG']
@@ -631,6 +638,7 @@ function App(): JSX.Element {
 
 export default App;
 
+// report fb & remove from stats
 const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
   let listWeirdTxt = ''
 
@@ -659,6 +667,7 @@ const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
   return slot
 }
 
+// remove from stats
 const FilterStats = (slot: SlotCard): SlotCard => {
   for (let i = 0; i < slot.stats.length; i++) {
     for (let a = i + 1; a < slot.stats.length; a++) {

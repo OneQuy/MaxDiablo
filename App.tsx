@@ -382,8 +382,10 @@ function App(): JSX.Element {
       return ['gold', 'RẤT TỐT']
     else if (rawFloatScore >= 0.5) // fair
       return ['moccasin', 'TỐT']
+    else if (rawFloatScore >= 0.25) // normal
+      return ['paleturquoise', 'BÌNH THƯỜNG']
     else // trash
-      return ['dodgerblue', 'TẦM THƯỜNG']
+      return ['dodgerblue', 'RÁC']
   }, [])
 
   const getScoreOfStat = useCallback((statName: string, x10: boolean) => {

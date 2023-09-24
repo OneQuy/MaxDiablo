@@ -717,7 +717,7 @@ const FilterStats = (slot: SlotCard): SlotCard => {
 
 const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {
   //   1 hand weapon : wand, sword, dagger, axe, mace
-  //   2 hand weapon: crossbow, twohandedmace, twohandedsword, staff, bow, scythe, polearm
+  //   2 hand weapon: crossbow, twohandedmace, twohandedsword, staff, bow, scythe, polearm, twohandedaxe
   //   offhand: focus, shield, totem
 
   switch (name) {
@@ -735,6 +735,7 @@ const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {
     case SlotName.Bow:
     case SlotName.Scythe:
     case SlotName.Polearm:
+    case SlotName.TwoHandedAxe:
       return SlotName.H2Weapon
 
     case SlotName.Focus:

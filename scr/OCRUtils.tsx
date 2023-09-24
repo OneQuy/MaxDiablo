@@ -301,6 +301,8 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
                 slotName = SlotName.TwoHandedMace
             else if (line.includes('Chest') && lines[index + 1].includes('Armor'))
                 slotName = SlotName.ChestArmor
+            else if (line.includes('Two') && lines[index + 1].includes('Axe'))
+                slotName = SlotName.TwoHandedAxe
         }
 
         if (slotName) {

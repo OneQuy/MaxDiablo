@@ -375,7 +375,7 @@ function App(): JSX.Element {
 
   const getRateTypeByScore = useCallback((rawFloatScore: number) => {
     rawFloatScore = RoundNumber(rawFloatScore, 2)
-    
+
     if (rawFloatScore >= 1) // perfect
       return ['tomato', 'TUYỆT PHẨM!']
     else if (rawFloatScore >= 0.75) // good
@@ -445,8 +445,8 @@ function App(): JSX.Element {
         Alert.alert(
           'Lỗi không thể rate hình',
           'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
-          'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' + 
-          '* Advanced Tooltip Compare\n' + 
+          'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' +
+          '* Advanced Tooltip Compare\n' +
           '* Advanced Tooltip Information')
       }
       else if (extractRes === 'unique') {
@@ -689,6 +689,15 @@ const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
 // remove from stats
 const FilterStats = (slot: SlotCard): SlotCard => {
   for (let i = 0; i < slot.stats.length; i++) {
+    // remove 1 range stats
+    
+    if (slot.stats[i].min === slot.stats[i].max) {
+      slot.stats[i].name = 'hihi'
+      continue
+    }
+
+    // remove duplicate stats
+
     for (let a = i + 1; a < slot.stats.length; a++) {
       if (slot.stats[i].name === slot.stats[a].name) {
         slot.stats[i].name = 'hihi'

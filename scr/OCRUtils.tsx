@@ -1,7 +1,7 @@
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
 
-const isLog = false
+var isLog = false
 
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     for (let i = 0; i < lines.length; i++) {
@@ -207,13 +207,19 @@ function FixCloseSqrBracket(text: string): string {
     return text
 }
 
-export function ExtractSlotCard(text: string): SlotCard | string {
+export function ExtractSlotCard(text: string, forceLog = false): SlotCard | string {
     // console.log('----------------');
     // console.log(text);
     // console.log('----------------');
 
+    if (forceLog)
+        isLog = true
+
     if (!text)
         return 'text to regconize is null'
+
+    if (text.indexOf('[') < 0)
+        return 'miss brackets'
 
     // fix miss close sqr bracket line
 

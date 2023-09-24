@@ -96,7 +96,7 @@ function App(): JSX.Element {
 
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
     const txt = await Clipboard.getString()
-    const res = ExtractSlotCard(txt)
+    const res = ExtractSlotCard(txt, true)
 
     console.log(JSON.stringify(res))
     console.log(JSON.stringify(res, null, 1));
@@ -438,9 +438,16 @@ function App(): JSX.Element {
     else { // fail
       setStatus('')
 
-      Alert.alert(
-        'Lỗi không thể phân tích hình',
-        'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + extractRes)
+      if (extractRes === 'miss brackets') {
+        Alert.alert(
+          'Lỗi không thể rate hình',
+          'Vui lòng bật setting hiển thị range min/max cho các thông số')
+      }
+      else { // other errors
+        Alert.alert(
+          'Lỗi không thể phân tích hình',
+          'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + extractRes)
+      }
     }
   }, [])
 

@@ -444,7 +444,10 @@ function App(): JSX.Element {
       if (extractRes === 'miss brackets') {
         Alert.alert(
           'Lỗi không thể rate hình',
-          'Vui lòng bật setting hiển thị range min/max cho các thông số')
+          'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
+          'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' + 
+          '* Advanced Tooltip Compare\n' + 
+          '* Advanced Tooltip Information')
       }
       else { // other errors
         Alert.alert(

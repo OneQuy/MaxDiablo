@@ -401,7 +401,7 @@ function App(): JSX.Element {
         return stat[3]
     }
     else
-      return 0
+      return -1
   }, [])
 
   const getRateStatColor = useCallback((statName: string) => {
@@ -585,7 +585,7 @@ function App(): JSX.Element {
                             {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
                           </Text>
                           <Text style={{ color: 'black', backgroundColor: color }}>
-                            {scoreX10 > 0 ? `${scoreX10}/10` : ''}
+                            {scoreX10 >= 0 ? `${scoreX10}/10` : ''}
                           </Text>
                         </Text>
                       </View>

@@ -167,7 +167,7 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
     return nameStat
 }
 
-function ExtractRange(line: string): [number, number] | undefined {
+function ExtractRange(line: string, value: number): [number, number] | undefined {
     const openSqrBracketIdx = line.indexOf('[')
     const closeSqrBracketIdx = line.indexOf(']')
     let min = -1
@@ -187,7 +187,13 @@ function ExtractRange(line: string): [number, number] | undefined {
         }
     }
 
-    if (!IsNumType(min) || !IsNumType(max) || min === -1 || max === -1 || min > max) {
+    if (!IsNumType(min) || 
+        !IsNumType(max) || 
+        min === -1 || 
+        max === -1 || 
+        min > max ||
+        value < min ||
+        value > max) {
         if (isLog)
             console.log('[log extract] cant get range of line: ' + line);
 
@@ -416,7 +422,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
         // range
 
-        const range = ExtractRange(line)
+        const range = ExtractRange(line, value)
 
         if (!range) {
             continue

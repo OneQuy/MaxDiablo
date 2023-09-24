@@ -385,7 +385,7 @@ function App(): JSX.Element {
     else if (rawFloatScore >= 0.25) // normal
       return ['paleturquoise', 'BÌNH THƯỜNG']
     else // trash
-      return ['dodgerblue', 'RÁC']
+      return ['dodgerblue', 'RÁC RƯỞI']
   }, [])
 
   const getScoreOfStat = useCallback((statName: string, x10: boolean) => {

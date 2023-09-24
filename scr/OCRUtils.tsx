@@ -38,12 +38,6 @@ function FixLinesBeforeMerge(lines: string[]): string[] {
                 lines[index] = line
             }
         }
-
-        // add ]
-        // Bone Skills (21.0-35.0%
-        // +82 Intelligence +(76-104
-
-        
     }
 
     return lines;

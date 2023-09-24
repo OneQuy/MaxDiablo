@@ -22,6 +22,33 @@ function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     return lines
 }
 
+function FixLinesBeforeMerge(lines: string[]): string[] {
+    for (let index = 1; index < lines.length; index++) {
+        let line = lines[index].trim();
+
+        // fix ( to [
+        // Ex: Bone Skills (21.0-35.0%
+        // Ex: +82 Intelligence +(76-104
+        // Ex: +33.0 % Critical Strike Damage (21.0- 35.0]%
+        const openBracketIdx = line.indexOf('(')
+        
+        if (openBracketIdx >= 0 && openBracketIdx + 1 < line.length) {
+            if (IsNumOrDotChar(line[openBracketIdx + 1])) {
+                line = StringReplaceCharAt(line, openBracketIdx, '[')
+                lines[index] = line
+            }
+        }
+
+        // add ]
+        // Bone Skills (21.0-35.0%
+        // +82 Intelligence +(76-104
+
+        
+    }
+
+    return lines;
+}
+
 function FixLinesAfterMerge(lines: string[]): string[] {
     for (let index = 1; index < lines.length; index++) {
         let line = lines[index].trim();
@@ -355,6 +382,11 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
     // remove [4]. Ex: +16.0% Damage for 4 Seconds After Dodging an Attack [14.0-21.0]% [4]
 
     lines = RemoveTextAfterCloseSquareBracket(lines)
+
+
+    // fix lines after merge
+
+    lines = FixLinesBeforeMerge(lines)
 
     // merge square bracket line
 

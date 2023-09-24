@@ -270,11 +270,14 @@ function App(): JSX.Element {
     for (let istat = 0; istat < userSlot.stats.length; istat++) {
       const stat = userSlot.stats[istat]
 
+      // ingored stat
+
       if (stat.name.includes('Resistance') ||
         ignoredStats.includes(stat.name)) {
-        console.log('ignoredddddddddd', stat.name);
         continue
       }
+
+      // find in classes
 
       for (let iclass = 0; iclass < slotOfClasses.classes.length; iclass++) {
         const classs = slotOfClasses.classes[iclass]
@@ -564,6 +567,7 @@ function App(): JSX.Element {
                   {
                     slotCardRef.current.stats.map((stat, index) => {
                       const color = getRateStatColor(stat.name)
+                      const scoreX10 = getScoreOfStat(stat.name, true)
 
                       return <View key={index}>
                         <Text style={{ color, fontWeight: FontWeight.B500 }}>{stat.name}</Text>
@@ -573,7 +577,7 @@ function App(): JSX.Element {
                             {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
                           </Text>
                           <Text style={{ color: 'black', backgroundColor: color }}>
-                            {getScoreOfStat(stat.name, true)}/10
+                            {scoreX10 > 0 ? `${scoreX10}/10` : ''}
                           </Text>
                         </Text>
                       </View>

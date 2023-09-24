@@ -211,10 +211,6 @@ function FixCloseSqrBracket(text: string): string {
 }
 
 export function ExtractSlotCard(text: string, forceLog = false): SlotCard | string {
-    // console.log('----------------');
-    // console.log(text);
-    // console.log('----------------');
-
     if (forceLog)
         isLog = true
 
@@ -267,7 +263,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
     // find name slot
 
     let slotName: SlotName | undefined = undefined
-    const names = Object.values(SlotName)
+    let indexLineOfSlotName = -1
 
     for (let index = 1; index < lines.length; index++) {
         const line = lines[index]
@@ -286,13 +282,17 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
                 slotName = SlotName.ChestArmor
         }
 
-        if (slotName)
+        if (slotName) {
+            indexLineOfSlotName = index
             break
+        }
 
         // loop all names
 
-        for (let i = 0; i < names.length; i++) {
-            const namee = names[i]
+        const allSlotNames = Object.values(SlotName)
+
+        for (let i = 0; i < allSlotNames.length; i++) {
+            const namee = allSlotNames[i]
 
             if (line.includes(namee)) {
                 slotName = namee as SlotName
@@ -300,13 +300,25 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
             }
         }
 
-        if (slotName)
+        if (slotName) {
+            indexLineOfSlotName = index
             break
+        }
     }
 
     if (!slotName) {
         return 'cant extract SlotName'
     }
+
+    // is Unique?
+
+    if (lines[indexLineOfSlotName].toLowerCase().includes('unique') ||
+        (indexLineOfSlotName > 0 && lines[indexLineOfSlotName - 1].toLowerCase().includes('unique')) ||
+        (indexLineOfSlotName + 1 < lines.length && lines[indexLineOfSlotName + 1].toLowerCase().includes('unique'))) {
+        return 'unique'            
+    }
+
+    // log
 
     if (isLog) {
         console.log('trước merge================');

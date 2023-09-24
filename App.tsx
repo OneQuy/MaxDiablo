@@ -449,6 +449,11 @@ function App(): JSX.Element {
           '* Advanced Tooltip Compare\n' + 
           '* Advanced Tooltip Information')
       }
+      else if (extractRes === 'unique') {
+        Alert.alert(
+          'Ooops!',
+          'Không thể rate item UNIQUE. Vui lòng chọn hình khác!')
+      }
       else { // other errors
         Alert.alert(
           'Lỗi không thể phân tích hình',

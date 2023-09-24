@@ -279,5 +279,8 @@
  "Basic Skill Damage",
  "Lucky Hit: Up to X% Chance to Execute Injured Non-Elites",
  "Core Skill Damage",
- "Resistance to All Elements"
+ "Resistance to All Elements",
+ "Damage for X Seconds After Dodging an Attack",
+ "Max Evade Charges",
+ "Damage to Healthy Enemies"
 ]

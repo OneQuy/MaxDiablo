@@ -351,10 +351,10 @@ function App(): JSX.Element {
       if (totalScore.current > 4)
         totalScore.current = 4
 
-      // totalScore.current = totalScore.current / statsForRating.current.length
       console.log('total score of 4 = ', totalScore.current);
       console.log('final total score = ', totalScore.current / 4);
       totalScore.current = totalScore.current / 4
+      // totalScore.current = totalScore.current / statsForRating.current.length
     }
     else
       totalScore.current = -1
@@ -690,7 +690,7 @@ const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
 const FilterStats = (slot: SlotCard): SlotCard => {
   for (let i = 0; i < slot.stats.length; i++) {
     // remove 1 range stats
-    
+
     if (slot.stats[i].min === slot.stats[i].max) {
       slot.stats[i].name = 'hihi'
       continue

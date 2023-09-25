@@ -66,7 +66,9 @@ function App(): JSX.Element {
   const rateText = useRef('...')
   const suitBuilds = useRef<[Tier, Build, SlotCard, number][]>()
   const statsForRating = useRef<[Stat, Classs | undefined, Stat | undefined, number][]>([]) // user stat, class, class data stat, rate score
-  const totalScore = useRef(-1)
+  const rateScore_Class = useRef(-1)
+  const rateScore_Class_BuildAbove3Stats = useRef(-1) 
+  const rateScore_Class_BuildAll = useRef(-1) 
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -308,7 +310,7 @@ function App(): JSX.Element {
 
     // rate
 
-    totalScore.current = 0
+    rateScore_Class.current = 0
     // let logDiff = ''
 
     for (let i = 0; i < statsForRating.current.length; i++) {
@@ -333,7 +335,7 @@ function App(): JSX.Element {
 
       // sum score
 
-      totalScore.current += statsForRating.current[i][3]
+      rateScore_Class.current += statsForRating.current[i][3]
     };
 
     // if (logDiff !== '') {
@@ -348,21 +350,21 @@ function App(): JSX.Element {
 
     // total score / 10
 
-    if (totalScore.current > 0) {
-      if (totalScore.current > 4)
-        totalScore.current = 4
+    if (rateScore_Class.current > 0) {
+      if (rateScore_Class.current > 4)
+        rateScore_Class.current = 4
 
-      console.log('total score of 4 = ', totalScore.current);
-      console.log('final total score = ', totalScore.current / 4);
-      totalScore.current = totalScore.current / 4
+      console.log('total score of 4 = ', rateScore_Class.current);
+      console.log('final total score = ', rateScore_Class.current / 4);
+      rateScore_Class.current = rateScore_Class.current / 4
       // totalScore.current = totalScore.current / statsForRating.current.length
     }
     else
-      totalScore.current = -1
+      rateScore_Class.current = -1
 
     // rate text
 
-    rateText.current = getRateTypeByScore(totalScore.current)[1]
+    rateText.current = getRateTypeByScore(rateScore_Class.current)[1]
   }, [])
 
   const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -422,7 +424,7 @@ function App(): JSX.Element {
   }, [])
 
   const getRateTextColorForSuitBuild = useCallback(() => {
-    return getRateTypeByScore(totalScore.current)[0]
+    return getRateTypeByScore(rateScore_Class.current)[0]
   }, [])
 
   const onGotOcrResultText = useCallback(async (result: string) => {
@@ -611,7 +613,7 @@ function App(): JSX.Element {
             <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : getRateTextColorForSuitBuild(), padding: 10, borderRadius: 10 }} >
               <Text style={{ color: rateText.current === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
             </View>
-            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{totalScore.current >= 0 ? RoundNumber(totalScore.current * 10, 1) : 0}/10</Text>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class.current >= 0 ? RoundNumber(rateScore_Class.current * 10, 1) : 0}/10</Text>
           </View>
         }
         {/* builds suit */}

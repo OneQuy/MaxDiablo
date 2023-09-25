@@ -67,8 +67,8 @@ function App(): JSX.Element {
   const suitBuilds = useRef<[Tier, Build, SlotCard, number][]>()
   const statsForRating = useRef<[Stat, Classs | undefined, Stat | undefined, number][]>([]) // user stat, class, class data stat, rate score
   const rateScore_Class = useRef(-1)
-  const rateScore_Class_BuildAbove3Stats = useRef(-1) 
-  const rateScore_Class_BuildAll = useRef(-1) 
+  const rateScore_Class_BuildAbove3Stats = useRef(-1)
+  const rateScore_Class_BuildAll = useRef(-1)
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -148,6 +148,11 @@ function App(): JSX.Element {
     ocrResult.current = ''
     suitBuilds.current = undefined
     rateText.current = '...'
+    rateScore_Class.current = 0
+    rateScore_Class_BuildAbove3Stats.current = 0
+    rateScore_Class_BuildAll.current = 0
+
+    setStatus('Uploading...')
 
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
@@ -158,8 +163,6 @@ function App(): JSX.Element {
 
       return
     }
-
-    setStatus('Uploading...')
 
     const tempFilePath = 'tmpfile-' + Date.now()
     const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
@@ -198,7 +201,7 @@ function App(): JSX.Element {
     // find suits
 
     suitBuilds.current = []
-    const linesMatchIsGood = 3
+    const linesMatchIsGood = 1
 
     for (let itier = 0; itier < buildsData.length; itier++) {
       const tier = buildsData[itier]
@@ -310,21 +313,10 @@ function App(): JSX.Element {
 
     // rate
 
-    rateScore_Class.current = 0
-    // let logDiff = ''
+    let totalScore_Class = 0
 
     for (let i = 0; i < statsForRating.current.length; i++) {
       const [userStat, classs, classStat, score] = statsForRating.current[i]
-
-      // log diff
-
-      // if (classStat) {
-      //   if (userStat.min !== classStat.min)
-      //     logDiff += ('\nmin diff ' + userStat.min + ', ' + classStat.min + ', ' + userStat.name);
-
-      //   if (userStat.max !== classStat.max)
-      //     logDiff += ('\nmax diff ' + userStat.max + ', ' + classStat.max + ', ' + userStat.name);
-      // }
 
       // this stat score
 
@@ -335,12 +327,8 @@ function App(): JSX.Element {
 
       // sum score
 
-      rateScore_Class.current += statsForRating.current[i][3]
+      totalScore_Class += statsForRating.current[i][3]
     };
-
-    // if (logDiff !== '') {
-    //   Alert.alert('Có khác biệt tham số với ClassData', logDiff)
-    // }
 
     // log
 
@@ -348,23 +336,61 @@ function App(): JSX.Element {
       console.log(userStat.name, classs?.name, score);
     });
 
-    // total score / 10
+    // calc rateScore_Class
 
-    if (rateScore_Class.current > 0) {
-      if (rateScore_Class.current > 4)
-        rateScore_Class.current = 4
+    if (totalScore_Class > 4) {
+      totalScore_Class = 4
 
-      console.log('total score of 4 = ', rateScore_Class.current);
-      console.log('final total score = ', rateScore_Class.current / 4);
-      rateScore_Class.current = rateScore_Class.current / 4
-      // totalScore.current = totalScore.current / statsForRating.current.length
+      Alert.alert('Wow', 'totalScore_Class more than 4!')
     }
-    else
-      rateScore_Class.current = -1
+
+    console.log('totalScore_Class of 4 = ', totalScore_Class);
+    console.log('totalScore_Class / 4 = ', totalScore_Class / 4);
+    rateScore_Class.current = totalScore_Class / 4
+    // rateScore_Class.current = totalScore / statsForRating.current.length
 
     // rate text
 
     rateText.current = getRateTypeByScore(rateScore_Class.current)[1]
+
+    // calc rateScore_Class_BuildAbove3Stats & rateScore_Class_BuildAll
+
+    if (suitBuilds.current && suitBuilds.current.length > 0) {
+      // count
+
+      let totalScore_all = 0
+      let totalScore_above3stats = 0
+
+      let count_above3stats = 0
+      let count_all = suitBuilds.current.length
+
+      for (let i = 0; i < suitBuilds.current.length; i++) {
+        let matchStatCount = suitBuilds.current[i][3]
+        let score = Math.min(1, matchStatCount / 4)
+
+        totalScore_all += score
+
+        if (matchStatCount >= 3) { // from and above 3
+          totalScore_above3stats += score
+          count_above3stats++
+        }
+      }
+
+      // calc rateScore_Class_BuildAbove3Stats
+
+      rateScore_Class_BuildAbove3Stats.current = (totalScore_above3stats + totalScore_Class)/ (count_above3stats + 4)
+
+      // calc rateScore_Class_BuildAll
+
+      rateScore_Class_BuildAll.current = (totalScore_all + totalScore_Class) / (count_all + 4)
+    }
+    else {
+      rateScore_Class_BuildAbove3Stats.current = 0
+      rateScore_Class_BuildAll.current = 0
+    }
+
+    console.log('rateScore_Class_BuildAbove3Stats', rateScore_Class_BuildAbove3Stats.current);
+    console.log('rateScore_Class_BuildAll', rateScore_Class_BuildAll.current);
   }, [])
 
   const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -614,8 +640,20 @@ function App(): JSX.Element {
               <Text style={{ color: rateText.current === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
             </View>
             <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class.current >= 0 ? RoundNumber(rateScore_Class.current * 10, 1) : 0}/10</Text>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAbove3Stats.current >= 0 ? RoundNumber(rateScore_Class_BuildAbove3Stats.current * 10, 1) : 0}/10</Text>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAll.current >= 0 ? RoundNumber(rateScore_Class_BuildAll.current * 10, 1) : 0}/10</Text>
           </View>
         }
+        {/* dev btns */}
+        <TouchableOpacity style={{ marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
+          <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
+          <Text style={{ color: 'gray' }}>[dev] copy ocr result</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressShowAds}>
+          <Text style={{ color: 'gray' }}>[dev] show ads</Text>
+        </TouchableOpacity>
         {/* builds suit */}
         {
           !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
@@ -643,16 +681,6 @@ function App(): JSX.Element {
               }
             </View>
         }
-        {/* dev btns */}
-        <TouchableOpacity style={{ marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
-          <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
-          <Text style={{ color: 'gray' }}>[dev] copy ocr result</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressShowAds}>
-          <Text style={{ color: 'gray' }}>[dev] show ads</Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )

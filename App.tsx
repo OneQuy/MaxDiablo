@@ -191,6 +191,8 @@ function App(): JSX.Element {
     if (!slotCardRef.current)
       return
 
+    const userSlot = slotCardRef.current
+
     // find suits
 
     suitBuilds.current = []
@@ -205,11 +207,10 @@ function App(): JSX.Element {
         for (let islot = 0; islot < build.slots.length; islot++) {
           const slot = build.slots[islot]
 
-          if (slot.slotName !== slotCardRef.current.slotName)
+          if (slot.slotName !== userSlot.slotName)
             continue
 
-          // @ts-ignore
-          const statEquals = slot.stats.filter(stat => slotCardRef.current.stats.findIndex(a => a.name === stat.name) >= 0)
+          const statEquals = slot.stats.filter(stat => userSlot.stats.findIndex(a => a.name === stat.name) >= 0)
 
           if (statEquals.length >= linesMatchIsGood) {
             // console.log('statEquals: ' + statEquals.length, ', suit build: ' + build.name, ', tier: ' + tier.name);

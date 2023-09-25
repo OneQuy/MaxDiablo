@@ -326,7 +326,7 @@ function App(): JSX.Element {
       // this stat score
 
       if (userStat.max === userStat.min)
-        statsForRating.current[i][3] = 1
+        statsForRating.current[i][3] = 0
       else
         statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
 

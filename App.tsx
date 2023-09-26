@@ -189,7 +189,8 @@ function App(): JSX.Element {
       return
     }
 
-    await detectFromImgUrl(getURLRes.url)
+    // await detectFromImgUrlAsync_Cloudlabs(getURLRes.url)
+    await detectFromImgUrlAsync_ImageToText(getURLRes.url)
   }, [])
 
   const findSuitBuilds = useCallback(() => {
@@ -378,7 +379,7 @@ function App(): JSX.Element {
 
       // calc rateScore_Class_BuildAbove3Stats
 
-      rateScore_Class_BuildAbove3Stats.current = (totalScore_above3stats + totalScore_Class)/ (count_above3stats + 4)
+      rateScore_Class_BuildAbove3Stats.current = (totalScore_above3stats + totalScore_Class) / (count_above3stats + 4)
 
       // calc rateScore_Class_BuildAll
 
@@ -491,7 +492,49 @@ function App(): JSX.Element {
     }
   }, [])
 
-  const detectFromImgUrl = useCallback(async (imgUrl: string) => {
+  const detectFromImgUrlAsync_ImageToText = useCallback(async (imgUrl: string) => {
+    const options = {
+      method: 'GET',
+      url: 'https://image-to-text9.p.rapidapi.com/ocr',
+      params: {
+        url: imgUrl
+      },
+      headers: {
+        'X-RapidAPI-Key': '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a',
+        'X-RapidAPI-Host': 'image-to-text9.p.rapidapi.com'
+      }
+    };
+
+    setStatus('Processing...')
+
+    try {
+      const response = await axios.request(options);
+      const result = response.data?.text
+
+      if (!result)
+        throw 'ImageToText API have no result'
+
+      onGotOcrResultText(result)
+    } catch (error) {
+      const serror = JSON.stringify(error);
+
+      if (serror.includes('429')) {
+        Alert.alert(
+          'Lỗi không thể phân tích hình',
+          'Vượt lượt phân tích.')
+      }
+      else {
+        Alert.alert(
+          'Lỗi không thể phân tích hình',
+          'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + ToCanPrint(error))
+      }
+
+      userImgUri.current = ''
+      setStatus('')
+    }
+  }, [])
+
+  const detectFromImgUrlAsync_Cloudlabs = useCallback(async (imgUrl: string) => {
     const options = {
       method: 'POST',
       url: 'https://cloudlabs-image-ocr.p.rapidapi.com/ocr/recognizeUrl',
@@ -512,7 +555,7 @@ function App(): JSX.Element {
       const result = response.data?.result
 
       if (!result)
-        throw 'OCR have no result'
+        throw 'Cloudlabs have no result'
 
       onGotOcrResultText(result)
     } catch (error) {

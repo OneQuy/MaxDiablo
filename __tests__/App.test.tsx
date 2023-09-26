@@ -138,3 +138,14 @@ test('text 11 THE IMPACT', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 }); 
+
+// MASTER BREAKER
+
+test('text 12 MASTER BREAKER', () => {
+  const text = 'plo app-Go X +\nNisnQcJWGU-3tdyAPkFuMRpTITmC9e461423nAJzgOSprwEqQ,\n9gag tmp google tools dev imobility E\nMASTERS BREAKER\nAncestral Rare Two-Handed\nSword\n806 Item Power\nto\n2,352 Damage Per Second (-345)\n[1,882-2,822) Damage per Hit\n1.00 Attacks per Second\n• +14.0% Critical Strike Damage [14.01%\n●\n+33.0 % Critical Strike Damage (21.0-\n35.01%\n+38.0% Core Skill Damage [25.0-\n39.01%\n+32.0% Critical Strike Damage with\nBone Skills (21.0-35.0%\n+82 Intelligence +(76-104\nEquip\nLink\nCompare\nMark as Junk\nMIKO SG\nDAD CAMERA\nRequires Level 79\nSell Value: 34,138\nDurability: 100/100\nCon\n3,271\n60'
+  const expected = '{"slotName":"Two-Handed Sword","itemPower":806,"stats":[{"name":"Critical Strike Damage","min":14,"max":14,"isPercent":true,"value":14},{"name":"Critical Strike Damage","min":21,"max":35,"isPercent":true,"value":33},{"name":"Core Skill Damage","min":25,"max":39,"isPercent":true,"value":38},{"name":"Critical Strike Damage with Bone Skills","min":21,"max":35,"isPercent":true,"value":32},{"name":"Intelligence","min":76,"max":104,"isPercent":false,"value":82}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 

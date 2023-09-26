@@ -246,17 +246,17 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
     return [min, max]
 }
 
-function FixCloseSqrBracket(text: string): string {
-    for (let index = 1; index < text.length; index++) {
-        if (text[index] === '1' &&
-            text[index + 1] === '%' &&
-            text[index - 1] >= '0' && text[index - 1] <= '9') {
-            text = StringReplaceCharAt(text, index, ']')
+function FixCloseSqrBracket(wholeText: string): string {
+    for (let index = 1; index < wholeText.length; index++) {
+        if (wholeText[index] === '1' &&
+            wholeText[index + 1] === '%' &&
+            wholeText[index - 1] >= '0' && wholeText[index - 1] <= '9') {
+            wholeText = StringReplaceCharAt(wholeText, index, ']')
             // console.log('fix bracket', index);
         }
     }
 
-    return text
+    return wholeText
 }
 
 export function ExtractSlotCard(text: string, forceLog = false): SlotCard | string {

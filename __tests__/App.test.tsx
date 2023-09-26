@@ -149,3 +149,12 @@ test('text 12 MASTER BREAKER', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 }); 
+
+test('text 13 MASTER BREAKER', () => {
+  const text = 'DUEL\nRETRIBUTION\nAncestral Rare Two-\nHanded Sword\n768 Item Power\n2,026 Damage Per Second\n[1,621-2,431] Damage per Hit\n1.00 Attacks per Second\n+ +14.0% Critical Strike Damage\n[14.0]%\n◆ +42.0% Damage to Close\nEnemies [33.0-47.0)%\nIdentify with\n+35.0% Core Skill Damage [25.0\n-39.01%\n+33.0% Critical Strike Damage\nwith Bone Skills (21.0-35.01%\n+104 Intelligence +[76-104]\n✰\nRequires Level 80\nNot usable by your Class'
+  const expected = '{"slotName":"Two-Handed Sword","itemPower":768,"stats":[{"name":"Critical Strike Damage","min":14,"max":14,"isPercent":true,"value":14},{"name":"Damage to Close Enemies","min":33,"max":47,"isPercent":true,"value":42},{"name":"Core Skill Damage","min":25,"max":39,"isPercent":true,"value":35},{"name":"Critical Strike Damage with Bone Skills","min":21,"max":35,"isPercent":true,"value":33},{"name":"Intelligence","min":76,"max":104,"isPercent":false,"value":104}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 

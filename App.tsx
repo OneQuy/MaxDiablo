@@ -26,11 +26,8 @@ import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Classs, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
-import { statfs } from 'fs';
 import { RoundNumber } from './scr/common/Utils';
-import { stringify } from 'querystring';
 import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
-import { rawListeners } from 'process';
 // import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 // import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
@@ -512,7 +509,7 @@ function App(): JSX.Element {
 
       if (!result)
         throw 'ImageToText API have no result'
-
+      clear()
       onGotOcrResultText(result)
     } catch (error) {
       const serror = JSON.stringify(error);
@@ -537,7 +534,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     FirebaseInit()
-
+    
     // onGotOcrResultText(demoText)
 
     // CheckAndInitAdmobAsync();
@@ -633,7 +630,6 @@ function App(): JSX.Element {
         }
         {/* rating result text */}
         {
-          // !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
           <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
             <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : getRateTextColorForSuitBuild(), padding: 10, borderRadius: 10 }} >
               <Text style={{ color: rateText.current === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>

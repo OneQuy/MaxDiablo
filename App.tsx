@@ -509,7 +509,7 @@ function App(): JSX.Element {
 
       if (!result)
         throw 'ImageToText API have no result'
-      clear()
+
       onGotOcrResultText(result)
     } catch (error) {
       const serror = JSON.stringify(error);
@@ -534,7 +534,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     FirebaseInit()
-    
+
     // onGotOcrResultText(demoText)
 
     // CheckAndInitAdmobAsync();

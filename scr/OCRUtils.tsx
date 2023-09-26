@@ -68,6 +68,11 @@ function FixLinesAfterMerge(lines: string[]): string[] {
             lines[index] = line
         }
 
+        if (line.includes('\\u26ab')) {
+            line = line.replace('\\u26ab', '')
+            lines[index] = line
+        }
+
         // final
 
         lines[index] = line.trim()

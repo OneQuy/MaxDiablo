@@ -326,6 +326,9 @@ function App(): JSX.Element {
 
     // log
 
+    console.log();
+    console.log();
+    
     statsForRating.current.forEach(([userStat, classs, classStat, score]) => {
       console.log(userStat.name, classs?.name, score);
     });

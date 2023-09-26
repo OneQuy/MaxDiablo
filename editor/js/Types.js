@@ -18,6 +18,7 @@ var SlotName;
     SlotName["Crossbow"] = "Crossbow";
     SlotName["TwoHandedMace"] = "Two-Handed Mace";
     SlotName["TwoHandedSword"] = "Two-Handed Sword";
+    SlotName["TwoHandedAxe"] = "Two-Handed Axe";
     SlotName["Axe"] = "Axe";
     SlotName["Totem"] = "Totem";
     SlotName["Staff"] = "Staff";
@@ -28,7 +29,10 @@ var SlotName;
     SlotName["H1Weapon"] = "1h Weapon";
     SlotName["H2Weapon"] = "2h Weapon";
     SlotName["Offhand"] = "Offhand";
-})(SlotName = exports.SlotName || (exports.SlotName = {})); // Note when add new: if name is too long, add too extract slot name hardcoded (scr/OCRUtils.tsx) 
+    // Note when add new:
+    // + if name is too long, add too extract slot name hardcoded (scr/OCRUtils.tsx) 
+    // + add to ConvertSlotNameToShortSlotName
+})(SlotName = exports.SlotName || (exports.SlotName = {}));
 // class data ================
 var ClassName;
 (function (ClassName) {

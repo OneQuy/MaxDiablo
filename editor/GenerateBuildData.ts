@@ -6,7 +6,7 @@ const fs = require('fs')
 
 const tiersDirPath = './editor/builddata/'
 
-export const GenerateBuildData = (printBeauty = false): string | undefined => {
+export const GenerateBuildData = (printBeauty = true): string | undefined => {
     const tierDirs = fs.readdirSync(tiersDirPath)
 
     if (tierDirs.length <= 0)
@@ -106,10 +106,7 @@ export const GenerateBuildData = (printBeauty = false): string | undefined => {
     console.log('build count: ' + countBuilds);
     console.log('tier count: ' + tiers.length);
 
-    if (printBeauty)
-        fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers, null, 1));
-    else
-        fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers));
+    fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers, null, 1));
 
     return
 }

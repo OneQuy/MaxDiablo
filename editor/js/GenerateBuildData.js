@@ -6,7 +6,7 @@ var Utils_NodeJS_1 = require("./Utils_NodeJS");
 var fs = require('fs');
 var tiersDirPath = './editor/builddata/';
 var GenerateBuildData = function (printBeauty) {
-    if (printBeauty === void 0) { printBeauty = false; }
+    if (printBeauty === void 0) { printBeauty = true; }
     var tierDirs = fs.readdirSync(tiersDirPath);
     if (tierDirs.length <= 0)
         (0, Utils_NodeJS_1.LogRed)('not found any tier dir in ' + tiersDirPath);
@@ -74,10 +74,7 @@ var GenerateBuildData = function (printBeauty) {
     console.log('slot count: ' + countSlots);
     console.log('build count: ' + countBuilds);
     console.log('tier count: ' + tiers.length);
-    if (printBeauty)
-        fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers, null, 1));
-    else
-        fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers));
+    fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers, null, 1));
     return;
 };
 exports.GenerateBuildData = GenerateBuildData;

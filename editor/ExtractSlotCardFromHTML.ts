@@ -1,6 +1,8 @@
 import parse from "node-html-parser";
 import { SlotCard, SlotName, Stat } from "./Types";
 
+const RemoveStatWithResistance = true
+
 export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtractStat: boolean): SlotCard | string {
     const root = parse(htmlString);
 
@@ -52,7 +54,7 @@ export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtrac
         return 'Zero stat, not enought stats line of .d4t-list-affix.d4-color-gray'
     }
 
-    const stats: Stat[] = []
+    let stats: Stat[] = []
 
     for (let i = 0; i < statRaws.length; i++) {
         // Example:
@@ -156,6 +158,8 @@ export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtrac
     if (ignoreLineCantExtractStat && stats.length <= 0)
         return 'cant extract any stats of this slot'
 
+   stats = checkAndRemoveStats(stats)
+    
     return {
         slotName,
         itemPower,
@@ -163,6 +167,16 @@ export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtrac
     } as SlotCard
 }
 
+const checkAndRemoveStats = (stats: Stat[]) : Stat[] => {
+    if (!RemoveStatWithResistance) 
+        return stats
+
+    return stats.filter(stat => {
+        const valid = !stat.name.includes('Resistance')
+        
+        return valid
+    })
+}
 
 const IsNumOrDot = (c: string) => {
     if (c === '.')

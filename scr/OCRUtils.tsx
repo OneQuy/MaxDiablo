@@ -38,6 +38,24 @@ function FixLinesBeforeMerge(lines: string[]): string[] {
                 lines[index] = line
             }
         }
+
+        // fix miss close sqr bracket: ']'
+        // Ex: +82 Intelligence +(76-104
+        // Ex:  ...Bone Skills (21.0-35.0%
+        
+        const openSqrBracketIdx = line.indexOf('[')
+        const closeSqrBracketIdx = line.indexOf(']')
+        
+        if (openSqrBracketIdx > 0 && closeSqrBracketIdx < 0) {
+            const sub = line.substring(openSqrBracketIdx)
+
+            const nums = ExtractAllNumbersInText(sub)
+
+            if (nums.length === 2) {
+                line += ']'
+                lines[index] = line
+            }
+        }
     }
 
     return lines;
@@ -114,9 +132,6 @@ function MergeLines(lines: string[]): string[] { // (logic: merge previous line 
         }
 
         if (needMerge) {
-            // lines[index - 1] += ' ' + line
-            // lines[index] = ''
-
             lines[index] = lines[index - 1] + ' ' + line
             lines[index - 1] = ''
         }

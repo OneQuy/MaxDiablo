@@ -30,6 +30,7 @@ import { statfs } from 'fs';
 import { RoundNumber } from './scr/common/Utils';
 import { stringify } from 'querystring';
 import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
+import { rawListeners } from 'process';
 // import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 // import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
@@ -64,6 +65,7 @@ function App(): JSX.Element {
   const rateScore_Class = useRef(-1)
   const rateScore_Class_BuildAbove3Stats = useRef(-1)
   const rateScore_Class_BuildAll = useRef(-1)
+  const rateLimitText = useRef('')
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -184,7 +186,6 @@ function App(): JSX.Element {
       return
     }
 
-    // await detectFromImgUrlAsync_Cloudlabs(getURLRes.url)
     await detectFromImgUrlAsync_ImageToText(getURLRes.url)
   }, [])
 
@@ -504,6 +505,9 @@ function App(): JSX.Element {
 
     try {
       const response = await axios.request(options);
+
+      rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
+
       const result = response.data?.text
 
       if (!result)
@@ -649,6 +653,7 @@ function App(): JSX.Element {
         <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressShowAds}>
           <Text style={{ color: 'gray' }}>[dev] show ads</Text>
         </TouchableOpacity>
+        <Text style={{ marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
         {/* builds suit */}
         {
           !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :

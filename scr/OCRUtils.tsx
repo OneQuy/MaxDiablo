@@ -194,12 +194,14 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
 }
 
 function ExtractRange(line: string, value: number): [number, number] | undefined {
+    // Ex:
+    // +32.0% Critical Strike Damage with Bone Skills [21.0-35.0%
+
     const openSqrBracketIdx = line.indexOf('[')
-    const closeSqrBracketIdx = line.indexOf(']')
     let min = -1
     let max = -1
 
-    if (openSqrBracketIdx >= 0 && closeSqrBracketIdx >= 0) {
+    if (openSqrBracketIdx >= 0) {
         const s = line.substring(openSqrBracketIdx)
         const floats = ExtractAllNumbersInText(s)
 

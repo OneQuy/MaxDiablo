@@ -55,16 +55,6 @@ function FixLinesBeforeMerge(lines: string[]): string[] {
                 line += ']'
                 lines[index] = line
             }
-            if (line.includes('•'))
-                console.warn(line);
-
-
-            // remove these loz: ⚫, •
-
-            line = line.replaceAll('⚫', '\n')
-            line = line.replaceAll('•', '\n')
-            lines[index] = line
-
         }
     }
 

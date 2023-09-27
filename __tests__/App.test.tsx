@@ -167,3 +167,12 @@ test('text 14 ROYALTY STRIKE (ko hình)', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 }); 
+
+test('text 15 EQUIPPED BLIGHTED (ko hình)', () => {
+  const text = '\r\n\r\n6E\r\nNeck\r\nEQUIPPED\r\nBLIGHTED AMULET\r\nAncestral Legendary Amulet\r\nEqui\r\n644+25 Item Power\r\nUpgrades: 5/5\r\n• 23.0% Resistance to All Elements (23.0]%\r\n• +3 Ranks of All Corpse Skills [1-3] +30.0% Damage for 4 Seconds After Killing an Elite [15.0-30.0]%[4]\r\n+3 Ranks of the Gloom Passive [1-3] (Necromancer Only)\r\nImprinted: You deal 149 % [x][75-1801% increased damage for 6 seconds after the Shadowblight Key Passive damages enemies 10 times. (Necromancer Only) +250 Armor\r\nRequires Level 77 Account Bound\r\nSell Value: 40,041'
+  const expected = '{"slotName":"Amulet","itemPower":644,"stats":[{"name":"Resistance to All Elements","min":23,"max":23,"isPercent":true,"value":23},{"name":"Ranks of All Corpse Skills","min":1,"max":3,"isPercent":false,"value":3},{"name":"Damage for X Seconds After Killing an Elite","min":15,"max":30,"isPercent":true,"value":30},{"name":"Ranks of the Gloom Passive","min":1,"max":3,"isPercent":false,"value":3}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 

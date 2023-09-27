@@ -324,14 +324,14 @@ function App(): JSX.Element {
       totalScore_Class += statsForRating.current[i][3]
     };
 
-    // log
+    // // log
 
-    console.log();
-    console.log();
+    // console.log();
+    // console.log();
     
-    statsForRating.current.forEach(([userStat, classs, classStat, score]) => {
-      console.log(userStat.name, classs?.name, score);
-    });
+    // statsForRating.current.forEach(([userStat, classs, classStat, score]) => {
+    //   console.log(userStat.name, classs?.name, score);
+    // });
 
     // calc rateScore_Class
 
@@ -341,8 +341,8 @@ function App(): JSX.Element {
       Alert.alert('Wow', 'totalScore_Class more than 4!')
     }
 
-    console.log('totalScore_Class of 4 = ', totalScore_Class);
-    console.log('totalScore_Class / 4 = ', totalScore_Class / 4);
+    // console.log('totalScore_Class of 4 = ', totalScore_Class);
+    // console.log('totalScore_Class / 4 = ', totalScore_Class / 4);
     rateScore_Class.current = totalScore_Class / 4
     // rateScore_Class.current = totalScore / statsForRating.current.length
 
@@ -386,8 +386,8 @@ function App(): JSX.Element {
       rateScore_Class_BuildAll.current = 0
     }
 
-    console.log('rateScore_Class_BuildAbove3Stats', rateScore_Class_BuildAbove3Stats.current);
-    console.log('rateScore_Class_BuildAll', rateScore_Class_BuildAll.current);
+    // console.log('rateScore_Class_BuildAbove3Stats', rateScore_Class_BuildAbove3Stats.current);
+    // console.log('rateScore_Class_BuildAll', rateScore_Class_BuildAll.current);
   }, [])
 
   const getStatNameColorCompareWithBuild = useCallback((stat: string) => {

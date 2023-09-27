@@ -92,12 +92,6 @@ function App(): JSX.Element {
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
     const txt = await Clipboard.getString()
     await onGotOcrResultTextAsync(txt, true)
-
-    if (typeof slotCardRef.current === 'string')
-      return
-
-    console.log(JSON.stringify(slotCardRef.current))
-    console.log(JSON.stringify(slotCardRef.current, null, 1));
   }, [])
 
   const onPressTakeCamera = useCallback(async () => {
@@ -327,7 +321,7 @@ function App(): JSX.Element {
 
     // console.log();
     // console.log();
-    
+
     // statsForRating.current.forEach(([userStat, classs, classStat, score]) => {
     //   console.log(userStat.name, classs?.name, score);
     // });
@@ -440,18 +434,22 @@ function App(): JSX.Element {
     return getRateTypeByScore(rateScore_Class.current)[0]
   }, [])
 
-  const onGotOcrResultTextAsync = useCallback(async (result: string, forceLog: boolean) => {
+  const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
     ocrResult.current = JSON.stringify(result)
-    let extractRes = ExtractSlotCard(result, forceLog)
+    let extractRes = ExtractSlotCard(result, stringifyResult)
 
     if (typeof extractRes === 'object') { // success
+      if (stringifyResult) {
+        console.log(JSON.stringify(extractRes))
+        console.log(JSON.stringify(extractRes, null, 1));
+      }
+
       extractRes = HandleWeirdStatNames(extractRes)
       slotCardRef.current = FilterStats(extractRes)
 
       findSuitBuilds()
       rate()
 
-      // setStatus('SUCCESS')
       setStatus(Math.random().toString())
     }
     else { // fail

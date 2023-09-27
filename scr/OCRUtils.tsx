@@ -261,9 +261,11 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
     return [min, max]
 }
 
-function FixCloseSqrBracket(wholeText: string): string {
+function HandleWholeTextBeforeSplitLines(wholeText: string): string {
     for (let index = 1; index + 1 < wholeText.length; index++) {
         let curChar = wholeText[index]
+
+        // force fix ']' at: 5.01% => 5.0]%
 
         if (curChar === '1' &&
             wholeText[index + 1] === '%' &&
@@ -272,6 +274,11 @@ function FixCloseSqrBracket(wholeText: string): string {
             wholeText = StringReplaceCharAt(wholeText, index, curChar)
         }
     }
+
+    wholeText = wholeText.replaceAll('\\r\\n', '###')
+    wholeText = wholeText.replaceAll('\n', '###')
+    wholeText = wholeText.replaceAll('⚫', '###')
+    wholeText = wholeText.replaceAll('•', '###')
 
     return wholeText
 }
@@ -288,14 +295,16 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
     // fix miss close sqr bracket line
 
-    text = FixCloseSqrBracket(text)
+    text = HandleWholeTextBeforeSplitLines(text)
+
+    if (isLog) {
+        console.log('after handled whole text ====================================');
+        console.log(text);
+    }
 
     // split lines
 
-    let lines = text.split('\n')
-
-    if (lines.length <= 1)
-        lines = text.split('\\n')
+    let lines = text.split('###')
 
     if (lines.length <= 1)
         return 'text to regconize is not enough lines: ' + lines.length

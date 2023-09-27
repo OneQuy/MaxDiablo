@@ -61,7 +61,6 @@ function App(): JSX.Element {
   const statsForRating = useRef<[Stat, Classs | undefined, Stat | undefined, number][]>([]) // user stat, class, class data stat, rate score
   const rateScore_Class = useRef(-1)
   const rateScore_Class_BuildAbove3Stats = useRef(-1)
-  const rateScore_Class_BuildAll = useRef(-1)
   const rateLimitText = useRef('')
 
   const onPressUpload = useCallback(async () => {
@@ -145,7 +144,6 @@ function App(): JSX.Element {
     rateText.current = '...'
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
-    rateScore_Class_BuildAll.current = 0
 
     setStatus('Uploading...')
 
@@ -347,26 +345,18 @@ function App(): JSX.Element {
     rateScore_Class.current = totalScore_Class / 4
     // rateScore_Class.current = totalScore / statsForRating.current.length
 
-    // rate text
-
-    rateText.current = getRateTypeByScore(rateScore_Class.current)[1]
-
     // calc rateScore_Class_BuildAbove3Stats & rateScore_Class_BuildAll
 
     if (suitBuilds.current && suitBuilds.current.length > 0) {
       // count
 
-      let totalScore_all = 0
       let totalScore_above3stats = 0
 
       let count_above3stats = 0
-      let count_all = suitBuilds.current.length
 
       for (let i = 0; i < suitBuilds.current.length; i++) {
         let matchStatCount = suitBuilds.current[i][3]
         let score = Math.min(1, matchStatCount / 4)
-
-        totalScore_all += score
 
         if (matchStatCount >= 3) { // from and above 3
           totalScore_above3stats += score
@@ -377,18 +367,17 @@ function App(): JSX.Element {
       // calc rateScore_Class_BuildAbove3Stats
 
       rateScore_Class_BuildAbove3Stats.current = (totalScore_above3stats + totalScore_Class) / (count_above3stats + 4)
-
-      // calc rateScore_Class_BuildAll
-
-      rateScore_Class_BuildAll.current = (totalScore_all + totalScore_Class) / (count_all + 4)
     }
     else {
       rateScore_Class_BuildAbove3Stats.current = 0
-      rateScore_Class_BuildAll.current = 0
     }
 
+    // rate text
+
+    const finalScore = Math.max(rateScore_Class.current, rateScore_Class_BuildAbove3Stats.current)
+    rateText.current = getRateTypeByScore(finalScore)[1]
+
     // console.log('rateScore_Class_BuildAbove3Stats', rateScore_Class_BuildAbove3Stats.current);
-    // console.log('rateScore_Class_BuildAll', rateScore_Class_BuildAll.current);
   }, [])
 
   const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -640,7 +629,6 @@ function App(): JSX.Element {
             </View>
             <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class.current >= 0 ? RoundNumber(rateScore_Class.current * 10, 1) : 0}/10</Text>
             <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAbove3Stats.current >= 0 ? RoundNumber(rateScore_Class_BuildAbove3Stats.current * 10, 1) : 0}/10</Text>
-            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAll.current >= 0 ? RoundNumber(rateScore_Class_BuildAll.current * 10, 1) : 0}/10</Text>
           </View>
         }
         {/* dev btns */}

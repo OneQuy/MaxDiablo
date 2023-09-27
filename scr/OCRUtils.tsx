@@ -277,6 +277,7 @@ function HandleWholeTextBeforeSplitLines(wholeText: string): string {
 
     wholeText = wholeText.replaceAll('\\r\\n', '###')
     wholeText = wholeText.replaceAll('\n', '###')
+    wholeText = wholeText.replaceAll('\\n', '###')
     wholeText = wholeText.replaceAll('⚫', '###')
     wholeText = wholeText.replaceAll('•', '###')
 

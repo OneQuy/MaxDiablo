@@ -31,7 +31,7 @@ function FixLinesBeforeMerge(lines: string[]): string[] {
         // Ex: +82 Intelligence +(76-104
         // Ex: +33.0 % Critical Strike Damage (21.0- 35.0]%
         const openBracketIdx = line.indexOf('(')
-        
+
         if (openBracketIdx >= 0 && openBracketIdx + 1 < line.length) {
             if (IsNumOrDotChar(line[openBracketIdx + 1])) {
                 line = StringReplaceCharAt(line, openBracketIdx, '[')
@@ -42,10 +42,10 @@ function FixLinesBeforeMerge(lines: string[]): string[] {
         // fix miss close sqr bracket: ']'
         // Ex: +82 Intelligence +(76-104
         // Ex:  ...Bone Skills (21.0-35.0%
-        
+
         const openSqrBracketIdx = line.indexOf('[')
         const closeSqrBracketIdx = line.indexOf(']')
-        
+
         if (openSqrBracketIdx > 0 && closeSqrBracketIdx < 0) {
             const sub = line.substring(openSqrBracketIdx)
 
@@ -55,6 +55,16 @@ function FixLinesBeforeMerge(lines: string[]): string[] {
                 line += ']'
                 lines[index] = line
             }
+            if (line.includes('•'))
+                console.warn(line);
+
+
+            // remove these loz: ⚫, •
+
+            line = line.replaceAll('⚫', '\n')
+            line = line.replaceAll('•', '\n')
+            lines[index] = line
+
         }
     }
 
@@ -227,7 +237,7 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
         else if (floats.length === 1) {
             min = floats[0]
             max = min
-            
+
             // value not between range & range only have 1 value, must split the range. 
             // Ex: +2 Ranks of Incinerate [23] (to [2-3])
             // Ex: [2.310] (to [2.3-10]) // ?? todo
@@ -241,14 +251,14 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
 
                 min = parseFloat(minS)
                 max = parseFloat(maxS)
-            }            
+            }
         }
     }
 
-    if (!IsNumType(min) || 
-        !IsNumType(max) || 
-        min === -1 || 
-        max === -1 || 
+    if (!IsNumType(min) ||
+        !IsNumType(max) ||
+        min === -1 ||
+        max === -1 ||
         min > max ||
         value < min ||
         value > max) {
@@ -262,12 +272,14 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
 }
 
 function FixCloseSqrBracket(wholeText: string): string {
-    for (let index = 1; index < wholeText.length; index++) {
-        if (wholeText[index] === '1' &&
+    for (let index = 1; index + 1 < wholeText.length; index++) {
+        let curChar = wholeText[index]
+
+        if (curChar === '1' &&
             wholeText[index + 1] === '%' &&
             wholeText[index - 1] >= '0' && wholeText[index - 1] <= '9') {
-            wholeText = StringReplaceCharAt(wholeText, index, ']')
-            // console.log('fix bracket', index);
+            curChar = ']'
+            wholeText = StringReplaceCharAt(wholeText, index, curChar)
         }
     }
 
@@ -381,7 +393,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
     if (lines[indexLineOfSlotName].toLowerCase().includes('unique') ||
         (indexLineOfSlotName > 0 && lines[indexLineOfSlotName - 1].toLowerCase().includes('unique')) ||
         (indexLineOfSlotName + 1 < lines.length && lines[indexLineOfSlotName + 1].toLowerCase().includes('unique'))) {
-        return 'unique'            
+        return 'unique'
     }
 
     // log
@@ -395,14 +407,13 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
         }
     }
 
-    // remove [4]. Ex: +16.0% Damage for 4 Seconds After Dodging an Attack [14.0-21.0]% [4]
-
-    lines = RemoveTextAfterCloseSquareBracket(lines)
-
-
     // fix lines after merge
 
     lines = FixLinesBeforeMerge(lines)
+
+    // remove [4]. Ex: +16.0% Damage for 4 Seconds After Dodging an Attack [14.0-21.0]% [4]
+
+    lines = RemoveTextAfterCloseSquareBracket(lines)
 
     // merge square bracket line
 

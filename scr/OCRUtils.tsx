@@ -301,7 +301,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
         return 'text to regconize is not enough lines: ' + lines.length
 
     if (isLog) {
-        console.log('================');
+        console.log('after split lines ====================================');
 
         for (let index = 0; index < lines.length; index++) {
             const line = lines[index]
@@ -389,7 +389,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
     // log
 
     if (isLog) {
-        console.log('trước merge================');
+        console.log('trước merge====================================');
 
         for (let index = 0; index < lines.length; index++) {
             const line = lines[index]
@@ -410,7 +410,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
     lines = MergeLines(lines)
 
     if (isLog) {
-        console.log('sau mergeeeee================');
+        console.log('sau mergeeeee====================================');
 
         for (let index = 0; index < lines.length; index++) {
             const line = lines[index]

@@ -92,12 +92,13 @@ function App(): JSX.Element {
 
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
     const txt = await Clipboard.getString()
-    const res = ExtractSlotCard(txt, true)
+    await onGotOcrResultTextAsync(txt, true)
 
-    console.log(JSON.stringify(res))
-    console.log(JSON.stringify(res, null, 1));
+    if (typeof slotCardRef.current === 'string')
+      return
 
-    onGotOcrResultText(txt)
+    console.log(JSON.stringify(slotCardRef.current))
+    console.log(JSON.stringify(slotCardRef.current, null, 1));
   }, [])
 
   const onPressTakeCamera = useCallback(async () => {
@@ -450,9 +451,9 @@ function App(): JSX.Element {
     return getRateTypeByScore(rateScore_Class.current)[0]
   }, [])
 
-  const onGotOcrResultText = useCallback(async (result: string) => {
+  const onGotOcrResultTextAsync = useCallback(async (result: string, forceLog: boolean) => {
     ocrResult.current = JSON.stringify(result)
-    let extractRes = ExtractSlotCard(result)
+    let extractRes = ExtractSlotCard(result, forceLog)
 
     if (typeof extractRes === 'object') { // success
       extractRes = HandleWeirdStatNames(extractRes)
@@ -513,7 +514,7 @@ function App(): JSX.Element {
       if (!result)
         throw 'ImageToText API have no result'
 
-      onGotOcrResultText(result)
+      onGotOcrResultTextAsync(result, false)
     } catch (error) {
       const serror = JSON.stringify(error);
 

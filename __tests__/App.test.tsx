@@ -158,3 +158,12 @@ test('text 13 MASTER BREAKER', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 }); 
+
+test('text 14 ROYALTY STRIKE (ko hình)', () => {
+  const text = '\r\n\r\nrks\r\nProfiles Tab Window Help\r\n05443087824&set=pcb.852282506344258\r\nhes fb 9gag tmp\r\ngoogle\r\ntools\r\n1 dev\r\nimobility\r\nROYALTY STRIKE\r\nAncestral Rare Amulet\r\n752 Item Power\r\n• 17.8% Resistance to All Elements [17.8]%\r\n• 16.5% Fury Cost Reduction [9.5- 16.5]%\r\n⚫ 7.0% Damage Reduction [3.1 - 7.3]% • +2 Ranks of the Counteroffensive Passive [1 - 2] (Barbarian Only) ⚫ +42.0% Overpower Damage with Two-Handed Bludgeoning Weapons [21.0-42.0]%\r\nEmpty Vicious malignant socket\r\nRequires Level 80\r\nSell Value: 22,678\r\nMacBook Pro\r\nया'
+  const expected = '{\"slotName\":\"Amulet\",\"itemPower\":752,\"stats\":[{\"name\":\"Resistance to All Elements\",\"min\":17.8,\"max\":17.8,\"isPercent\":true,\"value\":17.8},{\"name\":\"Fury Cost Reduction\",\"min\":9.5,\"max\":16.5,\"isPercent\":true,\"value\":16.5},{\"name\":\"Damage Reduction\",\"min\":3.1,\"max\":7.3,\"isPercent\":true,\"value\":7},{\"name\":\"Ranks of the Counteroffensive Passive\",\"min\":1,\"max\":2,\"isPercent\":false,\"value\":2},{\"name\":\"Overpower Damage with Two-Handed Bludgeoning Weapons\",\"min\":21,\"max\":42,\"isPercent\":true,\"value\":42}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 

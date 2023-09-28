@@ -184,13 +184,32 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
         return undefined
     }
 
-    // Golems Inherit +4.4% of Your Thorns []%
+    // Lucky Hit: Up to a 5% Chance to Heal +544 Life [465-836]
 
-    const innerNum = ExtractAllNumbersInText(nameStat)
+    if (nameStat.includes('Lucky Hit: Up to a 5%')) {
+        const innerNum = ExtractAllNumbersInText(nameStat)
 
-    if (innerNum.length > 0) {
-        nameStat = nameStat.replace('+' + innerNum[0].toString(), 'X')
-        nameStat = nameStat.replace(innerNum[0].toString(), 'X')
+        if (innerNum.length >= 2) {
+            nameStat = nameStat.replace('+' + innerNum[1].toString() + '.0', 'X')
+            nameStat = nameStat.replace(innerNum[1].toString() + '.0', 'X')
+
+            nameStat = nameStat.replace('+' + innerNum[1].toString(), 'X')
+            nameStat = nameStat.replace(innerNum[1].toString(), 'X')
+        }
+    }
+    else {
+        // Golems Inherit +4.4% of Your Thorns []%
+        // Damage for 5 Seconds After Killing an Elite
+
+        const innerNum = ExtractAllNumbersInText(nameStat)
+
+        if (innerNum.length > 0) {
+            nameStat = nameStat.replace('+' + innerNum[0].toString() + '.0', 'X')
+            nameStat = nameStat.replace(innerNum[0].toString() + '.0', 'X')
+            
+            nameStat = nameStat.replace('+' + innerNum[0].toString(), 'X')
+            nameStat = nameStat.replace(innerNum[0].toString(), 'X')
+        }
     }
 
     // fix Thom
@@ -465,7 +484,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
         let numberS = ''
 
-        if (!line.includes('Inherit')) {
+        if (!line.includes('Inherit') && !line.includes('Lucky Hit: Up to a 5% Chance to')) {
             for (let i = firstCharIdx - 1; i >= 0; i--) {
                 if (IsNumOrDotChar(line[i])) {
                     numberS = line[i] + numberS
@@ -482,8 +501,14 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
             }
         }
 
-        /* Golems Inherit +4.4% of Your Thorns []% */
-        const value = line.includes('Inherit') ? SplitNumberInText(line) : Number.parseFloat(numberS)
+        let value = NaN
+
+        if (line.includes('Inherit')) // Golems Inherit +4.4% of Your Thorns []%
+            value = SplitNumberInText(line)
+        else if (line.includes('Lucky Hit: Up to a 5% Chance to'))
+            value = SplitNumberInText(line.substring(line.indexOf('Chance to')))
+        else
+            value = Number.parseFloat(numberS)
 
         if (!IsNumType(value)) {
             if (isLog)

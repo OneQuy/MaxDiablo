@@ -185,3 +185,12 @@ test('text 16 SHADOW WRAPS', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 }); 
+
+test('text 17 FIST TORTORER (KH)', () => {
+  const text = '\r\n\r\nEdit Tab\r\nFIST TORTURER\r\nAncestral Rare Gloves 785 Item Power\r\n392 Armor (-7)\r\nLucky Hit: Up to a 5% Chance to Heal +544 Life [465-836] • +10.0% Attack Speed [4.4- 10.0]%\r\n• Lucky Hit: Up to a 5% Chance to Restore +12.0% Primary Resource [7.0-14.0]%\r\n+3 Ranks of Bone Spear [2-3]\r\n(Necromancer Only)\r\nRequires Level 80 Necromancer\r\nSell Value: 12,224\r\nDurability: 100/100\r\nTake'
+  const expected = '{"slotName":"Gloves","itemPower":785,"stats":[{"name":"Lucky Hit: Up to a 5% Chance to Heal X Life","min":465,"max":836,"isPercent":true,"value":544},{"name":"Attack Speed","min":4.4,"max":10,"isPercent":true,"value":10},{"name":"Lucky Hit: Up to a 5% Chance to Restore X% Primary Resource","min":7,"max":14,"isPercent":true,"value":12},{"name":"Ranks of Bone Spear","min":2,"max":3,"isPercent":false,"value":3}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 

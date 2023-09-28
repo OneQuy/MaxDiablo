@@ -176,3 +176,12 @@ test('text 15 EQUIPPED BLIGHTED (ko hình)', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 }); 
+
+test('text 16 SHADOW WRAPS', () => {
+  const text = '\r\n\r\nSHADOW WRAPS\r\nAncestral Rare Gloves\r\n768 Item Power\r\n384 Armor (+384)\r\n⚫ +2 Ranks of Incinerate [2-3] (Sorcerer Only)\r\n⚫ +2 Ranks of Fireball [2-3] (Sorcerer Only) +8.0% Critical Strike Chance [3.0-8.0]% +9.6% Attack Speed [4.4 - 10.0]%\r\nRequires Level 72\r\nSell Value: 11,764\r\nDurability: 100/100 In bags: 0'
+  const expected = '{"slotName":"Gloves","itemPower":768,"stats":[{"name":"Ranks of Incinerate","min":2,"max":3,"isPercent":false,"value":2},{"name":"Ranks of Fireball","min":2,"max":3,"isPercent":false,"value":2},{"name":"Critical Strike Chance","min":3,"max":8,"isPercent":true,"value":8},{"name":"Attack Speed","min":4.4,"max":10,"isPercent":true,"value":9.6}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 

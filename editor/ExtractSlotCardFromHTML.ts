@@ -1,8 +1,6 @@
 import parse from "node-html-parser";
 import { SlotCard, SlotName, Stat } from "./Types";
 
-const RemoveStatWithResistance = true
-
 export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtractStat: boolean): SlotCard | string {
     const root = parse(htmlString);
 
@@ -158,8 +156,8 @@ export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtrac
     if (ignoreLineCantExtractStat && stats.length <= 0)
         return 'cant extract any stats of this slot'
 
-   stats = checkAndRemoveStats(stats)
-    
+    stats = checkAndRemoveStats(stats)
+
     return {
         slotName,
         itemPower,
@@ -167,15 +165,26 @@ export function ExtractSlotCardFromHTML(htmlString: string, ignoreLineCantExtrac
     } as SlotCard
 }
 
-const checkAndRemoveStats = (stats: Stat[]) : Stat[] => {
-    if (!RemoveStatWithResistance) 
-        return stats
-
-    return stats.filter(stat => {
+const checkAndRemoveStats = (stats: Stat[]): Stat[] => {
+    stats = stats.filter(stat => {
         const valid = !stat.name.includes('Resistance')
-        
         return valid
     })
+
+    // remove duplicate stats
+
+    for (let i = 0; i < stats.length; i++) {
+        for (let a = i + 1; a < stats.length; a++) {
+            if (stats[i].name === stats[a].name) {
+                stats[i].name = 'hihi'
+                console.log('remmmm', stats[a].name, stats[i].min, stats[i].max);
+            }
+        }
+    }
+
+    stats = stats.filter(i => i.name !== 'hihi')
+
+    return stats
 }
 
 const IsNumOrDot = (c: string) => {

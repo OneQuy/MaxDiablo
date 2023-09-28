@@ -3,7 +3,6 @@ exports.__esModule = true;
 exports.ExtractSlotCardFromHTML = void 0;
 var node_html_parser_1 = require("node-html-parser");
 var Types_1 = require("./Types");
-var RemoveStatWithResistance = true;
 function ExtractSlotCardFromHTML(htmlString, ignoreLineCantExtractStat) {
     var _a, _b;
     var root = (0, node_html_parser_1["default"])(htmlString);
@@ -129,12 +128,21 @@ function ExtractSlotCardFromHTML(htmlString, ignoreLineCantExtractStat) {
 }
 exports.ExtractSlotCardFromHTML = ExtractSlotCardFromHTML;
 var checkAndRemoveStats = function (stats) {
-    if (!RemoveStatWithResistance)
-        return stats;
-    return stats.filter(function (stat) {
+    stats = stats.filter(function (stat) {
         var valid = !stat.name.includes('Resistance');
         return valid;
     });
+    // remove duplicate stats
+    for (var i = 0; i < stats.length; i++) {
+        for (var a = i + 1; a < stats.length; a++) {
+            if (stats[i].name === stats[a].name) {
+                stats[i].name = 'hihi';
+                console.log('remmmm', stats[a].name, stats[i].min, stats[i].max);
+            }
+        }
+    }
+    stats = stats.filter(function (i) { return i.name !== 'hihi'; });
+    return stats;
 };
 var IsNumOrDot = function (c) {
     if (c === '.')

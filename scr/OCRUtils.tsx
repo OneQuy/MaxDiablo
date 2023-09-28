@@ -1,5 +1,5 @@
 import { SlotCard, SlotName, Stat } from "./Types";
-import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt } from "./common/UtilsTS";
+import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt, ToCanPrint } from "./common/UtilsTS";
 
 var isLog = false
 
@@ -263,6 +263,24 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
             }
         }
     }
+    else // have no open sqr bracket
+    {
+        // +10.0% Damage to Frozen Enemies 19.5-16.5]% => [9.5-16.5]%
+
+        const floats = ExtractAllNumbersInText(line)
+
+        if (floats.length >= 3 && floats[0] === value) {
+            min = floats[1]
+
+            const minS = min.toString()
+
+            if (minS[0] === '1') {
+                min = parseFloat(minS.substring(1))
+            }
+
+            max = Math.abs(floats[2])
+        }        
+    }
 
     if (!IsNumType(min) ||
         !IsNumType(max) ||
@@ -464,7 +482,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
     if (lines.length <= 1)
         return 'text to regconize doesnt follow requires'
-
+    
     // extract each line
 
     let stats: Stat[] = []
@@ -523,7 +541,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
         if (!nameStat)
             continue
-
+                
         // range
 
         const range = ExtractRange(line, value)
@@ -587,8 +605,8 @@ const IsIgnoredLine = (line: string) => {
     if (!line || line.trim() === '')
         return true
 
-    if (line.indexOf('[') < 0 && line.indexOf(']') >= 0) // 2] (Sorcerer Only)
-        return true
+    // if (line.indexOf('[') < 0 && line.indexOf(']') >= 0) // 2] (Sorcerer Only)
+    //     return true
 
     if (line.toLowerCase().includes('requires level') ||
         line.toLowerCase().includes('sell value') ||

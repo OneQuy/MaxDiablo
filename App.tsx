@@ -525,8 +525,6 @@ function App(): JSX.Element {
   useEffect(() => {
     FirebaseInit()
 
-    // onGotOcrResultText(demoText)
-
     // CheckAndInitAdmobAsync();
 
     // const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
@@ -564,7 +562,7 @@ function App(): JSX.Element {
         {/* user upload image info */}
         <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
           {/* image */}
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 0.8 }}>
             {
               userImgUri.current === '' ? undefined :
                 <Image style={{ width: '100%', height: windowSize.height * 0.4, }} resizeMode='contain' source={{ uri: userImgUri.current }} />

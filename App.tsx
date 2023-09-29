@@ -41,8 +41,10 @@ import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDa
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
-const allStatsData: string[] = require('./assets/AllStats.json') // for valid stat name
 const ignoredStats: string[] = require('./assets/IgnoredStats.json') // for ignoring stats
+
+const allStatsData: string[] = require('./assets/AllStats.json') // for valid stat name
+const allStatsData_IgnoredCase: string[] = allStatsData.map(name => name.toLowerCase())
 
 const DefaultGoodStats = [
   'core skill damage',
@@ -679,7 +681,7 @@ const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
   for (let i = 0; i < slot.stats.length; i++) {
     const stat = slot.stats[i]
 
-    if (allStatsData.includes(stat.name))
+    if (allStatsData_IgnoredCase.includes(stat.name.toLowerCase()))
       continue
 
     listWeirdTxt += ('[' + stat.name + ']')

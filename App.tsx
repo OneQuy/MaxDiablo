@@ -56,7 +56,7 @@ function App(): JSX.Element {
   const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
-  const rateText = useRef('...')
+  const rateText = useRef<[string, string]>(['...', 'black']) // rate text, rate box bg color
   const suitBuilds = useRef<[Tier, Build, SlotCard, number][]>()
   const statsForRating = useRef<[Stat, Classs | undefined, Stat | undefined, number][]>([]) // user stat, class, class data stat, rate score
   const rateScore_Class = useRef(-1)
@@ -135,7 +135,7 @@ function App(): JSX.Element {
     userImgUri.current = path
     ocrResult.current = ''
     suitBuilds.current = undefined
-    rateText.current = '...'
+    rateText.current = ['...', 'black']
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
 
@@ -366,12 +366,11 @@ function App(): JSX.Element {
       rateScore_Class_BuildAbove3Stats.current = 0
     }
 
-    // rate text
+    // rate final
 
     const finalScore = Math.max(rateScore_Class.current, rateScore_Class_BuildAbove3Stats.current)
-    rateText.current = getRateTypeByScore(finalScore)[1]
-
-    // console.log('rateScore_Class_BuildAbove3Stats', rateScore_Class_BuildAbove3Stats.current);
+    const resultRate = getRateTypeByScore(finalScore)
+    rateText.current = [resultRate[1], resultRate[0]]
   }, [])
 
   const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -619,11 +618,11 @@ function App(): JSX.Element {
               <Text style={{ color: 'white' }}>{status}</Text>
             </View>
         }
-        {/* rating result text */}
+        {/* rating result box */}
         {
           <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
-            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current === '...' ? 'black' : getRateTextColorForSuitBuild(), padding: 10, borderRadius: 10 }} >
-              <Text style={{ color: rateText.current === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current}</Text>
+            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current[0] === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current[1], padding: 10, borderRadius: 10 }} >
+              <Text style={{ color: rateText.current[0] === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current[0]}</Text>
             </View>
             <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class.current >= 0 ? RoundNumber(rateScore_Class.current * 10, 1) : 0}/10</Text>
             <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAbove3Stats.current >= 0 ? RoundNumber(rateScore_Class_BuildAbove3Stats.current * 10, 1) : 0}/10</Text>

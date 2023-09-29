@@ -476,10 +476,6 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
     lines = lines.filter(line => line && line.trim() !== '')
 
-    // remove ignored lines
-
-    lines = lines.filter(i => !IsIgnoredLine(i))
-
     if (lines.length <= 1)
         return 'text to regconize doesnt follow requires'
     
@@ -599,22 +595,4 @@ const IsNotIncludesAnyCharUpperLine = (line: string) => {
     }
 
     return true
-}
-
-const IsIgnoredLine = (line: string) => {
-    if (!line || line.trim() === '')
-        return true
-
-    // if (line.indexOf('[') < 0 && line.indexOf(']') >= 0) // 2] (Sorcerer Only)
-    //     return true
-
-    if (line.toLowerCase().includes('requires level') ||
-        line.toLowerCase().includes('sell value') ||
-        line.toLowerCase().includes('item power') ||
-        line.toLowerCase().includes('upgrades:') ||
-        IsNotIncludesAnyCharUpperLine(line) || // 1 dev // [7-8]% // 7.9]%
-        IsOnlyCharAndSpaceLine(line))
-        return true
-    else
-        return false
 }

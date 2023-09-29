@@ -203,3 +203,12 @@ test('text 18 CONJURATION INCEPTION ', () => {
 
   expect(JSON.stringify(card)).toBe(expected);
 }); 
+
+test('text 19 RIFT STAR ', () => {
+  const text = '\r\n\r\n23:38\r\nK\r\nMaxDiablo\r\nX\r\nClassesData.json\r\nData.html\r\nChats\r\n2\r\nDiablo Senpal\r\nAtack speed all Grass Banks of Fireball soc B\r\n151\r\n1627\r\nke\r\nالمصيبة\r\nD\r\nlear TOU\r\neng\r\nwarm s\r\nYOU\r\nNgoc\r\nRIFT STAR\r\nAncestral Rare Ring\r\n793 Item Power\r\n• 25.0% Cold Resistance [25.0]% • 25.0% Lightning Resistance [25.0]%\r\n• 5.5% Resource Generation (5.0- 12.0%\r\n• +5.0% Lucky Hit Chance [3.2-6.0]% • +17.5% Critical Strike Damage [10.5- 17.5]%\r\n• +4.2% Critical Strike Chance [1.8-\r\n5.0%\r\nChia sẻ\r\nate soc\r\nEmpty Vicious malignant socket\r\nRequires Level 800\r\ntoce; all cl class\r\nStor BAD\r\nSell Value: 23,849 @\r\nHily & seconds ang hulk\r\nthay & reconde trons\r\n□1\r\nThích Bình luận Ống kính\r\nO\r\n<\r\n4'
+  const expected = '{"slotName":"Ring","itemPower":793,"stats":[{"name":"Cold Resistance","min":25,"max":25,"isPercent":true,"value":25},{"name":"Lightning Resistance","min":25,"max":25,"isPercent":true,"value":25},{"name":"Resource Generation","min":5,"max":12,"isPercent":true,"value":5.5},{"name":"Lucky Hit Chance","min":3.2,"max":6,"isPercent":true,"value":5},{"name":"Critical Strike Damage","min":10.5,"max":17.5,"isPercent":true,"value":17.5},{"name":"Critical Strike Chance","min":1.8,"max":5,"isPercent":true,"value":4.2}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 

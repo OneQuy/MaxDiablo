@@ -45,10 +45,10 @@ const allStatsData: string[] = require('./assets/AllStats.json') // for valid st
 const ignoredStats: string[] = require('./assets/IgnoredStats.json') // for ignoring stats
 
 const DefaultGoodStats = [
-  'Core Skill Damage',
-  'Critical Strike Damage',
-  'All Stats',
-  'Vulnerable Damage',
+  'core skill damage',
+  'critical strike damage',
+  'all stats',
+  'vulnerable damage',
 ]
 
 function App(): JSX.Element {
@@ -202,11 +202,9 @@ function App(): JSX.Element {
           if (slot.slotName !== userSlot.slotName)
             continue
 
-          const statEquals = slot.stats.filter(stat => userSlot.stats.findIndex(a => a.name === stat.name) >= 0)
+          const statEquals = slot.stats.filter(stat => userSlot.stats.findIndex(a => a.name.toLowerCase() === stat.name.toLowerCase()) >= 0)
 
           if (statEquals.length >= linesMatchIsGood) {
-            // console.log('statEquals: ' + statEquals.length, ', suit build: ' + build.name, ', tier: ' + tier.name);
-
             suitBuilds.current.push([tier, build, slot, statEquals.length])
           }
         }
@@ -236,7 +234,7 @@ function App(): JSX.Element {
 
     // find in DefaultGoodStats 
 
-    const userGoodStats: Stat[] = userSlot.stats.filter(i => DefaultGoodStats.includes(i.name))
+    const userGoodStats: Stat[] = userSlot.stats.filter(stat => DefaultGoodStats.includes(stat.name.toLowerCase()))
 
     // find in class data
 
@@ -265,7 +263,7 @@ function App(): JSX.Element {
 
       // ingored stat
 
-      if (stat.name.includes('Resistance') ||
+      if (stat.name.toLowerCase().includes('resistance') ||
         ignoredStats.includes(stat.name)) {
         continue
       }
@@ -275,7 +273,7 @@ function App(): JSX.Element {
       for (let iclass = 0; iclass < slotOfClasses.classes.length; iclass++) {
         const classs = slotOfClasses.classes[iclass]
 
-        const findStats = classs.stats.filter(istat => stat.name === istat.name)
+        const findStats = classs.stats.filter(istat => stat.name.toLowerCase() === istat.name.toLowerCase())
 
         if (findStats.length > 0) {
           statsForRating.current.push([stat, classs, findStats[0], -1])
@@ -293,7 +291,7 @@ function App(): JSX.Element {
     // append default good stats
 
     userGoodStats.forEach(stat => {
-      if (statsForRating.current.findIndex(tuple => tuple[0].name === stat.name) < 0) {
+      if (statsForRating.current.findIndex(tuple => tuple[0].name.toLowerCase() === stat.name.toLowerCase()) < 0) {
         statsForRating.current.push([stat, undefined, undefined, -1])
       }
     })
@@ -377,7 +375,7 @@ function App(): JSX.Element {
     if (!slotCardRef.current)
       return 'white'
 
-    const idx = slotCardRef.current.stats.findIndex(i => i.name === stat)
+    const idx = slotCardRef.current.stats.findIndex(i => i.name.toLowerCase() === stat.toLowerCase())
 
     return idx >= 0 ? 'tomato' : 'white'
   }, [])
@@ -401,7 +399,7 @@ function App(): JSX.Element {
     if (!statsForRating.current || statsForRating.current.length === 0)
       return 0
 
-    const stat = statsForRating.current.find(i => i[0].name === statName)
+    const stat = statsForRating.current.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
 
     if (stat !== undefined) {
       if (x10)
@@ -420,7 +418,7 @@ function App(): JSX.Element {
     if (!statsForRating.current || statsForRating.current.length === 0)
       return 'green'
 
-    const stat = statsForRating.current.find(i => i[0].name === statName)
+    const stat = statsForRating.current.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
 
     if (stat !== undefined) {
       return getRateTypeByScore(stat[3])[0]
@@ -713,8 +711,9 @@ const FilterStats = (slot: SlotCard): SlotCard => {
     // remove duplicate stats
 
     for (let a = i + 1; a < slot.stats.length; a++) {
-      if (slot.stats[i].name === slot.stats[a].name) {
+      if (slot.stats[i].name.toLowerCase() === slot.stats[a].name.toLowerCase()) {
         slot.stats[i].name = 'hihi'
+        break
         // console.log('remmmm', slot.stats[a].name, slot.stats[i].min, slot.stats[i].max);
       }
     }

@@ -15,7 +15,7 @@ export const GenerateIgnoredStats = () => {
         const stat = GetStatFromTypeOfClassData(line)
 
         if (stat) { 
-            arr.push(stat.name)
+            arr.push(stat.name.toLowerCase())
         }
         else {
             LogRed('can not extract stat of line: ' + line)

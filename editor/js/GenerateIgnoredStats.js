@@ -12,7 +12,7 @@ var GenerateIgnoredStats = function () {
         var line = lines[i].trim();
         var stat = (0, GenerateClassData_1.GetStatFromTypeOfClassData)(line);
         if (stat) {
-            arr.push(stat.name);
+            arr.push(stat.name.toLowerCase());
         }
         else {
             (0, Utils_NodeJS_1.LogRed)('can not extract stat of line: ' + line);

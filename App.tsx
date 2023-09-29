@@ -264,7 +264,7 @@ function App(): JSX.Element {
       // ingored stat
 
       if (stat.name.toLowerCase().includes('resistance') ||
-        ignoredStats.includes(stat.name)) {
+        ignoredStats.includes(stat.name.toLowerCase())) {
         continue
       }
 

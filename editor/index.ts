@@ -25,11 +25,11 @@ const main = () => {
         else
             LogGreen('success')
     }
-    else if (IsParamExist('stats')) {
+    else if (IsParamExist('allstat')) {
         GenerateAllStatName()
         LogGreen('success')
     }
-    else if (IsParamExist('ignoredstats')) {
+    else if (IsParamExist('ignorestat')) {
         GenerateIgnoredStats()
         LogGreen('success')
     }

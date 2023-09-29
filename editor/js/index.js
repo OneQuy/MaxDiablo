@@ -24,11 +24,11 @@ var main = function () {
         else
             (0, Utils_NodeJS_1.LogGreen)('success');
     }
-    else if ((0, Utils_NodeJS_1.IsParamExist)('stats')) {
+    else if ((0, Utils_NodeJS_1.IsParamExist)('allstat')) {
         (0, GenerateAllStatName_1.GenerateAllStatName)();
         (0, Utils_NodeJS_1.LogGreen)('success');
     }
-    else if ((0, Utils_NodeJS_1.IsParamExist)('ignoredstats')) {
+    else if ((0, Utils_NodeJS_1.IsParamExist)('ignorestat')) {
         (0, GenerateIgnoredStats_1.GenerateIgnoredStats)();
         (0, Utils_NodeJS_1.LogGreen)('success');
     }

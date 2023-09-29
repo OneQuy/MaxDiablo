@@ -141,7 +141,7 @@ function App(): JSX.Element {
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
 
-    setStatus('Uploading...')
+    setStatus('Đang upload...')
 
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
@@ -488,7 +488,7 @@ function App(): JSX.Element {
       }
     };
 
-    setStatus('Processing...')
+    setStatus('Đang phân tích...')
 
     try {
       const response = await axios.request(options);

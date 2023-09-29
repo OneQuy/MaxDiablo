@@ -195,7 +195,7 @@ test('text 17 FIST TORTORER (KH)', () => {
   expect(JSON.stringify(card)).toBe(expected);
 }); 
 
-test('text 18 ', () => {
+test('text 18 CONJURATION INCEPTION ', () => {
   const text = '"\r\n\r\nIden\r\nCONJURATION INCEPTION\r\nAncestral Rare Wand\r\n763 Item Power\r\n993 Damage Per Second (+993) [662-994] Damage per Hit\r\n1.20 Attacks per Second (Very Fast Weapon)\r\n+10.0% Lucky Hit Chance [10.0]%\r\n+36.5% Basic Skill Damage [18.5- 39.5]%\r\n• +19.0% Core Skill Damage [12.5- 19.51%\r\n• +9.0% Damage to Burning Enemies [7.0-14.01%\r\n+10.0% Damage to Frozen Enemies\r\n19.5-16.51%\r\nEmpty Socket\r\nRequires Level 80"'
   const expected = '{"slotName":"Wand","itemPower":763,"stats":[{"name":"Lucky Hit Chance","min":10,"max":10,"isPercent":true,"value":10},{"name":"Basic Skill Damage","min":18.5,"max":39.5,"isPercent":true,"value":36.5},{"name":"Core Skill Damage","min":12.5,"max":19.5,"isPercent":true,"value":19},{"name":"Damage to Burning Enemies","min":7,"max":14,"isPercent":true,"value":9},{"name":"Damage to Frozen Enemies","min":9.5,"max":16.5,"isPercent":true,"value":10}]}'
 

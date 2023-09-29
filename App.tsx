@@ -541,11 +541,12 @@ function App(): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
-      {/* title */}
+      {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo [IV] Senpai</Text>
         <Text style={{ fontSize: 15, color: 'white' }}>(v{jsonPackage['version']})</Text>
       </View>
+      {/* the rest */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ marginHorizontal: Outline.Margin }}>

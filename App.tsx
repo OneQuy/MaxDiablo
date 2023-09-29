@@ -557,7 +557,7 @@ function App(): JSX.Element {
             <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
           </TouchableOpacity>
         </View>
-        {/* user upload image info */}
+        {/* user upload image & info */}
         <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
           {/* image */}
           <View style={{ flex: 0.8 }}>
@@ -566,9 +566,20 @@ function App(): JSX.Element {
                 <Image style={{ width: '100%', height: windowSize.height * 0.4, }} resizeMode='contain' source={{ uri: userImgUri.current }} />
             }
           </View>
-          {/* info */}
+          {/* loading & info */}
           {
-            !slotCardRef.current ? undefined :
+            // loading
+            !slotCardRef.current ?
+              <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
+                {
+                  userImgUri.current === '' || ocrResult.current ? undefined :
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
+                    <ActivityIndicator color={'tomato'} />
+                    <Text style={{ color: 'white' }}>{status}</Text>
+                  </View>
+                }
+              </View> :
+              // user stats info
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
                 {/* slot name  */}
                 <View style={{ flexDirection: 'row' }}>
@@ -606,14 +617,6 @@ function App(): JSX.Element {
               </View>
           }
         </View>
-        {/* status */}
-        {
-          userImgUri.current === '' || ocrResult.current ? undefined :
-            <View style={{ gap: Outline.Gap, marginTop: Outline.Gap, alignItems: 'center' }}>
-              <ActivityIndicator color={'tomato'} />
-              <Text style={{ color: 'white' }}>{status}</Text>
-            </View>
-        }
         {/* rating result box */}
         {
           <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>

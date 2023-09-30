@@ -5,8 +5,11 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Button,
   Image,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -55,6 +58,8 @@ const DefaultGoodStats = [
   'vulnerable damage',
 ]
 
+const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
+
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const userImgUri = useRef('')
@@ -67,6 +72,7 @@ function App(): JSX.Element {
   const rateScore_Class_BuildAbove3Stats = useRef(-1)
   const rateLimitText = useRef('')
   const scrollViewRef = useRef<ScrollView>(null)
+  const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -188,7 +194,26 @@ function App(): JSX.Element {
     if (!scrollViewRef.current)
       return
 
-    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true})
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true })
+  }, [])
+
+  const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const thresholdScrollHide = 100
+    const hideTop = 50
+
+    const native = event.nativeEvent
+
+    const nowY = native.contentOffset.y
+
+    const value = nowY > thresholdScrollHide ? 0 : hideTop
+    
+    Animated.spring(
+      scrollTopBtnAnimatedY,
+      {
+        toValue: value,
+        useNativeDriver: false,
+      }
+    ).start()
   }, [])
 
   const findSuitBuilds = useCallback(() => {
@@ -555,6 +580,8 @@ function App(): JSX.Element {
       {/* the rest */}
       <ScrollView
         ref={scrollViewRef}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         style={{ marginHorizontal: Outline.Margin }}>
         {/* select photo btns */}
@@ -583,10 +610,10 @@ function App(): JSX.Element {
               <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
                 {
                   userImgUri.current === '' || ocrResult.current ? undefined :
-                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
-                    <ActivityIndicator color={'tomato'} />
-                    <Text style={{ color: 'white' }}>{status}</Text>
-                  </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
+                      <ActivityIndicator color={'tomato'} />
+                      <Text style={{ color: 'white' }}>{status}</Text>
+                    </View>
                 }
               </View> :
               // user stats info
@@ -677,10 +704,12 @@ function App(): JSX.Element {
         }
       </ScrollView>
       {/* scrollToTop btn */}
-      <View pointerEvents='box-none' style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-        <TouchableOpacity onPress={scrollToTop} style={{justifyContent: 'center', alignItems: 'center', width: 35, height: 35, marginRight: 15, marginBottom: 15, borderRadius: 17, backgroundColor: 'white' }}>
-          <Image style={{width: 20, height: 20}} source={upArrowIcon} />
-        </TouchableOpacity>
+      <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+        <TouchableOpacityAnimated
+          onPress={scrollToTop}
+          style={{ top: scrollTopBtnAnimatedY, justifyContent: 'center', alignItems: 'center', width: 35, height: 35, marginRight: 15, marginBottom: 15, borderRadius: 17, backgroundColor: 'white' }}>
+          <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
+        </TouchableOpacityAnimated>
       </View>
     </SafeAreaView>
   )

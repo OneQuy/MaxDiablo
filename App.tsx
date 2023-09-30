@@ -429,10 +429,6 @@ function App(): JSX.Element {
       return 'dimgray'
   }, [])
 
-  const getRateTextColorForSuitBuild = useCallback(() => {
-    return getRateTypeByScore(rateScore_Class.current)[0]
-  }, [])
-
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
     ocrResult.current = JSON.stringify(result)
     let extractRes = ExtractSlotCard(result, stringifyResult)
@@ -669,6 +665,11 @@ function App(): JSX.Element {
             </View>
         }
       </ScrollView>
+      <View pointerEvents='box-none' style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+        <TouchableOpacity onPress={() => console.log(111)} style={{width: 50, height: 50, marginRight: 15, marginBottom: 15, borderRadius: 25, backgroundColor: 'tomato'}}>
+
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }

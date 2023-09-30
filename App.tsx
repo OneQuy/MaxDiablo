@@ -64,6 +64,7 @@ function App(): JSX.Element {
   const rateScore_Class = useRef(-1)
   const rateScore_Class_BuildAbove3Stats = useRef(-1)
   const rateLimitText = useRef('')
+  const scrollViewRef = useRef<ScrollView>(null)
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -179,6 +180,13 @@ function App(): JSX.Element {
     }
 
     await detectFromImgUrlAsync_ImageToText(getURLRes.url)
+  }, [])
+
+  const scrollToTop = useCallback(() => {
+    if (!scrollViewRef.current)
+      return
+
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true})
   }, [])
 
   const findSuitBuilds = useCallback(() => {
@@ -544,6 +552,7 @@ function App(): JSX.Element {
       </View>
       {/* the rest */}
       <ScrollView
+        ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         style={{ marginHorizontal: Outline.Margin }}>
         {/* select photo btns */}
@@ -665,8 +674,9 @@ function App(): JSX.Element {
             </View>
         }
       </ScrollView>
+      {/* scrollToTop btn */}
       <View pointerEvents='box-none' style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-        <TouchableOpacity onPress={() => console.log(111)} style={{width: 50, height: 50, marginRight: 15, marginBottom: 15, borderRadius: 25, backgroundColor: 'tomato'}}>
+        <TouchableOpacity onPress={scrollToTop} style={{width: 50, height: 50, marginRight: 15, borderRadius: 25, backgroundColor: 'tomato'}}>
 
         </TouchableOpacity>
       </View>

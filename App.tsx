@@ -38,6 +38,8 @@ import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDa
 //   keywords: ['fashion', 'clothing'],
 // });
 
+const upArrowIcon = require('./assets/images/up-arrow.png')
+
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
@@ -676,8 +678,8 @@ function App(): JSX.Element {
       </ScrollView>
       {/* scrollToTop btn */}
       <View pointerEvents='box-none' style={{position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-        <TouchableOpacity onPress={scrollToTop} style={{width: 50, height: 50, marginRight: 15, borderRadius: 25, backgroundColor: 'tomato'}}>
-
+        <TouchableOpacity onPress={scrollToTop} style={{justifyContent: 'center', alignItems: 'center', width: 35, height: 35, marginRight: 15, marginBottom: 15, borderRadius: 17, backgroundColor: 'white' }}>
+          <Image style={{width: 20, height: 20}} source={upArrowIcon} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

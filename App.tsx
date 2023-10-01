@@ -7,9 +7,11 @@ import {
   Alert,
   Animated,
   Button,
+  GestureResponderEvent,
   Image,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  NativeTouchEvent,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -73,6 +75,82 @@ function App(): JSX.Element {
   const rateLimitText = useRef('')
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
+
+  const imgScale = useRef(new Animated.Value(1)).current
+  const imgMove = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
+  const initialImg2TouchesDistance = useRef(-1)
+  const initialImgTouch1Event = useRef<NativeTouchEvent | null>(null)
+  const [isTouchingImg, setIsTouchingImg] = useState(false)
+
+  const imageResponse = useRef({
+    onTouchStart: (event: GestureResponderEvent) => {
+      const touches = event.nativeEvent.touches
+
+
+      if (touches.length !== 2)
+        return
+
+      setIsTouchingImg(true)
+
+      // move img
+
+      const t1 = touches[0]
+      initialImgTouch1Event.current = t1
+
+      // scale
+
+      const t2 = touches[1]
+
+      initialImg2TouchesDistance.current = Math.sqrt(
+        Math.pow(t1.pageX - t2.pageX, 2) +
+        Math.pow(t1.pageY - t2.pageY, 2))
+    },
+
+    onTouchMove: (event: GestureResponderEvent) => {
+      const touches = event.nativeEvent.touches
+
+      if (touches.length !== 2)
+        return
+
+      // move img
+
+      const t1 = touches[0]
+
+      if (initialImgTouch1Event.current) {
+        const newX = t1.pageX - initialImgTouch1Event.current.pageX
+        const newY = t1.pageY - initialImgTouch1Event.current.pageY
+
+        imgMove.setValue({
+          x: newX,
+          y: newY
+        })
+      }
+
+      // scale
+
+      const t2 = touches[1]
+
+      const currentDistance = Math.sqrt(
+        Math.pow(t1.pageX - t2.pageX, 2) +
+        Math.pow(t1.pageY - t2.pageY, 2))
+
+      const maxScale = 20
+
+      const scale = currentDistance / initialImg2TouchesDistance.current;
+
+      imgScale.setValue(Math.max(1, Math.min(maxScale, scale)))
+
+    },
+
+    onTouchEnd: (event: GestureResponderEvent) => {
+      imgScale.setValue(1)
+      imgMove.setValue({ x: 0, y: 0 })
+      setIsTouchingImg(false)
+    }
+
+    // onTouchCancel?: ((event: GestureResponderEvent) => void) | undefined;
+    // onTouchEndCapture?: ((event: GestureResponderEvent) => void) | undefined;
+  })
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -161,7 +239,7 @@ function App(): JSX.Element {
 
       return
     }
-
+    return
     const tempFilePath = 'tmpfile-' + Date.now()
     const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
 
@@ -206,7 +284,7 @@ function App(): JSX.Element {
     const nowY = native.contentOffset.y
 
     const value = nowY > thresholdScrollHide ? 0 : hideTop
-    
+
     Animated.spring(
       scrollTopBtnAnimatedY,
       {
@@ -570,7 +648,7 @@ function App(): JSX.Element {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
+    <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
       {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
@@ -579,6 +657,7 @@ function App(): JSX.Element {
       </View>
       {/* the rest */}
       <ScrollView
+        scrollEnabled={!isTouchingImg}
         ref={scrollViewRef}
         onScroll={onScroll}
         scrollEventThrottle={16}
@@ -597,10 +676,20 @@ function App(): JSX.Element {
         {/* user upload image & info */}
         <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
           {/* image */}
-          <View style={{ flex: 0.8 }}>
+          <View
+            // {...imageResponse.current}
+            style={{ flex: 0.8 }}>
             {
               userImgUri.current === '' ? undefined :
-                <Image style={{ width: '100%', height: windowSize.height * 0.4, }} resizeMode='contain' source={{ uri: userImgUri.current }} />
+                <Animated.Image
+                  style={[
+                    { width: '100%', height: windowSize.height * 0.4, },
+                    imgMove.getLayout(),
+                    {
+                      transform: [{ scale: imgScale }]
+                    }]}
+                  resizeMode='contain'
+                  source={{ uri: userImgUri.current }} />
             }
           </View>
           {/* loading & info */}

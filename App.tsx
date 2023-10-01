@@ -696,7 +696,7 @@ function App(): JSX.Element {
           {
             // loading
             !slotCardRef.current ?
-              <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
+              <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                 {
                   userImgUri.current === '' || ocrResult.current ? undefined :
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
@@ -745,7 +745,7 @@ function App(): JSX.Element {
         </View>
         {/* rating result box */}
         {
-          <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+          <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
             <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current[0] === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current[1], padding: 10, borderRadius: 10 }} >
               <Text style={{ color: rateText.current[0] === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current[0]}</Text>
             </View>
@@ -754,20 +754,20 @@ function App(): JSX.Element {
           </View>
         }
         {/* dev btns */}
-        <TouchableOpacity style={{ marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
+        <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
           <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
+        <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
           <Text style={{ color: 'gray' }}>[dev] copy ocr result</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: Outline.Gap }} onPress={onPressShowAds}>
+        <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={onPressShowAds}>
           <Text style={{ color: 'gray' }}>[dev] show ads</Text>
         </TouchableOpacity>
-        <Text style={{ marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
+        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
         {/* builds suit */}
         {
           !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
-            <View style={{ marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
               {
                 suitBuilds.current.map(([tier, build, slot, statsMatchedCount], index) => {
                   return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>

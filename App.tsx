@@ -117,12 +117,12 @@ function App(): JSX.Element {
       const t1 = touches[0]
 
       if (initialImgTouch1Event.current) {
-        const newX = t1.pageX - initialImgTouch1Event.current.pageX
-        const newY = t1.pageY - initialImgTouch1Event.current.pageY
+        const x = t1.pageX - initialImgTouch1Event.current.pageX
+        const y = t1.pageY - initialImgTouch1Event.current.pageY
 
         imgMove.setValue({
-          x: newX,
-          y: newY
+          x,
+          y
         })
       }
 
@@ -139,17 +139,22 @@ function App(): JSX.Element {
       const scale = currentDistance / initialImg2TouchesDistance.current;
 
       imgScale.setValue(Math.max(1, Math.min(maxScale, scale)))
-
     },
 
-    onTouchEnd: (event: GestureResponderEvent) => {
+    onTouchEnd: (_: GestureResponderEvent) => {
       imgScale.setValue(1)
       imgMove.setValue({ x: 0, y: 0 })
       setIsTouchingImg(false)
-    }
+    },
 
-    // onTouchCancel?: ((event: GestureResponderEvent) => void) | undefined;
-    // onTouchEndCapture?: ((event: GestureResponderEvent) => void) | undefined;
+    // onTouchCancel: (event: GestureResponderEvent) => {
+    //   console.log(11);
+      
+    // },
+
+    // onTouchEndCapture: (event: GestureResponderEvent) => {
+    //   console.log(22);
+    // },
   })
 
   const onPressUpload = useCallback(async () => {

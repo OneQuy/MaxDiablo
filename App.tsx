@@ -9,6 +9,8 @@ import {
   Button,
   GestureResponderEvent,
   Image,
+  LayoutChangeEvent,
+  LayoutRectangle,
   NativeScrollEvent,
   NativeSyntheticEvent,
   NativeTouchEvent,
@@ -18,7 +20,8 @@ import {
   StatusBar,
   Text,
   TouchableOpacity,
-  View
+  View,
+  ViewProps
 } from 'react-native';
 
 // @ts-ignore
@@ -33,6 +36,7 @@ import { Build, Classs, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
+import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 // import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 // import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
@@ -76,41 +80,51 @@ function App(): JSX.Element {
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
 
+  const [isTouchingImg, setIsTouchingImg] = useState(false)
   const imgScale = useRef(new Animated.Value(1)).current
   const imgMove = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
   const initialImg2TouchesDistance = useRef(-1)
-  const initialImgTouch1Event = useRef<NativeTouchEvent | null>(null)
-  const [isTouchingImg, setIsTouchingImg] = useState(false)
+  const initialImgTouch1Event = useRef<NativeTouchEvent | undefined>(undefined)
+  const imgViewMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
+  const imgViewMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
 
-  const imageResponse = useRef({
-    onTouchStart: (event: GestureResponderEvent) => {
+  const imageResponse = useRef<ViewProps>({
+    onMoveShouldSetResponder: (event: GestureResponderEvent) => {
       const touches = event.nativeEvent.touches
 
+      if (touches.length !== 2 || !imgViewMeasureResult.current)
+        return false
 
-      if (touches.length !== 2)
-        return
+      const t1 = touches[0]
+      const t2 = touches[1]
+
+      if (!IsPointInRectMeasure(t1.pageX, t1.pageY, imgViewMeasureResult.current) &&
+        !IsPointInRectMeasure(t2.pageX, t2.pageY, imgViewMeasureResult.current))
+        return false
+      
+      // can be moved!
 
       setIsTouchingImg(true)
 
       // move img
 
-      const t1 = touches[0]
       initialImgTouch1Event.current = t1
 
       // scale
 
-      const t2 = touches[1]
-
       initialImg2TouchesDistance.current = Math.sqrt(
         Math.pow(t1.pageX - t2.pageX, 2) +
         Math.pow(t1.pageY - t2.pageY, 2))
+
+      return true
     },
 
-    onTouchMove: (event: GestureResponderEvent) => {
+    onResponderMove: (event: GestureResponderEvent) => {
       const touches = event.nativeEvent.touches
 
-      if (touches.length !== 2)
+      if (touches.length !== 2) {
         return
+      }
 
       // move img
 
@@ -141,21 +155,32 @@ function App(): JSX.Element {
       imgScale.setValue(Math.max(1, Math.min(maxScale, scale)))
     },
 
-    onTouchEnd: (_: GestureResponderEvent) => {
-      imgScale.setValue(1)
-      imgMove.setValue({ x: 0, y: 0 })
-      setIsTouchingImg(false)
-    },
+    // onResponderTerminate: (_: GestureResponderEvent) => {
+    //   onMoveImgEnd()
+    //  },
 
-    // onTouchCancel: (event: GestureResponderEvent) => {
-    //   console.log(11);
-      
+    // onResponderReject: (_: GestureResponderEvent) => {
+    //  onMoveImgEnd()
+    // },
+    
+    // onResponderRelease: (_: GestureResponderEvent) => {
+    //  onMoveImgEnd()
+    // },
+    
+    // onResponderEnd: (_: GestureResponderEvent) => {
+    //  onMoveImgEnd()
     // },
 
-    // onTouchEndCapture: (event: GestureResponderEvent) => {
-    //   console.log(22);
-    // },
+    // onTouchEnd: () => onMoveImgEnd()
   })
+
+  const onMoveImgEnd = useCallback(() => {
+    console.log('end' + new Date());
+    
+    imgScale.setValue(1)
+    imgMove.setValue({ x: 0, y: 0 })
+    setIsTouchingImg(false)
+  }, [])
 
   const onPressUpload = useCallback(async () => {
     try {
@@ -278,6 +303,12 @@ function App(): JSX.Element {
       return
 
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true })
+  }, [])
+
+  const imgOnLayout = useCallback((_: LayoutChangeEvent) => {
+    imgViewMeasure.current.GetOrMessure((res) => {
+      imgViewMeasureResult.current = res
+    })
   }, [])
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -682,7 +713,8 @@ function App(): JSX.Element {
         <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
           {/* image */}
           <View
-            // {...imageResponse.current}
+            ref={imgViewMeasure.current.theRef}
+            onLayout={imgOnLayout}
             style={{ flex: 0.8 }}>
             {
               userImgUri.current === '' ? undefined :

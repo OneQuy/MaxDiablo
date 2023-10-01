@@ -78,6 +78,7 @@ function App(): JSX.Element {
   const rateScore_Class_BuildAbove3Stats = useRef(-1)
   const rateLimitText = useRef('')
   const scrollViewRef = useRef<ScrollView>(null)
+  const scrollViewCurrentOffsetY = useRef(0)
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
@@ -92,7 +93,9 @@ function App(): JSX.Element {
     onMoveShouldSetResponder: (event: GestureResponderEvent) => {
       const touches = event.nativeEvent.touches
 
-      if (touches.length !== 2 || !imgViewMeasureResult.current)
+      if (touches.length !== 2 || 
+          !imgViewMeasureResult.current ||
+          scrollViewCurrentOffsetY.current > 100)
         return false
 
       const t1 = touches[0]
@@ -170,11 +173,11 @@ function App(): JSX.Element {
     //  onMoveImgEnd()
     // },
     
-    // onResponderEnd: (_: GestureResponderEvent) => {
-    //  onMoveImgEnd()
-    // },
+    onResponderEnd: (_: GestureResponderEvent) => {
+     onMoveImgEnd()
+    },
 
-    onTouchEnd: () => onMoveImgEnd()
+    // onTouchEnd: () => onMoveImgEnd()
   })
 
   const onMoveImgEnd = useCallback(() => {
@@ -324,6 +327,7 @@ function App(): JSX.Element {
     const native = event.nativeEvent
 
     const nowY = native.contentOffset.y
+    scrollViewCurrentOffsetY.current = nowY
 
     const value = nowY > thresholdScrollHide ? 0 : hideTop
 
@@ -749,7 +753,7 @@ function App(): JSX.Element {
                 }
               </View> :
               // user stats info
-              <View style={{ marginLeft: Outline.Margin, flex: 1 }}>
+              <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                 {/* slot name  */}
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>

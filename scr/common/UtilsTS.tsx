@@ -1,4 +1,16 @@
-import { Alert, Platform, AlertButton, PermissionsAndroid } from "react-native";
+/*
+CATEGORIES:
+
+const
+color
+file / dir
+convert
+check type
+string utils
+other utils
+*/
+
+import { Alert, Platform, AlertButton, PermissionsAndroid, LayoutRectangle } from "react-native";
 
 // const -------------------------
 
@@ -356,6 +368,20 @@ export const ExtractAllNumbersInText = (text: string): number[] => {
 }
 
 // other utils ---------------------------
+
+export const IsPointInRect = ( // main
+    x: number, 
+    y: number, 
+    rectX: number,
+    rectY: number,
+    rectW: number,
+    rectH: number) => {
+    if (x >= rectX && x <= rectX + rectW &&
+        y >= rectY && y <= rectY + rectH)
+        return true
+    else
+        return false
+}
 
 export const ToCanPrint = (something: any) => {
     if (typeof something === 'object') {

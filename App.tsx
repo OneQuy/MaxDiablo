@@ -68,7 +68,7 @@ const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpaci
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
-  const userImgUri = useRef('')
+  const userImgUri = useRef('file:///storage/emulated/0/Pictures/0.jpg')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
   const rateText = useRef<[string, string]>(['...', 'black']) // rate text, rate box bg color
@@ -121,8 +121,11 @@ function App(): JSX.Element {
 
     onResponderMove: (event: GestureResponderEvent) => {
       const touches = event.nativeEvent.touches
+      console.log('touching', touches.length, Date.now());
 
       if (touches.length !== 2) {
+        console.log('not 2 touch');
+        
         return
       }
 
@@ -171,11 +174,11 @@ function App(): JSX.Element {
     //  onMoveImgEnd()
     // },
 
-    // onTouchEnd: () => onMoveImgEnd()
+    onTouchEnd: () => onMoveImgEnd()
   })
 
   const onMoveImgEnd = useCallback(() => {
-    console.log('end' + new Date());
+    console.log('end ' + Date.now());
     
     imgScale.setValue(1)
     imgMove.setValue({ x: 0, y: 0 })
@@ -201,6 +204,9 @@ function App(): JSX.Element {
 
         const path = Platform.OS === 'android' ? 'file://' + response.realPath : response.path;
         onSelectedImg(path)
+
+        console.log(path);
+        
       }
     }
     catch (e) {

@@ -35,15 +35,19 @@ import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
-// import { CheckAndInitAdmobAsync } from './scr/common/Admob';
-// import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
+import { CheckAndInitAdmobAsync } from './scr/common/Admob';
+import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
-// const adUnitId = true ? TestIds.INTERSTITIAL : (Platform.OS === 'android' ? 'ca-app-pub-9208244284687724/8105396391' : 'ca-app-pub-9208244284687724/4249911866');
+const adID_Test = TestIds.INTERSTITIAL
 
-// const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
-//   requestNonPersonalizedAdsOnly: true,
-//   keywords: ['fashion', 'clothing'],
-// });
+const adID = Platform.OS === 'android' ? 
+      'ca-app-pub-9208244284687724/8105396391' : 
+      'ca-app-pub-9208244284687724/4249911866'
+
+const interstitial = InterstitialAd.createForAdRequest(adID_Test, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
 
 const upArrowIcon = require('./assets/images/up-arrow.png')
 
@@ -91,9 +95,9 @@ function App(): JSX.Element {
     onMoveShouldSetResponder: (event: GestureResponderEvent) => {
       const touches = event.nativeEvent.touches
 
-      if (touches.length !== 2 || 
-          !imgViewMeasureResult.current ||
-          scrollViewCurrentOffsetY.current > 100)
+      if (touches.length !== 2 ||
+        !imgViewMeasureResult.current ||
+        scrollViewCurrentOffsetY.current > 100)
         return false
 
       const t1 = touches[0]
@@ -102,7 +106,7 @@ function App(): JSX.Element {
       if (!IsPointInRectMeasure(t1.pageX, t1.pageY, imgViewMeasureResult.current) &&
         !IsPointInRectMeasure(t2.pageX, t2.pageY, imgViewMeasureResult.current))
         return false
-      
+
       // can be moved!
 
       setIsTouchingImg(true)
@@ -163,13 +167,13 @@ function App(): JSX.Element {
     // onResponderReject: (_: GestureResponderEvent) => {
     //  onMoveImgEnd()
     // },
-    
+
     // onResponderRelease: (_: GestureResponderEvent) => {
     //  onMoveImgEnd()
     // },
-    
+
     onResponderEnd: (_: GestureResponderEvent) => {
-     onMoveImgEnd()
+      onMoveImgEnd()
     },
   })
 
@@ -236,7 +240,7 @@ function App(): JSX.Element {
   }, [])
 
   const onPressShowAds = useCallback(async () => {
-    // interstitial.show()
+    interstitial.show()
   }, [])
 
   const onPressCopyOCRResult = useCallback(async () => {
@@ -266,7 +270,7 @@ function App(): JSX.Element {
 
       return
     }
-    
+
     const tempFilePath = 'tmpfile-' + Date.now()
     const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
 
@@ -668,17 +672,29 @@ function App(): JSX.Element {
   useEffect(() => {
     FirebaseInit()
 
-    // CheckAndInitAdmobAsync();
+    CheckAndInitAdmobAsync();
 
-    // const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-    //   console.log('loaded ads')
-    // });
+    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      console.log('loaded ads')
+    });
 
-    // // Start loading the interstitial straight away
-    // interstitial.load();
+    const unsubscribe2 = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      console.log('closed ads')
+      interstitial.load();
+    });
+    
+    const unsubscribe3 = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
+      console.log('error ads', e)
+      // interstitial.load();
+    });
 
-    // // Unsubscribe from events on unmount
-    // return unsubscribe;
+    interstitial.load();
+
+    return () => {
+      unsubscribe()
+      unsubscribe2()
+      unsubscribe3()
+    }
   }, [])
 
   return (

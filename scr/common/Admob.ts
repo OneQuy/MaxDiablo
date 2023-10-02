@@ -16,9 +16,12 @@ export const CheckAndInitAdmobAsync = async () => {
     //     await request(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY);
     // }
 
-    mobileAds()
-        .initialize()
-        .then(_ => {
-            console.log('Initialization complete!')
-        });
+    // mobileAds()
+    //     .initialize()
+    //     .then(_ => {
+    //         console.log('Initialization complete!')
+    //     });
+
+    await mobileAds().initialize()
+    // console.log('Initialization complete!')
 }

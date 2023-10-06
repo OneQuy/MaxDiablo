@@ -530,7 +530,7 @@ function App(): JSX.Element {
 
     const idx = slotCardRef.current.stats.findIndex(i => i.name.toLowerCase() === stat.toLowerCase())
 
-    return idx >= 0 ? 'tomato' : 'white'
+    return idx >= 0 ? 'white' : 'gray'
   }, [])
 
   const getRateTypeByScore = useCallback((rawFloatScore: number) => {
@@ -577,7 +577,7 @@ function App(): JSX.Element {
       return getRateTypeByScore(stat[3])[0]
     }
     else
-      return 'dimgray'
+      return 'gray'
   }, [])
 
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
@@ -697,6 +697,8 @@ function App(): JSX.Element {
     }
   }, [])
 
+  const notShowSuitBuilds = !suitBuilds.current || suitBuilds.current.length === 0
+
   return (
     <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
@@ -800,12 +802,12 @@ function App(): JSX.Element {
             <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current[0] === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current[1], padding: 10, borderRadius: 10 }} >
               <Text style={{ color: rateText.current[0] === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current[0]}</Text>
             </View>
-            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class.current >= 0 ? RoundNumber(rateScore_Class.current * 10, 1) : 0}/10</Text>
+            {/* <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class.current >= 0 ? RoundNumber(rateScore_Class.current * 10, 1) : 0}/10</Text> */}
             <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAbove3Stats.current >= 0 ? RoundNumber(rateScore_Class_BuildAbove3Stats.current * 10, 1) : 0}/10</Text>
           </View>
         }
         {/* dev btns */}
-        <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
+        {/* <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
           <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
@@ -813,17 +815,17 @@ function App(): JSX.Element {
         </TouchableOpacity>
         <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={onPressShowAds}>
           <Text style={{ color: 'gray' }}>[dev] show ads</Text>
-        </TouchableOpacity>
-        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
+        </TouchableOpacity> */}
         {/* builds suit */}
         {
-          !suitBuilds.current || suitBuilds.current.length === 0 ? undefined :
-            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+           notShowSuitBuilds ? undefined :
+            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
+              <Text style={{ color: 'white', fontSize: FontSize.Big }}>Danh sách build thích hợp:</Text>
               {
-                suitBuilds.current.map(([tier, build, slot, statsMatchedCount], index) => {
+                suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
                   return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
                     {/* build name  */}
-                    <Text style={{ color: 'yellow', fontSize: FontSize.Big }}>{build.name}</Text>
+                    <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{build.name}</Text>
                     {/* tier & slot name */}
                     <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
                       <Text style={{ color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
@@ -833,7 +835,7 @@ function App(): JSX.Element {
                     <View style={{ gap: Outline.Gap }}>
                       {
                         slot.stats.map((stat, index) => {
-                          return <Text key={stat.name + index} style={{ color: getStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]%</Text>
+                          return <Text key={stat.name + index} style={{ color: getStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}</Text>
                         })
                       }
                     </View>
@@ -842,6 +844,8 @@ function App(): JSX.Element {
               }
             </View>
         }
+      {/* remain count */}
+      <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
       </ScrollView>
       {/* scrollToTop btn */}
       <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>

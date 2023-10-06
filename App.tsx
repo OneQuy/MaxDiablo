@@ -40,9 +40,9 @@ import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile
 
 const adID_Test = TestIds.INTERSTITIAL
 
-const adID = Platform.OS === 'android' ? 
-      'ca-app-pub-9208244284687724/8105396391' : 
-      'ca-app-pub-9208244284687724/4249911866'
+const adID = Platform.OS === 'android' ?
+  'ca-app-pub-9208244284687724/8105396391' :
+  'ca-app-pub-9208244284687724/4249911866'
 
 const interstitial = InterstitialAd.createForAdRequest(adID, {
   requestNonPersonalizedAdsOnly: true,
@@ -50,6 +50,7 @@ const interstitial = InterstitialAd.createForAdRequest(adID, {
 });
 
 const upArrowIcon = require('./assets/images/up-arrow.png')
+const starIcon = require('./assets/images/star-icon.png')
 
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
@@ -682,7 +683,7 @@ function App(): JSX.Element {
       console.log('closed ads')
       interstitial.load();
     });
-    
+
     const unsubscribe3 = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
       console.log('error ads', e)
       // interstitial.load();
@@ -818,7 +819,7 @@ function App(): JSX.Element {
         </TouchableOpacity> */}
         {/* builds suit */}
         {
-           notShowSuitBuilds ? undefined :
+          notShowSuitBuilds ? undefined :
             <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
               <Text style={{ color: 'white', fontSize: FontSize.Normal }}>Danh sách build thích hợp:</Text>
               {
@@ -830,6 +831,13 @@ function App(): JSX.Element {
                     <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
                       <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
                       <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                      {
+                        statsMatchedCount < 3 ? undefined :
+                        <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
+                          <Image source={starIcon} style={{ width: 14, height: 14 }} />
+                          <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>Ngon</Text>
+                        </View>
+                      }
                       <View style={{ flex: 1 }} />
                     </View>
                     <View style={{ gap: Outline.Gap }}>
@@ -844,8 +852,8 @@ function App(): JSX.Element {
               }
             </View>
         }
-      {/* remain count */}
-      <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
+        {/* remain count */}
+        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
       </ScrollView>
       {/* scrollToTop btn */}
       <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>

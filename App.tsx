@@ -44,7 +44,7 @@ const adID = Platform.OS === 'android' ?
       'ca-app-pub-9208244284687724/8105396391' : 
       'ca-app-pub-9208244284687724/4249911866'
 
-const interstitial = InterstitialAd.createForAdRequest(adID_Test, {
+const interstitial = InterstitialAd.createForAdRequest(adID, {
   requestNonPersonalizedAdsOnly: true,
   keywords: ['fashion', 'clothing'],
 });

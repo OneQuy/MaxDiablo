@@ -828,8 +828,8 @@ function App(): JSX.Element {
                     <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{build.name}</Text>
                     {/* tier & slot name */}
                     <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
-                      <Text style={{ color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
-                      <Text style={{ color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                      <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
+                      <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
                       <View style={{ flex: 1 }} />
                     </View>
                     <View style={{ gap: Outline.Gap }}>

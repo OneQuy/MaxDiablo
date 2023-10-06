@@ -820,7 +820,7 @@ function App(): JSX.Element {
         {
            notShowSuitBuilds ? undefined :
             <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
-              <Text style={{ color: 'white', fontSize: FontSize.Big }}>Danh sách build thích hợp:</Text>
+              <Text style={{ color: 'white', fontSize: FontSize.Normal }}>Danh sách build thích hợp:</Text>
               {
                 suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
                   return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>

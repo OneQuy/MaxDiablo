@@ -128,6 +128,7 @@ function ExtractSlotCardFromHTML(htmlString, ignoreLineCantExtractStat) {
 }
 exports.ExtractSlotCardFromHTML = ExtractSlotCardFromHTML;
 var checkAndRemoveStats = function (stats) {
+    // remove 'Resistance'
     stats = stats.filter(function (stat) {
         var valid = !stat.name.includes('Resistance');
         return valid;
@@ -137,11 +138,22 @@ var checkAndRemoveStats = function (stats) {
         for (var a = i + 1; a < stats.length; a++) {
             if (stats[i].name === stats[a].name) {
                 stats[i].name = 'hihi';
-                console.log('remmmm', stats[a].name, stats[i].min, stats[i].max);
+                // console.log('remmmm', stats[a].name, stats[i].min, stats[i].max);
             }
         }
     }
     stats = stats.filter(function (i) { return i.name !== 'hihi'; });
+    // remove same value range stats
+    while (true) {
+        if (stats.length <= 4)
+            break;
+        if (stats[0].min === stats[0].max) {
+            console.log('remmmm', stats[0].name, stats[0].min, stats[0].max);
+            console.log('aaa', stats.length);
+            stats = stats.slice(1);
+            console.log('bbb', stats.length);
+        }
+    }
     return stats;
 };
 var IsNumOrDot = function (c) {

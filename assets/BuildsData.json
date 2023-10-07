@@ -112,13 +112,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
-       {
         "name": "Movement Speed",
         "isPercent": true,
         "min": 15.8,
@@ -287,13 +280,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Overpower Damage",
-        "isPercent": true,
-        "min": 47.3,
-        "max": 47.3,
-        "value": 47.3
-       },
-       {
         "name": "Strength",
         "isPercent": false,
         "min": 57,
@@ -328,13 +314,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Overpower Damage",
-        "isPercent": true,
-        "min": 47.3,
-        "max": 47.3,
-        "value": 47.3
-       },
-       {
         "name": "Strength",
         "isPercent": false,
         "min": 57,
@@ -368,13 +347,6 @@
       "slotName": "Two-Handed Mace",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Overpower Damage",
-        "isPercent": true,
-        "min": 94.5,
-        "max": 94.5,
-        "value": 94.5
-       },
        {
         "name": "All Stats",
         "isPercent": false,
@@ -512,13 +484,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
-       {
         "name": "Damage Reduction while Injured",
         "isPercent": true,
         "min": 25.1,
@@ -625,13 +590,6 @@
       "slotName": "Dagger",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 30
-       },
        {
         "name": "Basic Skill Attack Speed",
         "isPercent": true,
@@ -868,13 +826,6 @@
       "slotName": "Wand",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 15,
-        "max": 15,
-        "value": 15
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -1172,13 +1123,6 @@
       "slotName": "Dagger",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 30
-       },
        {
         "name": "Basic Skill Attack Speed",
         "isPercent": true,
@@ -1484,13 +1428,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Damage to Distant Enemies",
-        "isPercent": true,
-        "min": 60,
-        "max": 60,
-        "value": 60
-       },
-       {
         "name": "Vulnerable Damage",
         "isPercent": true,
         "min": 21,
@@ -1795,13 +1732,6 @@
       "itemPower": 800,
       "stats": [
        {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
-       {
         "name": "Movement Speed",
         "isPercent": true,
         "min": 15.8,
@@ -2038,13 +1968,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Overpower Damage",
-        "isPercent": true,
-        "min": 94.5,
-        "max": 94.5,
-        "value": 94.5
-       },
-       {
         "name": "Vulnerable Damage",
         "isPercent": true,
         "min": 21,
@@ -2181,13 +2104,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
-       {
         "name": "Movement Speed",
         "isPercent": true,
         "min": 15.8,
@@ -2265,13 +2181,6 @@
       "slotName": "Wand",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 15,
-        "max": 15,
-        "value": 15
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -2374,13 +2283,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Mana Cost Reduction",
         "isPercent": true,
@@ -2922,13 +2824,6 @@
       "itemPower": 800,
       "stats": [
        {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 15,
-        "max": 15,
-        "value": 15
-       },
-       {
         "name": "Overpower Damage",
         "isPercent": true,
         "min": 31.5,
@@ -3031,13 +2926,6 @@
       "itemPower": 800,
       "stats": [
        {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
-       {
         "name": "Movement Speed",
         "isPercent": true,
         "min": 15.8,
@@ -3132,27 +3020,6 @@
       "slotName": "Shield",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Block Chance",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 30
-       },
-       {
-        "name": "Blocked Damage Reduction",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 90
-       },
-       {
-        "name": "Main Hand Weapon Damage",
-        "isPercent": true,
-        "min": 120,
-        "max": 120,
-        "value": 120
-       },
        {
         "name": "Thorns",
         "isPercent": false,
@@ -3294,13 +3161,6 @@
       "slotName": "Dagger",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 30
-       },
        {
         "name": "Intelligence",
         "isPercent": false,
@@ -3646,13 +3506,6 @@
       "slotName": "Wand",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 15,
-        "max": 15,
-        "value": 15
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -4060,13 +3913,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Overpower Damage",
-        "isPercent": true,
-        "min": 94.5,
-        "max": 94.5,
-        "value": 94.5
-       },
-       {
         "name": "Vulnerable Damage",
         "isPercent": true,
         "min": 21,
@@ -4202,13 +4048,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Movement Speed",
         "isPercent": true,
@@ -4412,13 +4251,6 @@
       "itemPower": 800,
       "stats": [
        {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 15,
-        "max": 15,
-        "value": 15
-       },
-       {
         "name": "Core Skill Damage",
         "isPercent": true,
         "min": 18.8,
@@ -4520,13 +4352,6 @@
       "slotName": "Boots",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Ranks of Frost Nova",
         "isPercent": false,
@@ -4763,13 +4588,6 @@
       "slotName": "Axe",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 42,
-        "max": 42,
-        "value": 42
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -5218,13 +5036,6 @@
       "itemPower": 800,
       "stats": [
        {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
-       {
         "name": "Movement Speed",
         "isPercent": true,
         "min": 15.8,
@@ -5427,13 +5238,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 42,
-        "max": 42,
-        "value": 42
-       },
-       {
         "name": "Vulnerable Damage",
         "isPercent": true,
         "min": 10.5,
@@ -5467,13 +5271,6 @@
       "slotName": "Axe",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 42,
-        "max": 42,
-        "value": 42
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -5509,13 +5306,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Overpower Damage",
-        "isPercent": true,
-        "min": 94.5,
-        "max": 94.5,
-        "value": 94.5
-       },
-       {
         "name": "Vulnerable Damage",
         "isPercent": true,
         "min": 21,
@@ -5549,13 +5339,6 @@
       "slotName": "Two-Handed Axe",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 84,
-        "max": 84,
-        "value": 84
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -5624,13 +5407,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Movement Speed",
         "isPercent": true,
@@ -5841,13 +5617,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 42,
-        "max": 42,
-        "value": 42
-       },
-       {
         "name": "Vulnerable Damage",
         "isPercent": true,
         "min": 10.5,
@@ -5949,13 +5718,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Movement Speed",
         "isPercent": true,
@@ -6302,13 +6064,6 @@
       "itemPower": 820,
       "stats": [
        {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 84,
-        "max": 84,
-        "value": 84
-       },
-       {
         "name": "All Stats",
         "isPercent": false,
         "min": 60,
@@ -6410,13 +6165,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Movement Speed",
         "isPercent": true,
@@ -6632,13 +6380,6 @@
       "itemPower": 800,
       "stats": [
        {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 15,
-        "max": 15,
-        "value": 15
-       },
-       {
         "name": "Lightning Critical Strike Damage",
         "isPercent": true,
         "min": 15.8,
@@ -6665,6 +6406,40 @@
         "min": 57,
         "max": 78,
         "value": 78
+       }
+      ]
+     },
+     {
+      "slotName": "Chest Armor",
+      "itemPower": 800,
+      "stats": [
+       {
+        "name": "Intelligence",
+        "isPercent": false,
+        "min": 42,
+        "max": 63,
+        "value": 63
+       },
+       {
+        "name": "Damage to Close Enemies",
+        "isPercent": true,
+        "min": 24.8,
+        "max": 35.3,
+        "value": 35.3
+       },
+       {
+        "name": "Damage to Stunned Enemies",
+        "isPercent": true,
+        "min": 24.8,
+        "max": 35.3,
+        "value": 35.3
+       },
+       {
+        "name": "Rank of the Glass Cannon Passive",
+        "isPercent": false,
+        "min": 1,
+        "max": 1,
+        "value": 1
        }
       ]
      }
@@ -6716,13 +6491,6 @@
       "slotName": "Dagger",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 30
-       },
        {
         "name": "Basic Skill Attack Speed",
         "isPercent": true,
@@ -6983,6 +6751,40 @@
         "value": 23.7
        }
       ]
+     },
+     {
+      "slotName": "Ring",
+      "itemPower": 800,
+      "stats": [
+       {
+        "name": "Vulnerable Damage",
+        "isPercent": true,
+        "min": 10.5,
+        "max": 21,
+        "value": 35.3
+       },
+       {
+        "name": "Critical Strike Damage",
+        "isPercent": true,
+        "min": 15.8,
+        "max": 26.2,
+        "value": 31.5
+       },
+       {
+        "name": "Critical Strike Damage with Imbued Skills",
+        "isPercent": true,
+        "min": 15.8,
+        "max": 26.2,
+        "value": 31.5
+       },
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       }
+      ]
      }
     ]
    },
@@ -7061,13 +6863,6 @@
       "slotName": "Boots",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Essence Cost Reduction",
         "isPercent": true,
@@ -7292,6 +7087,40 @@
         "min": 5,
         "max": 14,
         "value": 11
+       }
+      ]
+     },
+     {
+      "slotName": "Ring",
+      "itemPower": 800,
+      "stats": [
+       {
+        "name": "Critical Strike Damage",
+        "isPercent": true,
+        "min": 15.8,
+        "max": 26.2,
+        "value": 26.2
+       },
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       },
+       {
+        "name": "Maximum Essence",
+        "isPercent": false,
+        "min": 5,
+        "max": 14,
+        "value": 14
+       },
+       {
+        "name": "Vulnerable Damage",
+        "isPercent": true,
+        "min": 10.5,
+        "max": 21,
+        "value": 21
        }
       ]
      }
@@ -7591,6 +7420,40 @@
         "value": 17.4
        }
       ]
+     },
+     {
+      "slotName": "Ring",
+      "itemPower": 800,
+      "stats": [
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       },
+       {
+        "name": "Vulnerable Damage",
+        "isPercent": true,
+        "min": 10.5,
+        "max": 21,
+        "value": 21
+       },
+       {
+        "name": "Critical Strike Damage",
+        "isPercent": true,
+        "min": 15.8,
+        "max": 26.2,
+        "value": 26.2
+       },
+       {
+        "name": "Resource Generation",
+        "isPercent": true,
+        "min": 7.6,
+        "max": 18.5,
+        "value": 18
+       }
+      ]
      }
     ]
    },
@@ -7601,13 +7464,6 @@
       "slotName": "Dagger",
       "itemPower": 800,
       "stats": [
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 30
-       },
        {
         "name": "Basic Skill Attack Speed",
         "isPercent": true,
@@ -7902,6 +7758,40 @@
         "value": 23.7
        }
       ]
+     },
+     {
+      "slotName": "Ring",
+      "itemPower": 800,
+      "stats": [
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       },
+       {
+        "name": "Vulnerable Damage",
+        "isPercent": true,
+        "min": 10.5,
+        "max": 21,
+        "value": 21
+       },
+       {
+        "name": "Critical Strike Damage",
+        "isPercent": true,
+        "min": 15.8,
+        "max": 26.2,
+        "value": 26.2
+       },
+       {
+        "name": "Maximum Life",
+        "isPercent": false,
+        "min": 559,
+        "max": 1211,
+        "value": 1211
+       }
+      ]
      }
     ]
    },
@@ -7912,13 +7802,6 @@
       "slotName": "Axe",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 42,
-        "max": 42,
-        "value": 42
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -7987,13 +7870,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Movement Speed",
         "isPercent": true,
@@ -8220,6 +8096,40 @@
         "value": 18.5
        }
       ]
+     },
+     {
+      "slotName": "Totem",
+      "itemPower": 820,
+      "stats": [
+       {
+        "name": "Cooldown Reduction",
+        "isPercent": true,
+        "min": 6.2,
+        "max": 10.3,
+        "value": 10.3
+       },
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       },
+       {
+        "name": "Damage Reduction while Fortified",
+        "isPercent": true,
+        "min": 7.3,
+        "max": 15.3,
+        "value": 15.3
+       },
+       {
+        "name": "Damage Reduction from Enemies That Are Poisoned",
+        "isPercent": true,
+        "min": 7.4,
+        "max": 17.4,
+        "value": 17.4
+       }
+      ]
      }
     ]
    },
@@ -8230,13 +8140,6 @@
       "slotName": "Axe",
       "itemPower": 700,
       "stats": [
-       {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 42,
-        "max": 42,
-        "value": 42
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -8531,6 +8434,40 @@
         "value": 818
        }
       ]
+     },
+     {
+      "slotName": "Totem",
+      "itemPower": 820,
+      "stats": [
+       {
+        "name": "Cooldown Reduction",
+        "isPercent": true,
+        "min": 6.2,
+        "max": 10.3,
+        "value": 10.3
+       },
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       },
+       {
+        "name": "Lucky Hit Chance",
+        "isPercent": true,
+        "min": 4.8,
+        "max": 9,
+        "value": 9
+       },
+       {
+        "name": "Damage Reduction from Enemies That Are Poisoned",
+        "isPercent": true,
+        "min": 7.4,
+        "max": 17.4,
+        "value": 17.4
+       }
+      ]
      }
     ]
    },
@@ -8541,13 +8478,6 @@
       "slotName": "Staff",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Damage to Crowd Controlled Enemies",
-        "isPercent": true,
-        "min": 52.5,
-        "max": 52.5,
-        "value": 52.5
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -8616,13 +8546,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Movement Speed",
         "isPercent": true,
@@ -8894,13 +8817,6 @@
       "itemPower": 800,
       "stats": [
        {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 30,
-        "max": 30,
-        "value": 30
-       },
-       {
         "name": "Basic Skill Damage",
         "isPercent": true,
         "min": 27.7,
@@ -9153,6 +9069,40 @@
         "value": 23.7
        }
       ]
+     },
+     {
+      "slotName": "Ring",
+      "itemPower": 800,
+      "stats": [
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       },
+       {
+        "name": "Vulnerable Damage",
+        "isPercent": true,
+        "min": 10.5,
+        "max": 21,
+        "value": 21
+       },
+       {
+        "name": "Critical Strike Damage",
+        "isPercent": true,
+        "min": 15.8,
+        "max": 26.2,
+        "value": 26.2
+       },
+       {
+        "name": "Maximum Life",
+        "isPercent": false,
+        "min": 559,
+        "max": 1211,
+        "value": 1211
+       }
+      ]
      }
     ]
    },
@@ -9163,13 +9113,6 @@
       "slotName": "Axe",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Damage to Healthy Enemies",
-        "isPercent": true,
-        "min": 42,
-        "max": 42,
-        "value": 42
-       },
        {
         "name": "Vulnerable Damage",
         "isPercent": true,
@@ -9238,13 +9181,6 @@
       "slotName": "Boots",
       "itemPower": 820,
       "stats": [
-       {
-        "name": "Max Evade Charges",
-        "isPercent": false,
-        "min": 3,
-        "max": 3,
-        "value": 3
-       },
        {
         "name": "Movement Speed",
         "isPercent": true,
@@ -9469,6 +9405,40 @@
         "min": 4.8,
         "max": 9,
         "value": 9
+       }
+      ]
+     },
+     {
+      "slotName": "Totem",
+      "itemPower": 820,
+      "stats": [
+       {
+        "name": "Cooldown Reduction",
+        "isPercent": true,
+        "min": 6.2,
+        "max": 10.3,
+        "value": 10.3
+       },
+       {
+        "name": "Critical Strike Chance",
+        "isPercent": true,
+        "min": 2.7,
+        "max": 7.5,
+        "value": 7.5
+       },
+       {
+        "name": "Lucky Hit Chance",
+        "isPercent": true,
+        "min": 4.8,
+        "max": 9,
+        "value": 9
+       },
+       {
+        "name": "Damage Reduction from Enemies That Are Poisoned",
+        "isPercent": true,
+        "min": 7.4,
+        "max": 17.4,
+        "value": 17.4
        }
       ]
      }

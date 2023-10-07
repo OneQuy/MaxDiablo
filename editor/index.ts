@@ -31,7 +31,6 @@ const main = () => {
     }
     else if (IsParamExist('ignorestat')) {
         GenerateIgnoredStats()
-        LogGreen('success')
     }
 }
 

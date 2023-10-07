@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.GetStatFromTypeOfClassData = exports.IsChar = exports.GenerateClassData = exports.GenerateSlot = void 0;
+exports.GetStatFromTypeOfClassData = exports.IsChar = exports.IsValidSlotName = exports.GenerateClassData = exports.GenerateSlot = void 0;
 var Types_1 = require("./Types");
 var Utils_NodeJS_1 = require("./Utils_NodeJS");
 var node_html_parser_1 = require("node-html-parser");
@@ -58,7 +58,7 @@ var GenerateClassData = function () {
         var slotNameTxt = (_a = slot.querySelector('.stats__slot__name')) === null || _a === void 0 ? void 0 : _a.structuredText;
         if (!slotNameTxt)
             return '[ne]';
-        var slotName = IsValidSlotName(slotNameTxt);
+        var slotName = (0, exports.IsValidSlotName)(slotNameTxt);
         if (!slotName)
             return '[ne]';
         var nodeAllValues = slot.querySelector('.stats__slot__all__values');
@@ -91,6 +91,7 @@ var IsValidSlotName = function (name) {
     }
     return undefined;
 };
+exports.IsValidSlotName = IsValidSlotName;
 var IsValidClassName = function (name) {
     var names = Object.values(Types_1.ClassName);
     for (var i = 0; i < names.length; i++) {

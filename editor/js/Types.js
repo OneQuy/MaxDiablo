@@ -3,6 +3,7 @@ exports.__esModule = true;
 exports.ClassName = exports.SlotName = void 0;
 var SlotName;
 (function (SlotName) {
+    SlotName["None"] = "None";
     SlotName["Helm"] = "Helm";
     SlotName["ChestArmor"] = "Chest Armor";
     SlotName["Gloves"] = "Gloves";

@@ -30,7 +30,6 @@ var main = function () {
     }
     else if ((0, Utils_NodeJS_1.IsParamExist)('ignorestat')) {
         (0, GenerateIgnoredStats_1.GenerateIgnoredStats)();
-        (0, Utils_NodeJS_1.LogGreen)('success');
     }
 };
 main();

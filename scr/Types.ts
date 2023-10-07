@@ -1,4 +1,6 @@
 export enum SlotName {
+    None = 'None',
+    
     Helm = 'Helm',
     ChestArmor = 'Chest Armor',
     Gloves = 'Gloves',

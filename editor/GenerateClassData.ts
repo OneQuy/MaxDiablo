@@ -105,7 +105,7 @@ export const GenerateClassData = (): SlotOfClasses[] | string => {
     return slotsRes
 }
 
-const IsValidSlotName = (name: string): SlotName | undefined => {
+export const IsValidSlotName = (name: string): SlotName | undefined => {
     const names = Object.values(SlotName)
 
     for (let i = 0; i < names.length; i++) {

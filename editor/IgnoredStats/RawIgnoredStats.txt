@@ -1,3 +1,5 @@
+#None
+
 [7.0 - 14.0]% Healing Received
 [60 - 143] Life On Kill
 [5.0 - 12.0]% Crowd Control Duration
@@ -60,3 +62,101 @@ Lucky Hit: Up to a 5% Chance to Heal [523 - 941] Life
 [13.0 - 20.0]% Slow Duration Reduction
 [4.9 - 10.5]% Dodge Chance Against Distant Enemies
 [60 - 143] Life Regeneration while Not Damaged Recently
+
+#Amulet
+
+[5.0 - 12.0]% Control Impaired Duration Reduction
+[5.0 - 12.0]% Crowd Control Duration
+[3.0 - 8.0]% Critical Strike Chance Against Injured Enemies
+[14.0 - 28.0]% Damage for 4 seconds After Killing an Elite
+[3.1 - 7.3]% Dexterity
+[3.1 - 7.3]% Intelligence
+[3.0 - 5.8]% Dodge Chance
+[14.0 - 28.0]% Movement Speed for 4 Seconds After Killing an Elite
+[13.0 - 20.0]% Slow Duration Reduction
+[5.0 - 12.0]% Shrine Buff Duration
+[3.1 - 7.3]% Strength
+[14.0 - 21.0]% Ultimate Skill Damage
+[418 - 836] Thorns
+[3.1 - 7.3]% Willpower
+[21.0 - 35.0]% Damage with Skills that Swap to New Weapons
+[10.5 - 17.5]% Damage with Two-Handed Bludgeoning Weapons
+[10.5 - 17.5]% Damage with Dual-Wielded Weapons
+[14.0 - 21.0]% Berserking Duration
+[12.5 - 19.5]% Physical Damage Over Time
+[7.0 - 14.0]% Overpower Damage with Two-Handed Bludgeoning Weapons
+[10.5 - 17.5]% Damage with Two-Handed Slashing Weapons
+[7.0 - 14.0]% Damage Reduction from Affected By Shadow 
+[7.0 - 14.0]% Minion Attack Speed
+[1 - 2] Ranks of the Gloom Passive
+[1 - 2] Ranks of the Terror Passive
+[12.5 - 19.5]% Shadow Damage Over Time
+[1 - 2] Ranks of the Hellbent Commander Passive
+[1 - 2] Ranks of the Fueled by Death Passive
+[1 - 2] Ranks of the Death's Reach Passive
+[1 - 2] Ranks of the Coalesced Blood Passive
+[1 - 2] Ranks of the Compound Fracture Passive
+[10.5 - 17.5]% Darkness Skill Damage
+[10.5 - 17.5]% Frost Skill Damage
+[12.5 - 19.5]% Fire Damage Over Time
+[1 - 2] Ranks of the Elemental Dominance Passive
+[1 - 2] Ranks of the Endless Pyre Passive
+[1 - 2] Ranks of the Inner Flames Passive
+[1 - 2] Ranks of the Shocking Impact Passive
+[10.5 - 17.5]% Shock Skill Damage
+
+#1h Weapon
+
+[18.5 - 39.5]% Basic Skill Damage
+Lucky Hit: Up to [4.4 - 10.0]% Chance to Execute Injured Non-Elites
+[21.0 - 35.0]% Damage to Injured Enemies
+[14.0 - 21.0]% Ultimate Skill Damage
+[16.5 - 23.5]% Damage to Slowed Enemies
+[7.0 - 14.0]% Damage while Berserking
+[7.0 - 14.0]% Damage to Affected by Shadow Damage Over Time Enemies
+[7.0 - 14.0]% Damage to Chilled Enemies
+
+#2h Weapon
+
+[37.0 - 79.0]% Basic Skill Damage
+Lucky Hit: Up to [8.8 - 20.0]% Chance to Execute Injured Non-Elites
+[42.0 - 70.0]% Damage to Injured Enemies
+[28.0 - 42.0]% Ultimate Skill Damage
+[42.0 - 84.0]% Overpower Damage
+[33.0 - 47.0]% Damage to Slowed Enemies
+[14.0 - 28.0]% Damage while Berserking
+[14.0 - 28.0]% Damage to Affected by Shadow Damage Over Time Enemies
+[14.0 - 28.0]% Damage to Chilled Enemies
+[19.0 - 33.0]% Damage to Frozen Enemies
+
+#Offhand
+
+[28 - 42] Strength
+[28 - 42] Dexterity
+[3.0 - 8.0]% Critical Strike Chance Against Injured Enemies
+[18.5 - 39.5]% Basic Skill Damage
+Lucky Hit: Up to a [13.0 - 20.0]% Chance to Slow
+[7.0 - 14.0]% Healing Received
+[60 - 143] Life On Kill
+[15.0 - 22.0]% Fortify Generation
+[7.0 - 14.0]% Damage for 4 Seconds After Picking Up a Blood Orb
+[10.5 - 17.5]% Blood Orb Healing
+[15.0 - 22.0]% Fortify Generation
+[14.0 - 28.0]% Crackling Energy Damage
+
+#Shield
+
+[4.4 - 10.0]% Basic Skill Attack Speed
+Lucky Hit: Up to a [13.0 - 20.0]% Chance to Slow
+[28 - 42] Intelligence
+[28 - 42] Dexterity
+[9.5 - 16.5]% Resistance to All Elements
+[28 - 42] Strength
+[28 - 42] Willpower
+[18.5 - 39.5]% Basic Skill Damage
+[3.0 - 8.0]% Critical Strike Chance Against Injured Enemies
+[7.0 - 14.0]% Healing Received
+[60 - 143] Life On Kill
+[7.0 - 14.0]% Damage for 4 Seconds After Picking Up a Blood Orb
+[10.5 - 17.5]% Blood Orb Healing
+[7.0 - 14.0]% Minion Attack Speed

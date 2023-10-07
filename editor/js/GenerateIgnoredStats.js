@@ -33,7 +33,14 @@ var GenerateIgnoredStats = function () {
             continue;
         var stat = (0, GenerateClassData_1.GetStatFromTypeOfClassData)(line);
         if (stat) {
-            curSlot.statNames.push(stat.name.toLowerCase());
+            var statname = stat.name.toLowerCase();
+            // check duplicate stat
+            var idx = curSlot.statNames.indexOf(statname);
+            if (idx >= 0) {
+                // LogRed(curSlot.name + ', same stat: ' + statname)
+            }
+            else
+                curSlot.statNames.push(statname);
         }
         else {
             (0, Utils_NodeJS_1.LogRed)('can not extract stat of line: ' + line);

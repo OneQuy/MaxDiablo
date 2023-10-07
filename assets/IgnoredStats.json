@@ -30,25 +30,18 @@
    "damage for x seconds after picking up a blood orb",
    "darkness skill damage",
    "maximum minion life",
-   "physical damage",
    "shadow damage",
    "summoning skill damage",
    "cutthroat skill damage",
-   "damage with dual-wielded weapons",
    "damage with ranged weapons",
-   "damage with skills that swap to new weapons",
    "imbued skill damage",
    "imbuement skill damage",
    "marksman skill damage",
-   "physical damage",
-   "poison damage",
-   "shadow damage",
    "trap skill damage",
    "cold damage",
    "conjuration skill damage",
    "fire damage",
    "frost skill damage",
-   "lightning damage",
    "pyromancy skill damage",
    "shock skill damage",
    "lucky hit: up to a x% chance to slow",
@@ -57,13 +50,10 @@
    "control impaired duration reduction",
    "damage for x seconds after killing an elite",
    "dodge chance",
-   "healing received",
-   "life regeneration while not damaged recently",
    "potion drop rate",
    "shrine buff duration",
    "slow duration reduction",
-   "dodge chance against distant enemies",
-   "life regeneration while not damaged recently"
+   "dodge chance against distant enemies"
   ]
  },
  {
@@ -151,7 +141,6 @@
    "fortify generation",
    "damage for x seconds after picking up a blood orb",
    "blood orb healing",
-   "fortify generation",
    "crackling energy damage"
   ]
  },

@@ -30,7 +30,7 @@ import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, Classs, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
+import { Build, Classs, IgnoredStatsOfSlot, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
@@ -55,7 +55,7 @@ const starIcon = require('./assets/images/star-icon.png')
 const jsonPackage = require('./package.json')
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
-const ignoredStats: string[] = require('./assets/IgnoredStats.json') // for ignoring stats
+const ignoredStats: IgnoredStatsOfSlot[] = require('./assets/IgnoredStats.json') // for ignoring stats
 
 const allStatsData: string[] = require('./assets/AllStats.json') // for valid stat name
 const allStatsData_IgnoredCase: string[] = allStatsData.map(name => name.toLowerCase())

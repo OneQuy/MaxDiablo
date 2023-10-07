@@ -44,7 +44,17 @@ export const GenerateIgnoredStats = () => {
         const stat = GetStatFromTypeOfClassData(line)
 
         if (stat) {
-            curSlot.statNames.push(stat.name.toLowerCase())
+            const statname = stat.name.toLowerCase()
+
+            // check duplicate stat
+
+            const idx = curSlot.statNames.indexOf(statname)
+
+            if (idx >= 0) {
+                // LogRed(curSlot.name + ', same stat: ' + statname)
+            }
+            else
+                curSlot.statNames.push(statname)
         }
         else {
             LogRed('can not extract stat of line: ' + line)

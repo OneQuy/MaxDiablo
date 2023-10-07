@@ -40,7 +40,6 @@
 [10.5 - 17.5]% Marksman Skill Damage
 [10.5 - 17.5]% Physical Damage
 [10.5 - 17.5]% Poison Damage
-[10.5 - 17.5]% Shadow Damage
 [10.5 - 17.5]% Trap Skill Damage
 [10.5 - 17.5]% Cold Damage
 [14.0 - 28.0]% Conjuration Skill Damage
@@ -56,12 +55,10 @@ Lucky Hit: Up to a 5% Chance to Heal [523 - 941] Life
 [14.0 - 28.0]% Damage for 4 seconds After Killing an Elite
 [3.0 - 5.8]% Dodge Chance
 [7.0 - 14.0]% Healing Received
-[60 - 143] Life Regeneration while Not Damaged Recently
 [12.0 - 26.0]% Potion Drop Rate
 [5.0 - 12.0]% Shrine Buff Duration
 [13.0 - 20.0]% Slow Duration Reduction
 [4.9 - 10.5]% Dodge Chance Against Distant Enemies
-[60 - 143] Life Regeneration while Not Damaged Recently
 
 #Amulet
 

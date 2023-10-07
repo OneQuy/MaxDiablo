@@ -76,3 +76,10 @@ export type SlotOfClasses = {
     name: SlotName,
     classes: Classs[]
 }
+
+// ignored stat ============
+
+export type IgnoredStatsOfSlot = {
+    name: SlotName,
+    statNames: string[]
+}

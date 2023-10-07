@@ -825,7 +825,7 @@ function App(): JSX.Element {
                 suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
                   return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
                     {/* build name  */}
-                    <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{build.name}</Text>
+                    <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{(index + 1) + '. ' + build.name}</Text>
                     {/* tier & slot name */}
                     <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
                       <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
@@ -834,7 +834,7 @@ function App(): JSX.Element {
                         statsMatchedCount < 3 ? undefined :
                           <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
                             <Image source={starIcon} style={{ width: 14, height: 14 }} />
-                            <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>Ngon</Text>
+                            <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? 'Quá ngon' : 'Ngon'}</Text>
                           </View>
                       }
                       <View style={{ flex: 1 }} />

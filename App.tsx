@@ -704,7 +704,7 @@ function App(): JSX.Element {
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
       {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
-        <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo [IV] Tool</Text>
+        <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
         {/* <Text style={{ fontSize: 15, color: 'white' }}>(v{jsonPackage['version']})</Text> */}
       </View>
       {/* the rest */}

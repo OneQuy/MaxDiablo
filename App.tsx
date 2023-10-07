@@ -417,8 +417,7 @@ function App(): JSX.Element {
 
       // ingored stat
 
-      if (stat.name.toLowerCase().includes('resistance') ||
-        ignoredStats.includes(stat.name.toLowerCase())) {
+      if (IsIgnoredStat(stat, userSlot)) {
         continue
       }
 
@@ -833,10 +832,10 @@ function App(): JSX.Element {
                       <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
                       {
                         statsMatchedCount < 3 ? undefined :
-                        <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
-                          <Image source={starIcon} style={{ width: 14, height: 14 }} />
-                          <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>Ngon</Text>
-                        </View>
+                          <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
+                            <Image source={starIcon} style={{ width: 14, height: 14 }} />
+                            <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>Ngon</Text>
+                          </View>
                       }
                       <View style={{ flex: 1 }} />
                     </View>
@@ -926,6 +925,44 @@ const FilterStats = (slot: SlotCard): SlotCard => {
   // console.log('b', slot.stats.length);
 
   return slot
+}
+
+const IsIgnoredStat = (stat: Stat, slot: SlotCard): boolean => {
+  let res = false
+  const statNameLower = stat.name.toLowerCase()
+
+  if (statNameLower.includes('resistance')) {
+    res = true
+  }
+
+  let dataIdx = ignoredStats.findIndex(i => i.name === slot.slotName)
+
+  if (dataIdx < 0) {
+    const shortSlotName = ConvertSlotNameToShortSlotName(slot.slotName)
+    dataIdx = ignoredStats.findIndex(i => i.name === shortSlotName)
+  }
+
+  if (dataIdx >= 0) {
+    const idx = ignoredStats[dataIdx].statNames.indexOf(statNameLower)
+
+    res = idx >= 0
+
+    // console.log('aaaa', shortSlotName, statNameLower, res);
+  }
+  else {
+    const theRestIgnoredStats = ignoredStats.find(i => i.name === SlotName.None)
+
+    if (!theRestIgnoredStats)
+      throw new Error('[ne]')
+
+    const idx = theRestIgnoredStats.statNames.indexOf(statNameLower)
+
+    res = idx >= 0
+
+    // console.log('bbb', statNameLower, res);
+  }
+
+  return res
 }
 
 const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {

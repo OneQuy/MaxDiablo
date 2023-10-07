@@ -645,7 +645,7 @@ function App(): JSX.Element {
       const result = response.data?.text
 
       if (!result)
-        throw 'ImageToText API have no result'
+        throw 'ImageToText API have no result. Response:\n\n' + ToCanPrint(response)
 
       onGotOcrResultTextAsync(result, false)
     } catch (error) {

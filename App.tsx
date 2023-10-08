@@ -538,7 +538,7 @@ function App(): JSX.Element {
       rateScore_Class_BuildAbove3Stats.current = (totalScore_above3stats + totalScore_Class) / (count_above3stats + 4)
     }
     else {
-      rateScore_Class_BuildAbove3Stats.current = 0
+      rateScore_Class_BuildAbove3Stats.current = rateScore_Class.current
     }
 
     // rate final

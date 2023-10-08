@@ -88,6 +88,7 @@ function App(): JSX.Element {
   const scrollViewCurrentOffsetY = useRef(0)
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
   const loadedInterstitial = useRef(false)
+  const reallyNeedToShowInterstitial = useRef(false)
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
   const imgScale = useRef(new Animated.Value(1)).current
@@ -252,8 +253,22 @@ function App(): JSX.Element {
     Clipboard.setString(ocrResult.current)
   }, [])
 
-  const showAds = useCallback(() => {
-    interstitial.show()
+  const showAdsInterstitial = useCallback(() => {
+    reallyNeedToShowInterstitial.current = true
+
+    if (loadedInterstitial.current) {
+      loadedInterstitial.current = false
+      interstitial.show()
+    }
+    else {
+      loadAdsInterstitial()
+    }
+  }, [])
+ 
+  const loadAdsInterstitial = useCallback(() => {
+    console.log('loading interstitial')
+    loadedInterstitial.current = false
+    interstitial.load()
   }, [])
 
   const onSelectedImg = useCallback(async (path: string) => {
@@ -265,7 +280,6 @@ function App(): JSX.Element {
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
 
-    showAds()
     setStatus('Đang upload...')
 
     if (!await IsExistedAsync(path, false)) {
@@ -642,6 +656,8 @@ function App(): JSX.Element {
     };
 
     setStatus('Đang phân tích...')
+   
+    showAdsInterstitial()
 
     try {
       const response = await axios.request(options);
@@ -676,26 +692,37 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
+    // firebase
+
     FirebaseInit()
+
+    // ads
 
     CheckAndInitAdmobAsync();
 
     const unsubscribe_ads_interstitial_loaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
       console.log('loaded interstitial')
       loadedInterstitial.current = true
+
+      if (reallyNeedToShowInterstitial.current)
+        showAdsInterstitial()
     });
 
     const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-      loadedInterstitial.current = false
-      interstitial.load();
-      console.log('loading interstitial')
+      reallyNeedToShowInterstitial.current = false
+      loadAdsInterstitial()
+
+      // handle
     });
 
     const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
-      console.log('error interstitial')
-    });
+      console.log('error interstitial', e)
 
-    interstitial.load();
+      if (reallyNeedToShowInterstitial.current)
+        loadAdsInterstitial()
+    })
+
+    loadAdsInterstitial()
 
     return () => {
       unsubscribe_ads_interstitial_loaded()
@@ -711,7 +738,7 @@ function App(): JSX.Element {
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
       <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
       {/* app name */}
-      <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'flex-end' }}>
+      <View onTouchStart={() => showAdsInterstitial()} style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
       </View>
       {/* the rest */}
@@ -819,8 +846,8 @@ function App(): JSX.Element {
         </TouchableOpacity>
         <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
           <Text style={{ color: 'gray' }}>[dev] copy ocr result</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={onPressShowAds}>
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={showAdsInterstitial}>
           <Text style={{ color: 'gray' }}>[dev] show ads</Text>
         </TouchableOpacity> */}
         {/* builds suit */}

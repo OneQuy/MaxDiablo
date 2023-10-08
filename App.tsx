@@ -40,13 +40,22 @@ import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile
 
 const adID_Test = TestIds.INTERSTITIAL
 
-const adID = Platform.OS === 'android' ?
-  'ca-app-pub-9208244284687724/8105396391' :
+const adID_Interstitial = Platform.OS === 'android' ?
+  'ca-app-pub-9208244284687724/6474432133' :
   'ca-app-pub-9208244284687724/4249911866'
 
-const interstitial = InterstitialAd.createForAdRequest(adID, {
+const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
   requestNonPersonalizedAdsOnly: true,
-  keywords: ['fashion', 'clothing'],
+  // keywords: ['fashion', 'clothing'],
+});
+
+const adID_Banner = Platform.OS === 'android' ?
+  'ca-app-pub-9208244284687724/5493652375' :
+  ''
+
+const banner = InterstitialAd.createForAdRequest(adID_Banner, {
+  requestNonPersonalizedAdsOnly: true,
+  // keywords: ['fashion', 'clothing'],
 });
 
 const upArrowIcon = require('./assets/images/up-arrow.png')

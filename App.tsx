@@ -36,9 +36,7 @@ import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
-import { InterstitialAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
-
-const adID_Test = TestIds.INTERSTITIAL
+import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -51,12 +49,9 @@ const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
 
 const adID_Banner = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/5493652375' :
-  ''
+  'ca-app-pub-9208244284687724/4776043942'
 
-const banner = InterstitialAd.createForAdRequest(adID_Banner, {
-  requestNonPersonalizedAdsOnly: true,
-  // keywords: ['fashion', 'clothing'],
-});
+// const adID_Banner = TestIds.BANNER
 
 const upArrowIcon = require('./assets/images/up-arrow.png')
 const starIcon = require('./assets/images/star-icon.png')
@@ -689,13 +684,11 @@ function App(): JSX.Element {
     });
 
     const unsubscribe2 = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-      console.log('closed ads')
       interstitial.load();
     });
 
     const unsubscribe3 = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
       console.log('error ads', e)
-      // interstitial.load();
     });
 
     interstitial.load();
@@ -712,6 +705,12 @@ function App(): JSX.Element {
   return (
     <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
+      <BannerAd
+        unitId={adID_Banner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        onAdFailedToLoad={(e) => console.log(e)}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true, }}
+      />
       {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>

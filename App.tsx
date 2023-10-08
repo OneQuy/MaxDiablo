@@ -87,6 +87,7 @@ function App(): JSX.Element {
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollViewCurrentOffsetY = useRef(0)
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
+  const loadedInterstitial = useRef(false)
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
   const imgScale = useRef(new Animated.Value(1)).current
@@ -679,24 +680,27 @@ function App(): JSX.Element {
 
     CheckAndInitAdmobAsync();
 
-    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-      console.log('loaded ads')
+    const unsubscribe_ads_interstitial_loaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      console.log('loaded interstitial')
+      loadedInterstitial.current = true
     });
 
-    const unsubscribe2 = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+    const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      loadedInterstitial.current = false
       interstitial.load();
+      console.log('loading interstitial')
     });
 
-    const unsubscribe3 = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
-      console.log('error ads', e)
+    const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
+      console.log('error interstitial')
     });
 
     interstitial.load();
 
     return () => {
-      unsubscribe()
-      unsubscribe2()
-      unsubscribe3()
+      unsubscribe_ads_interstitial_loaded()
+      unsubscribe_ads_interstitial_closed()
+      unsubscribe_ads_interstitial_error()
     }
   }, [])
 
@@ -711,7 +715,7 @@ function App(): JSX.Element {
         requestOptions={{ requestNonPersonalizedAdsOnly: true, }}
       />
       {/* app name */}
-      <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
+      <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
       </View>
       {/* the rest */}

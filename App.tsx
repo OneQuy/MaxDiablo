@@ -37,6 +37,7 @@ import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDa
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -71,10 +72,13 @@ const DefaultGoodStats = [
   'vulnerable damage',
 ]
 
+const storage = new MMKVLoader().initialize();
+
 const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
+  const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
   const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
@@ -599,7 +603,7 @@ function App(): JSX.Element {
     else
       return 'gray'
   }, [])
-
+  
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
     ocrResult.current = JSON.stringify(result)
     let extractRes = ExtractSlotCard(result, stringifyResult)
@@ -616,6 +620,7 @@ function App(): JSX.Element {
       findSuitBuilds()
       rate()
 
+      setRateSuccessCount(val => val + 1)
       setStatus(Math.random().toString())
     }
     else { // fail

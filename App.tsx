@@ -708,13 +708,11 @@ function App(): JSX.Element {
       <BannerAd
         unitId={adID_Banner}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        onAdFailedToLoad={(e) => console.log(e)}
         requestOptions={{ requestNonPersonalizedAdsOnly: true, }}
       />
       {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', marginTop: 10, gap: Outline.Gap, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
-        {/* <Text style={{ fontSize: 15, color: 'white' }}>(v{jsonPackage['version']})</Text> */}
       </View>
       {/* the rest */}
       <ScrollView
@@ -861,7 +859,7 @@ function App(): JSX.Element {
             </View>
         }
         {/* remain count */}
-        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>{rateLimitText.current}</Text>
+        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{jsonPackage['version']}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
       </ScrollView>
       {/* scrollToTop btn */}
       <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>

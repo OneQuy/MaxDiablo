@@ -240,15 +240,15 @@ function App(): JSX.Element {
     onSelectedImg(path)
   }, [])
 
-  const onPressShowAds = useCallback(async () => {
-    interstitial.show()
-  }, [])
-
   const onPressCopyOCRResult = useCallback(async () => {
     if (!ocrResult.current)
       return
 
     Clipboard.setString(ocrResult.current)
+  }, [])
+
+  const showAds = useCallback(() => {
+    interstitial.show()
   }, [])
 
   const onSelectedImg = useCallback(async (path: string) => {
@@ -260,6 +260,7 @@ function App(): JSX.Element {
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
 
+    showAds()
     setStatus('Đang upload...')
 
     if (!await IsExistedAsync(path, false)) {

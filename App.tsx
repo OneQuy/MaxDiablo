@@ -40,7 +40,8 @@ import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 're
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
-  'ca-app-pub-9208244284687724/4249911866'
+  // 'ca-app-pub-9208244284687724/4249911866'
+  TestIds.INTERSTITIAL
 
 const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
   requestNonPersonalizedAdsOnly: true,
@@ -49,9 +50,8 @@ const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
 
 const adID_Banner = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/5493652375' :
-  'ca-app-pub-9208244284687724/4776043942'
-
-// const adID_Banner = TestIds.BANNER
+  // 'ca-app-pub-9208244284687724/4776043942'
+  TestIds.BANNER
 
 const upArrowIcon = require('./assets/images/up-arrow.png')
 const starIcon = require('./assets/images/star-icon.png')

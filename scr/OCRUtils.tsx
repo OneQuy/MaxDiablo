@@ -9,7 +9,7 @@ const ForceFixStatNameList = [
 
 function ForceFixStatNameAfterExtract(name: string): string {
     // fix a part of name
-    
+
     for (let i = 0; i < ForceFixStatNameList.length; i++) {
         const element = ForceFixStatNameList[i]
 
@@ -25,6 +25,10 @@ function ForceFixStatNameAfterExtract(name: string): string {
         name = AutoAddSpaceToStatName(name)
     }
     
+    // fix multi space: Damage for X   Seconds After  Dodging     an Attack
+
+    name = name.replace(/\s\s+/g, ' ');
+
     return name
 }
 

@@ -25,7 +25,7 @@ import {
 
 // @ts-ignore
 import { ImageResults, MediaType, openPicker } from '@baronha/react-native-multiple-image-picker'
-import { FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
+import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
@@ -33,12 +33,13 @@ import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Classs, IgnoredStatsOfSlot, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
-import { RoundNumber } from './scr/common/Utils';
+import { RandomInt, RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
+import { randomUUID } from 'crypto';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -101,6 +102,10 @@ function App(): JSX.Element {
   const reallyNeedToShowInterstitial = useRef(false)
   const showingInterstitial = useRef(false)
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
+  const tmpUploadFirebasePath = useRef('')
+  const remoteConfig = useRef({
+    auto_delete_file_if_extract_success: true
+  })
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
   const imgScale = useRef(new Animated.Value(1)).current
@@ -324,8 +329,14 @@ function App(): JSX.Element {
       return
     }
 
-    const tempFilePath = 'tmpfile-' + Date.now()
-    const uplodaErr = await FirebaseStorage_UploadAsync(tempFilePath, path)
+    tmpUploadFirebasePath.current =
+      'tmpfile-' +
+      Date.now() + '-' +
+      RandomInt(1000, 9999) + '-' +
+      version + '-' +
+      Platform.OS
+
+    const uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
 
     if (uplodaErr) {
       setStatus('')
@@ -337,7 +348,7 @@ function App(): JSX.Element {
       return
     }
 
-    const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tempFilePath)
+    const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tmpUploadFirebasePath.current)
 
     if (getURLRes.error) {
       setStatus('')
@@ -626,6 +637,9 @@ function App(): JSX.Element {
         console.log(JSON.stringify(extractRes, null, 1));
       }
 
+      if (remoteConfig.current.auto_delete_file_if_extract_success === true)
+        FirebaseStorage_DeleteAsync(tmpUploadFirebasePath.current)
+
       extractRes = HandleWeirdStatNames(extractRes)
       slotCardRef.current = FilterStats(extractRes)
 
@@ -713,9 +727,11 @@ function App(): JSX.Element {
     const res = await FirebaseDatabase_GetValueAsync('app_config')
 
     if (!res.value) {
-      console.error('FirebaseDatabase_GetValueAsync error: ', res.error)
+      Alert.alert('Không thể download remote config!', 'Có lỗi gì đó hoặc bạn vui lòng kiểm tra internet.\n\nLỗi:\n' + ToCanPrint(res.error))
       return
     }
+
+    remoteConfig.current = res.value
 
     rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
 

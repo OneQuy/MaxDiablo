@@ -3,6 +3,23 @@ import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumber
 
 var isLog = false
 
+const ForceFixStatNameList = [
+    ['Enemies That Are Burning', 'Damage Reduction from Enemies That Are Burning']
+]
+
+function ForceFixStatName(name: string): string {
+    for (let i = 0; i < ForceFixStatNameList.length; i++) {
+        const element = ForceFixStatNameList[i]
+
+        const n = element[0].toLowerCase()
+
+        if (name.toLowerCase().includes(n))
+            return element[1]
+    }
+
+    return name
+}
+
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
@@ -547,6 +564,10 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
         if (!range) {
             continue
         }
+        
+        // force fix stat name
+
+        nameStat = ForceFixStatName(nameStat)
 
         // parse and return
 

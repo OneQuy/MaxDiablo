@@ -1,0 +1,2 @@
+xử lý weird stat trên fb:
+1. thêm vào KnownWeirdStats (editor/GenerateAllStatName.ts), build lại all stat

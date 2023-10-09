@@ -944,8 +944,8 @@ function App(): JSX.Element {
               }
             </View>
         }
-        {/* remain count */}
-        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
+        {/* debug text, version, remain ocr count */}
+        <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
       </ScrollView>
       {/* scrollToTop btn */}
       <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
@@ -1088,7 +1088,6 @@ const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {
       return name
   }
 }
-
 
 const AlertWithCopy = (title: string, content: string) => {
   Alert.alert(

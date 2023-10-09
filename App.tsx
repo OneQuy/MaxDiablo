@@ -104,7 +104,8 @@ function App(): JSX.Element {
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
   const tmpUploadFirebasePath = useRef('')
   const remoteConfig = useRef({
-    auto_delete_file_if_extract_success: true
+    auto_delete_file_if_extract_success: true,
+    show_rate_app: false
   })
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
@@ -823,7 +824,7 @@ function App(): JSX.Element {
       {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
         <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
-        <Text onPress={OnPressed_StoreRate} style={{ fontSize: FontSize.Normal, color: 'white' }}>Đánh giá App</Text>
+        <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>Đánh giá App</Text>
       </View>
       {/* the rest */}
       <ScrollView

@@ -348,6 +348,7 @@ function HandleWholeTextBeforeSplitLines(wholeText: string): string {
     wholeText = wholeText.replaceAll('\\r\\n', '###')
     wholeText = wholeText.replaceAll('\n', '###')
     wholeText = wholeText.replaceAll('\\n', '###')
+    wholeText = wholeText.replaceAll('♦', '###')
     wholeText = wholeText.replaceAll('⚫', '###')
     wholeText = wholeText.replaceAll('•', '###')
     wholeText = wholeText.replaceAll('] +', ']###+') // +8.0% Critical Strike Chance [3.0-8.0] +9.6% Attack Speed [4.4 - 10.0]%

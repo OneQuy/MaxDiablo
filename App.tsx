@@ -926,12 +926,6 @@ function App(): JSX.Element {
         {/* dev btns */}
         {/* <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
           <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={onPressCopyOCRResult}>
-          <Text style={{ color: 'gray' }}>[dev] copy ocr result</Text>
-        </TouchableOpacity> */}
-        {/* <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap }} onPress={showAdsInterstitial}>
-          <Text style={{ color: 'gray' }}>[dev] show ads</Text>
         </TouchableOpacity> */}
         {/* builds suit */}
         {

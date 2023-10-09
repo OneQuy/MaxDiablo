@@ -100,6 +100,8 @@ function App(): JSX.Element {
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
   const loadedInterstitial = useRef(false)
   const reallyNeedToShowInterstitial = useRef(false)
+  const showingInterstitial = useRef(false)
+  const cachedAlert = useRef<[string, string] | undefined>(undefined)
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
   const imgScale = useRef(new Animated.Value(1)).current
@@ -267,8 +269,8 @@ function App(): JSX.Element {
   }, [])
 
   const checkAndShowAdsInterstitial = useCallback(() => {
-    console.log('cur rate success count', rateSuccessCountRef.current, '/ '  + rateSuccessCountPerInterstitialConfig.current);
-    
+    console.log('cur rate success count', rateSuccessCountRef.current, '/ ' + rateSuccessCountPerInterstitialConfig.current);
+
     if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
       return
 
@@ -443,9 +445,10 @@ function App(): JSX.Element {
     }
 
     if (slotOfClasses === undefined) {
-      Alert.alert(
-        'Lỗi không rate',
-        'Không thể rate cho slot: ' + userSlot.slotName)
+      // todo
+      // (
+      //   'Lỗi không rate',
+      //   'Không thể rate cho slot: ' + userSlot.slotName)
 
       return
     }
@@ -472,11 +475,6 @@ function App(): JSX.Element {
 
         if (findStats.length > 0) {
           statsForRating.current.push([stat, classs, findStats[0], -1])
-
-          if (findStats.length > 1) {
-            Alert.alert('Errorrrr   ' + stat.name + ', ' + classs.name)
-            return
-          }
 
           break
         }
@@ -514,12 +512,6 @@ function App(): JSX.Element {
     };
 
     // calc rateScore_Class
-
-    if (totalScore_Class > 4) {
-      totalScore_Class = 4
-
-      Alert.alert('Wow', 'totalScore_Class more than 4!')
-    }
 
     rateScore_Class.current = totalScore_Class / 4
     let valuedStatsScore = (totalScore_Class + (statsForRating.current.length / 4)) / 5
@@ -636,14 +628,14 @@ function App(): JSX.Element {
       setRateSuccessCount(rateSuccessCountRef.current)
 
       // done
-      
+
       setStatus(Math.random().toString())
     }
     else { // fail
       setStatus('')
 
       if (extractRes === 'miss brackets') {
-        Alert.alert(
+        cacheOrShowAlert(
           'Lỗi không thể rate hình',
           'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
           'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' +
@@ -651,16 +643,24 @@ function App(): JSX.Element {
           '* Advanced Tooltip Information')
       }
       else if (extractRes === 'unique') {
-        Alert.alert(
+        cacheOrShowAlert(
           'Ooops!',
           'Không thể rate item UNIQUE. Vui lòng chọn hình khác!')
       }
       else { // other errors
-        Alert.alert(
+        cacheOrShowAlert(
           'Lỗi không thể phân tích hình',
-          'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + extractRes)
+          'Vui lòng chụp lại hay chọn ảnh khác!\n\nExtract result:\n' + extractRes)
       }
     }
+  }, [])
+
+  const cacheOrShowAlert = useCallback((title: string, content: string) => {
+    if (showingInterstitial.current) { // showing ads
+      cachedAlert.current = [title, content]
+    }
+    else // not showing ads
+      AlertWithCopy(title, content)
   }, [])
 
   const detectFromImgUrlAsync_ImageToText = useCallback(async (imgUrl: string) => {
@@ -678,7 +678,7 @@ function App(): JSX.Element {
 
     setStatus('Đang phân tích...')
 
-    checkAndShowAdsInterstitial()
+    checkAndShowAdsInterstitial() // show ads
 
     try {
       const response = await axios.request(options);
@@ -692,18 +692,9 @@ function App(): JSX.Element {
 
       onGotOcrResultTextAsync(result, false)
     } catch (error) {
-      const serror = JSON.stringify(error);
-
-      if (serror.includes('429')) {
-        Alert.alert(
-          'Lỗi không thể phân tích hình',
-          'Vượt lượt phân tích.')
-      }
-      else {
-        Alert.alert(
-          'Lỗi không thể phân tích hình',
-          'Vui lòng chụp lại hay chọn ảnh khác!\nMã lỗi: ' + ToCanPrint(error))
-      }
+      cacheOrShowAlert(
+        'Lỗi không thể phân tích hình',
+        'Vui lòng chụp lại hay chọn ảnh khác!\n\nMã lỗi:\n' + ToCanPrint(error))
 
       userImgUri.current = ''
       setStatus('')
@@ -721,7 +712,7 @@ function App(): JSX.Element {
     rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
 
     const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
-    
+
     if (configVersion && version !== configVersion) {
       const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
 
@@ -760,12 +751,25 @@ function App(): JSX.Element {
         showAdsInterstitial()
     });
 
+    const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
+      console.log('open interstitial')
+      showingInterstitial.current = true
+    });
+
     const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
       reallyNeedToShowInterstitial.current = false
+      showingInterstitial.current = false
       loadAdsInterstitial()
 
       setRateSuccessCount(0)
       rateSuccessCountRef.current = 0
+
+      // show cached alert
+
+      if (cachedAlert.current !== undefined) {
+        AlertWithCopy(cachedAlert.current[0], cachedAlert.current[1])
+        cachedAlert.current = undefined
+      }
     });
 
     const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
@@ -779,6 +783,7 @@ function App(): JSX.Element {
 
     return () => {
       unsubscribe_ads_interstitial_loaded()
+      unsubscribe_ads_interstitial_opened()
       unsubscribe_ads_interstitial_closed()
       unsubscribe_ads_interstitial_error()
     }
@@ -970,8 +975,6 @@ const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
   }
 
   if (listWeirdTxt !== '') {
-    // Alert.alert('Lỗi stat lạ (không phân tích được)!', listWeirdTxt)
-
     // remove stat
 
     slot.stats = slot.stats.filter(i => i.name !== 'hihi')
@@ -1083,4 +1086,20 @@ const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {
     default:
       return name
   }
+}
+
+
+const AlertWithCopy = (title: string, content: string) => {
+  Alert.alert(
+    title, 
+    content,
+    [
+      { text: "OK" },
+      {
+        text: 'Copy',
+        onPress: () => {
+          Clipboard.setString(title + '\n\n' + content)
+        }
+      }
+    ])
 }

@@ -6,6 +6,7 @@ const KnownWeirdStats = [
     'Damage for X Seconds After Dodging an Attack',
     'Max Evade Charges',
     'Damage to Healthy Enemies',
+    'Rank of Hammer of the Ancients'
 ]
 
 export const GenerateAllStatName = () => {

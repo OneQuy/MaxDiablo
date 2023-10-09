@@ -431,7 +431,12 @@ PODS:
   - react-native-mmkv-storage (0.9.1):
     - MMKV (= 1.2.13)
     - React-Core
-  - react-native-multiple-image-picker (1.0.0):
+  - react-native-multiple-image-picker (1.1.5):
+    - CropViewController (= 2.6.1)
+    - React-Core
+    - react-native-multiple-image-picker/Viewer (= 1.1.5)
+    - TLPhotoPicker (= 2.1.9)
+  - react-native-multiple-image-picker/Viewer (1.1.5):
     - CropViewController (= 2.6.1)
     - React-Core
     - TLPhotoPicker (= 2.1.9)
@@ -801,7 +806,7 @@ SPEC CHECKSUMS:
   React-logger: da1ebe05ae06eb6db4b162202faeafac4b435e77
   react-native-image-picker: 5fcac5a5ffcb3737837f0617d43fd767249290de
   react-native-mmkv-storage: cfb6854594cfdc5f7383a9e464bb025417d1721c
-  react-native-multiple-image-picker: 0da09ef1bfc18a0d18ad7dc61629c5e315af0e1e
+  react-native-multiple-image-picker: 87f2655d149443b576cec0cba8b5fc9f88de57bb
   React-NativeModulesApple: edb5ace14f73f4969df6e7b1f3e41bef0012740f
   React-perflogger: 496a1a3dc6737f964107cb3ddae7f9e265ddda58
   React-RCTActionSheet: 02904b932b50e680f4e26e7a686b33ebf7ef3c00

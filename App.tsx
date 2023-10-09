@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 
 // @ts-ignore
-import { openPicker } from '@baronha/react-native-multiple-image-picker'
+import { ImageResults, MediaType, openPicker } from '@baronha/react-native-multiple-image-picker'
 import { FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
@@ -204,29 +204,38 @@ function App(): JSX.Element {
     setIsTouchingImg(false)
   }, [])
 
-  const onPressUpload = useCallback(async () => {
+  const onPressPickPhoto = useCallback(async () => {
     try {
-      const response = await openPicker({
-        mediaType: 'mediaType',
-        singleSelectedMode: true,
-        selectedColor: '#000000',
-      });
+      const response = await openPicker(
+        {
+          usedCameraButton: false,
+          tapHereToChange: 'Thay album',
+          maxSelectedAssets: 1,
+          allowedVideo: false,
+          emptyMessage: 'Hãy chọn 1 tấm để phân tích',
+          selectedColor: '#000000',
+        });
 
-      if (!response) {
+      if (!response || response.length <= 0) {
         Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
       }
       else {
-        if ((Platform.OS === 'android' && !response.realPath) || (Platform.OS !== 'android' && !response.path)) {
+        const img = response[0]
+
+        if ((Platform.OS === 'android' && !img) || (Platform.OS !== 'android' && !img.path)) {
           Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
           return
         }
 
-        const path = Platform.OS === 'android' ? 'file://' + response.realPath : response.path;
+        const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path;
         onSelectedImg(path)
       }
     }
-    catch (e) {
-      console.error('catch' + e);
+    catch (e: any) {
+      if (e.toString().includes('User has canceled'))
+        return
+
+      console.error('pick img error: ' + e);
     }
   }, [])
 
@@ -810,7 +819,7 @@ function App(): JSX.Element {
         {/* select photo btns */}
         <Text style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
         <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
-          <TouchableOpacity onPress={onPressUpload} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
@@ -1090,7 +1099,7 @@ const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {
 
 const AlertWithCopy = (title: string, content: string) => {
   Alert.alert(
-    title, 
+    title,
     content,
     [
       {

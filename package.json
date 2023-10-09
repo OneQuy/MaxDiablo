@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@baronha/react-native-multiple-image-picker": "^1.0.0",
+    "@baronha/react-native-multiple-image-picker": "^1.1.5",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "axios": "^1.5.0",
     "firebase": "^10.3.1",

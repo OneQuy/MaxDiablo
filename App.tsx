@@ -39,7 +39,6 @@ import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './sc
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
-import { FirebaseRemoteConfig_Fetch, FirebaseRemoteConfig_GetValue, dddddd } from './scr/common/Firebase/FirebaseRemoteConfig';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :

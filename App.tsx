@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 
 // @ts-ignore
-import { ImageResults, MediaType, openPicker } from '@baronha/react-native-multiple-image-picker'
+import { openPicker } from '@baronha/react-native-multiple-image-picker'
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
@@ -39,7 +39,7 @@ import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './sc
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
-import { randomUUID } from 'crypto';
+import { Track } from './scr/common/ForageAnalytic';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -756,6 +756,8 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
+    Track('app_open')
+
     // firebase
 
     FirebaseInit()

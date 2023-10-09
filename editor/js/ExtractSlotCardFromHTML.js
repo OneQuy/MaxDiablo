@@ -148,10 +148,7 @@ var checkAndRemoveStats = function (stats) {
         if (stats.length <= 4)
             break;
         if (stats[0].min === stats[0].max) {
-            console.log('remmmm', stats[0].name, stats[0].min, stats[0].max);
-            console.log('aaa', stats.length);
             stats = stats.slice(1);
-            console.log('bbb', stats.length);
         }
     }
     return stats;

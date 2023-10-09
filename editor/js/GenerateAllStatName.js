@@ -6,6 +6,7 @@ var KnownWeirdStats = [
     'Damage for X Seconds After Dodging an Attack',
     'Max Evade Charges',
     'Damage to Healthy Enemies',
+    'Rank of Hammer of the Ancients'
 ];
 var GenerateAllStatName = function () {
     var text = fs.readFileSync('./assets/ClassesData.json');

@@ -821,8 +821,9 @@ function App(): JSX.Element {
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
       <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
       {/* app name */}
-      <View onTouchStart={() => showAdsInterstitial()} style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'flex-end' }}>
-        <Text style={{ fontSize: 20, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
+      <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
+        <Text onPress={OnPressed_StoreRate} style={{ fontSize: FontSize.Normal, color: 'white' }}>Đánh giá App</Text>
       </View>
       {/* the rest */}
       <ScrollView
@@ -1120,4 +1121,9 @@ const AlertWithCopy = (title: string, content: string) => {
       },
       { text: "OK" },
     ])
+}
+
+const OnPressed_StoreRate = () => {
+  const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
+  Linking.openURL(storeLink)
 }

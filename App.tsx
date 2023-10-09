@@ -500,24 +500,18 @@ function App(): JSX.Element {
 
       // this stat score
 
+      let curScore = 0
+
       if (userStat.max === userStat.min)
-        statsForRating.current[i][3] = 0
+        curScore = 0
       else
-        statsForRating.current[i][3] = (userStat.value - userStat.min) / (userStat.max - userStat.min)
+        curScore = (userStat.value - userStat.min) / (userStat.max - userStat.min)
 
       // sum score
 
-      totalScore_Class += statsForRating.current[i][3]
+      totalScore_Class += curScore
+      statsForRating.current[i][3] = curScore
     };
-
-    // // log
-
-    // console.log();
-    // console.log();
-
-    // statsForRating.current.forEach(([userStat, classs, classStat, score]) => {
-    //   console.log(userStat.name, classs?.name, score);
-    // });
 
     // calc rateScore_Class
 
@@ -527,12 +521,10 @@ function App(): JSX.Element {
       Alert.alert('Wow', 'totalScore_Class more than 4!')
     }
 
-    // console.log('totalScore_Class of 4 = ', totalScore_Class);
-    // console.log('totalScore_Class / 4 = ', totalScore_Class / 4);
     rateScore_Class.current = totalScore_Class / 4
-    // rateScore_Class.current = totalScore / statsForRating.current.length
+    let valuedStatsScore = (totalScore_Class + (statsForRating.current.length / 4)) / 5
 
-    // calc rateScore_Class_BuildAbove3Stats & rateScore_Class_BuildAll
+    // calc rateScore_Class_BuildAbove3Stats
 
     if (suitBuilds.current && suitBuilds.current.length > 0) {
       // count
@@ -554,6 +546,7 @@ function App(): JSX.Element {
       // calc rateScore_Class_BuildAbove3Stats
 
       rateScore_Class_BuildAbove3Stats.current = (totalScore_above3stats + totalScore_Class) / (count_above3stats + 4)
+      valuedStatsScore = (totalScore_above3stats + totalScore_Class + (statsForRating.current.length / 4)) / (count_above3stats + 4 + 1)
     }
     else {
       rateScore_Class_BuildAbove3Stats.current = rateScore_Class.current
@@ -561,7 +554,8 @@ function App(): JSX.Element {
 
     // rate final
 
-    const finalScore = Math.max(rateScore_Class.current, rateScore_Class_BuildAbove3Stats.current)
+    const finalScore = Math.max(rateScore_Class.current, rateScore_Class_BuildAbove3Stats.current, valuedStatsScore)
+    rateScore_Class_BuildAbove3Stats.current = finalScore
     const resultRate = getRateTypeByScore(finalScore)
     rateText.current = [resultRate[1], resultRate[0]]
   }, [])

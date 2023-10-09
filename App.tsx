@@ -84,6 +84,7 @@ const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpaci
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
+  const [firstOpenApp, setFirstOpenApp] = useMMKVStorage('firstOpenApp', storage, true)
   const rateSuccessCountRef = useRef(0)
   const rateSuccessCountPerInterstitialConfig = useRef(2)
   const userImgUri = useRef('')
@@ -148,6 +149,7 @@ function App(): JSX.Element {
         Math.pow(t1.pageX - t2.pageX, 2) +
         Math.pow(t1.pageY - t2.pageY, 2))
 
+      Track('move_pic')
       return true
     },
 
@@ -235,6 +237,7 @@ function App(): JSX.Element {
 
         const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path;
         onSelectedImg(path)
+        Track('pick_photo')
       }
     }
     catch (e: any) {
@@ -273,6 +276,7 @@ function App(): JSX.Element {
       return
 
     onSelectedImg(path)
+    Track('take_camera')
   }, [])
 
   const onPressCopyOCRResult = useCallback(async () => {
@@ -293,6 +297,7 @@ function App(): JSX.Element {
 
   const showAdsInterstitial = useCallback(() => {
     reallyNeedToShowInterstitial.current = true
+    Track('fire_show_ads', loadedInterstitial.current)
 
     if (loadedInterstitial.current) {
       loadedInterstitial.current = false
@@ -338,6 +343,7 @@ function App(): JSX.Element {
       Platform.OS
 
     const uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
+    Track('uploaded_done', uplodaErr === null)
 
     if (uplodaErr) {
       setStatus('')
@@ -369,6 +375,7 @@ function App(): JSX.Element {
       return
 
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true })
+    Track('scroll_top')
   }, [])
 
   const imgOnLayout = useCallback((_: LayoutChangeEvent) => {
@@ -570,6 +577,12 @@ function App(): JSX.Element {
     rateScore_Class_BuildAbove3Stats.current = finalScore
     const resultRate = getRateTypeByScore(finalScore)
     rateText.current = [resultRate[1], resultRate[0]]
+
+    Track('rated', {
+      finalScore,
+      stats: statsForRating.current.length,
+      result: resultRate[1]
+    })
   }, [])
 
   const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
@@ -675,6 +688,8 @@ function App(): JSX.Element {
           'Lỗi không thể phân tích hình',
           'Vui lòng chụp lại hay chọn ảnh khác!\n\nExtract result:\n' + extractRes)
       }
+
+      Track('extract_failed')
     }
   }, [])
 
@@ -704,6 +719,7 @@ function App(): JSX.Element {
     checkAndShowAdsInterstitial() // show ads
 
     try {
+      Track('call_api')
       const response = await axios.request(options);
 
       rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
@@ -721,6 +737,7 @@ function App(): JSX.Element {
 
       userImgUri.current = ''
       setStatus('')
+      Track('call_api_failed')
     }
   }, [])
 
@@ -756,8 +773,6 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
-    Track('app_open')
-
     // firebase
 
     FirebaseInit()
@@ -781,6 +796,7 @@ function App(): JSX.Element {
     const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
       console.log('open interstitial')
       showingInterstitial.current = true
+      Track('ads_opened')
     });
 
     const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
@@ -798,6 +814,8 @@ function App(): JSX.Element {
         AlertWithCopy(cachedAlert.current[0], cachedAlert.current[1])
         cachedAlert.current = undefined
       }
+
+      Track('ads_closed')
     });
 
     const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
@@ -805,9 +823,25 @@ function App(): JSX.Element {
 
       if (reallyNeedToShowInterstitial.current)
         loadAdsInterstitial()
+
+      Track('ads_error', ToCanPrint(e))
     })
 
     loadAdsInterstitial()
+
+    // tracking
+
+    Track('app_open')
+
+    console.log('firstOpenApp', firstOpenApp)
+
+    if (firstOpenApp) {
+      setFirstOpenApp(false)
+
+      Track('first_open_app', {
+        os: Platform.OS
+      })
+    }
 
     return () => {
       unsubscribe_ads_interstitial_loaded()
@@ -1129,4 +1163,5 @@ const AlertWithCopy = (title: string, content: string) => {
 const OnPressed_StoreRate = () => {
   const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
   Linking.openURL(storeLink)
+  Track('pressed_ratestore')
 }

@@ -976,7 +976,7 @@ const HandleWeirdStatNames = (slot: SlotCard): SlotCard => {
   }
 
   if (listWeirdTxt !== '') {
-    Alert.alert('Lỗi stat lạ (không phân tích được)!', listWeirdTxt)
+    // Alert.alert('Lỗi stat lạ (không phân tích được)!', listWeirdTxt)
 
     // remove stat
 

@@ -757,6 +757,7 @@ function App(): JSX.Element {
     });
 
     const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      console.log('closed interstitial')
       reallyNeedToShowInterstitial.current = false
       showingInterstitial.current = false
       loadAdsInterstitial()
@@ -1094,12 +1095,12 @@ const AlertWithCopy = (title: string, content: string) => {
     title, 
     content,
     [
-      { text: "OK" },
       {
         text: 'Copy',
         onPress: () => {
           Clipboard.setString(title + '\n\n' + content)
         }
-      }
+      },
+      { text: "OK" },
     ])
 }

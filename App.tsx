@@ -84,6 +84,7 @@ const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpaci
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
+  const rateSuccessCountRef = useRef(0)
   const rateSuccessCountPerInterstitialConfig = useRef(2)
   const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
@@ -107,6 +108,8 @@ function App(): JSX.Element {
   const initialImgTouch1Event = useRef<NativeTouchEvent | undefined>(undefined)
   const imgViewMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
   const imgViewMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
+
+  rateSuccessCountRef.current = rateSuccessCount
 
   const imageResponse = useRef<ViewProps>({
     onMoveShouldSetResponder: (event: GestureResponderEvent) => {
@@ -261,6 +264,15 @@ function App(): JSX.Element {
       return
 
     Clipboard.setString(ocrResult.current)
+  }, [])
+
+  const checkAndShowAdsInterstitial = useCallback(() => {
+    console.log('cur rate success count', rateSuccessCountRef.current, '/ '  + rateSuccessCountPerInterstitialConfig.current);
+    
+    if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
+      return
+
+    showAdsInterstitial()
   }, [])
 
   const showAdsInterstitial = useCallback(() => {
@@ -626,7 +638,11 @@ function App(): JSX.Element {
       findSuitBuilds()
       rate()
 
-      setRateSuccessCount(val => val + 1)
+      rateSuccessCountRef.current++
+      setRateSuccessCount(rateSuccessCountRef.current)
+
+      // done
+      
       setStatus(Math.random().toString())
     }
     else { // fail
@@ -668,7 +684,7 @@ function App(): JSX.Element {
 
     setStatus('Đang phân tích...')
 
-    showAdsInterstitial()
+    checkAndShowAdsInterstitial()
 
     try {
       const response = await axios.request(options);
@@ -754,7 +770,8 @@ function App(): JSX.Element {
       reallyNeedToShowInterstitial.current = false
       loadAdsInterstitial()
 
-      // handle
+      setRateSuccessCount(0)
+      rateSuccessCountRef.current = 0
     });
 
     const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {

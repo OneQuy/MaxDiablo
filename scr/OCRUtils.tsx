@@ -320,6 +320,8 @@ function HandleWholeTextBeforeSplitLines(wholeText: string): string {
     wholeText = wholeText.replaceAll('] +', ']###+') // +8.0% Critical Strike Chance [3.0-8.0] +9.6% Attack Speed [4.4 - 10.0]%
     wholeText = wholeText.replaceAll(']% +', ']%###+') // +8.0% Critical Strike Chance [3.0-8.0]% +9.6% Attack Speed [4.4 - 10.0]%
     wholeText = wholeText.replaceAll(') +', ')###+') // +2 Ranks of Fireball [2-3] (Sorcerer Only) +8.0% Critical Strike Chance [3.0-8.0]
+    wholeText = wholeText.replaceAll('\r', '')
+    wholeText = wholeText.replaceAll('\\r', '')
 
     return wholeText
 }

@@ -7,7 +7,9 @@ const ForceFixStatNameList = [
     ['Enemies That Are Burning', 'Damage Reduction from Enemies That Are Burning']
 ]
 
-function ForceFixStatName(name: string): string {
+function ForceFixStatNameAfterExtract(name: string): string {
+    // fix a part of name
+    
     for (let i = 0; i < ForceFixStatNameList.length; i++) {
         const element = ForceFixStatNameList[i]
 
@@ -16,8 +18,18 @@ function ForceFixStatName(name: string): string {
         if (name.toLowerCase().includes(n))
             return element[1]
     }
+    
+    // add space. Ex: CooldownReduction
 
+    if (!name.includes(' ')) {
+        name = AutoAddSpaceToStatName(name)
+    }
+    
     return name
+}
+
+function AutoAddSpaceToStatName(s: string): string { // CooldownReduction
+    return s = s.replace(/([A-Z])/g, ' $1').trim()
 }
 
 function RemoveTextAfterCloseSquareBracket(lines: string[]): string[] {
@@ -567,7 +579,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
         
         // force fix stat name
 
-        nameStat = ForceFixStatName(nameStat)
+        nameStat = ForceFixStatNameAfterExtract(nameStat)
 
         // parse and return
 

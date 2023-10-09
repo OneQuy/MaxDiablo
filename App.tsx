@@ -9,6 +9,7 @@ import {
   GestureResponderEvent,
   Image,
   LayoutChangeEvent,
+  Linking,
   NativeScrollEvent,
   NativeSyntheticEvent,
   NativeTouchEvent,
@@ -33,11 +34,12 @@ import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Classs, IgnoredStatsOfSlot, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber } from './scr/common/Utils';
-import { FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
+import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
+import { FirebaseRemoteConfig_Fetch, FirebaseRemoteConfig_GetValue, dddddd } from './scr/common/Firebase/FirebaseRemoteConfig';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -57,7 +59,10 @@ const adID_Banner = Platform.OS === 'android' ?
 const upArrowIcon = require('./assets/images/up-arrow.png')
 const starIcon = require('./assets/images/star-icon.png')
 
-const jsonPackage = require('./package.json')
+const googleStoreOpenLink = "market://details?id=com.maxdiablo"
+const appleStoreOpenLink = "https://www.google.com/"
+
+const version = require('./package.json')['version']
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
 const ignoredStats: IgnoredStatsOfSlot[] = require('./assets/IgnoredStats.json') // for ignoring stats
@@ -79,6 +84,7 @@ const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpaci
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
+  const rateSuccessCountPerInterstitialConfig = useRef(2)
   const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
@@ -268,7 +274,7 @@ function App(): JSX.Element {
       loadAdsInterstitial()
     }
   }, [])
- 
+
   const loadAdsInterstitial = useCallback(() => {
     console.log('loading interstitial')
     loadedInterstitial.current = false
@@ -603,7 +609,7 @@ function App(): JSX.Element {
     else
       return 'gray'
   }, [])
-  
+
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
     ocrResult.current = JSON.stringify(result)
     let extractRes = ExtractSlotCard(result, stringifyResult)
@@ -661,7 +667,7 @@ function App(): JSX.Element {
     };
 
     setStatus('Đang phân tích...')
-   
+
     showAdsInterstitial()
 
     try {
@@ -694,12 +700,43 @@ function App(): JSX.Element {
     }
   }, [])
 
+  const getFirebaseConfigAsync = useCallback(async () => {
+    const res = await FirebaseDatabase_GetValueAsync('app_config')
+
+    if (!res.value) {
+      console.error('FirebaseDatabase_GetValueAsync error: ', res.error)
+      return
+    }
+
+    rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
+
+    const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
+    
+    if (configVersion && version !== configVersion) {
+      const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
+
+      Alert.alert(
+        'Có bản cập nhật mới!',
+        'Vui lòng lên app store cập nhật phiên bản mới nhất.',
+        [
+          {
+            text: 'Cập nhật',
+            onPress: () => Linking.openURL(storeLink)
+          }
+        ])
+    }
+  }, [])
+
   // init once 
 
   useEffect(() => {
     // firebase
 
     FirebaseInit()
+
+    // remote config
+
+    getFirebaseConfigAsync()
 
     // ads
 
@@ -891,7 +928,7 @@ function App(): JSX.Element {
             </View>
         }
         {/* remain count */}
-        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{jsonPackage['version']}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
+        <Text style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
       </ScrollView>
       {/* scrollToTop btn */}
       <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>

@@ -1,2 +1,3 @@
 xử lý weird stat trên fb:
-1. thêm vào KnownWeirdStats (editor/GenerateAllStatName.ts), build lại all stat
+1. nếu là full stat name thì thêm vào KnownWeirdStats (editor/GenerateAllStatName.ts), build lại all stat
+2. nếu stat name này là 1 phần của stat đúng thì thêm vào ForceFixStatNameList (scr/OCRUtils.tsx), rồi update app lên store lol

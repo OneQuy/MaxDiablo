@@ -104,7 +104,7 @@ function App(): JSX.Element {
   const showingInterstitial = useRef(false)
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
   const tmpUploadFirebasePath = useRef('')
-  
+
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
     show_rate_app: false,
@@ -655,11 +655,12 @@ function App(): JSX.Element {
     let extractRes = ExtractSlotCard(result, stringifyResult)
     const isSuccess = typeof extractRes === 'object'
 
-    if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '')
+    if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
       FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
         result: ocrResult.current,
         version
       })
+    }
 
     if (typeof extractRes === 'object') { // success
       if (stringifyResult) {

@@ -386,7 +386,7 @@ function App(): JSX.Element {
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const thresholdScrollHide = 100
-    const hideTop = 50
+    const hideTop = Platform.OS === 'android' ? 50 : 70
 
     const native = event.nativeEvent
 

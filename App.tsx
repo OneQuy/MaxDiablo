@@ -773,17 +773,23 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
-    // firebase
+    const initAsync = async () => {
+      // firebase
 
-    FirebaseInit()
+      FirebaseInit()
 
-    // remote config
+      // remote config
+      
+      await getFirebaseConfigAsync()
 
-    getFirebaseConfigAsync()
+      // ads
 
-    // ads
+      await CheckAndInitAdmobAsync();
 
-    CheckAndInitAdmobAsync();
+      loadAdsInterstitial()
+    }
+
+    initAsync()
 
     const unsubscribe_ads_interstitial_loaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
       console.log('loaded interstitial')
@@ -826,8 +832,6 @@ function App(): JSX.Element {
 
       Track('ads_error', ToCanPrint(e))
     })
-
-    loadAdsInterstitial()
 
     // tracking
 

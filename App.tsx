@@ -104,9 +104,11 @@ function App(): JSX.Element {
   const showingInterstitial = useRef(false)
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
   const tmpUploadFirebasePath = useRef('')
+  
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
-    show_rate_app: false
+    show_rate_app: false,
+    save_ocr_result: false
   })
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
@@ -248,6 +250,13 @@ function App(): JSX.Element {
     }
   }, [])
 
+  const generateImgID = useCallback(() => {
+    let now = Date.now().toString()
+    let s = now.substring(now.length - 3) + '_' + Math.random().toString().substring(2, 5)
+    // console.log(s, now);
+    return s
+  }, [])
+
   const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
     const txt = await Clipboard.getString()
     await onGotOcrResultTextAsync(txt, true)
@@ -323,8 +332,6 @@ function App(): JSX.Element {
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
 
-    setStatus('Đang upload...')
-
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
 
@@ -335,12 +342,14 @@ function App(): JSX.Element {
       return
     }
 
-    tmpUploadFirebasePath.current =
-      'tmpfile-' +
-      Date.now() + '-' +
-      RandomInt(1000, 9999) + '-' +
-      version + '-' +
-      Platform.OS
+    tmpUploadFirebasePath.current = generateImgID()
+    // 'tmpfile-' +
+    // Date.now() + '-' +
+    // RandomInt(1000, 9999) + '-' +
+    // version + '-' +
+    // Platform.OS
+
+    setStatus('Đang upload...')
 
     const uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
     Track('uploaded_done', uplodaErr === null)
@@ -644,6 +653,13 @@ function App(): JSX.Element {
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
     ocrResult.current = JSON.stringify(result)
     let extractRes = ExtractSlotCard(result, stringifyResult)
+    const isSuccess = typeof extractRes === 'object'
+
+    if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '')
+      FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
+        result: ocrResult.current,
+        version
+      })
 
     if (typeof extractRes === 'object') { // success
       if (stringifyResult) {
@@ -779,7 +795,7 @@ function App(): JSX.Element {
       FirebaseInit()
 
       // remote config
-      
+
       await getFirebaseConfigAsync()
 
       // ads
@@ -900,6 +916,10 @@ function App(): JSX.Element {
                     }]}
                   resizeMode='contain'
                   source={{ uri: userImgUri.current }} />
+            }
+            {
+              userImgUri.current === '' ? undefined :
+                <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {tmpUploadFirebasePath.current}</Text>
             }
           </View>
           {/* loading & info */}

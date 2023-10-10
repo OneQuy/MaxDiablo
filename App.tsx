@@ -833,8 +833,6 @@ function App(): JSX.Element {
 
     Track('app_open')
 
-    console.log('firstOpenApp', firstOpenApp)
-
     if (firstOpenApp) {
       setFirstOpenApp(false)
 

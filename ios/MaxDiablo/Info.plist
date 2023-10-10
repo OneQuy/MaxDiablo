@@ -37,6 +37,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Please accept to take your photo</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Please accept the permission for improving our app better.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>

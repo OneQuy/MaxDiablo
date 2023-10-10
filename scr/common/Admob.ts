@@ -2,6 +2,7 @@
 
 import mobileAds from 'react-native-google-mobile-ads';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { CheckAndRequestTrackingTransparencyAsync } from './iOSTrackingTransparency';
 
 var inited = false
 
@@ -18,5 +19,10 @@ export const CheckAndInitAdmobAsync = async () => {
     //     await request(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY);
     // }
 
+    const resTrackingiOS = await CheckAndRequestTrackingTransparencyAsync()
+
+    console.log(resTrackingiOS);
+    
+    
     await mobileAds().initialize()
 }

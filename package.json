@@ -8,7 +8,6 @@
     "lint": "eslint .",
     "start": "react-native start",
     "builda": "node editor/increasepackageversion && cd android && ./gradlew assembleRelease",
-    "storee": "node editor/increasepackageversion && cd android && ./gradlew bundlerelease",
     "store": "cd android && ./gradlew bundlerelease",
     "tscr": "tsc editor/index.ts --outDir ./editor/js && node editor/js",
     "test": "jest"

@@ -12,17 +12,7 @@ export const CheckAndInitAdmobAsync = async () => {
 
     inited = true
 
-    // const result = await check(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY);
+    await CheckAndRequestTrackingTransparencyAsync()
 
-    // if (result === RESULTS.DENIED) {
-    //     // The permission has not been requested, so request it.
-    //     await request(PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY);
-    // }
-
-    const resTrackingiOS = await CheckAndRequestTrackingTransparencyAsync()
-
-    console.log(resTrackingiOS);
-    
-    
     await mobileAds().initialize()
 }

@@ -273,7 +273,8 @@ function App(): JSX.Element {
     const result = await launchCamera({
       saveToPhotos: false,
       cameraType: 'back',
-      mediaType: 'photo'
+      mediaType: 'photo',
+      quality: 0.5,
     } as CameraOptions)
 
     if (!result || !result.assets)

@@ -1,6 +1,6 @@
 {
   "name": "diablosenpai",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "builda": "node editor/increasepackageversion && cd android && ./gradlew assembleRelease",
-    "store": "node editor/increasepackageversion && cd android && ./gradlew bundlerelease",
+    "storee": "node editor/increasepackageversion && cd android && ./gradlew bundlerelease",
+    "store": "cd android && ./gradlew bundlerelease",
     "tscr": "tsc editor/index.ts --outDir ./editor/js && node editor/js",
     "test": "jest"
   },

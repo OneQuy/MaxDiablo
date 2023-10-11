@@ -1099,11 +1099,10 @@ const FilterStats = (slot: SlotCard): SlotCard => {
 }
 
 const IsIgnoredStat = (stat: Stat, slot: SlotCard): boolean => {
-  let res = false
   const statNameLower = stat.name.toLowerCase()
 
   if (statNameLower.includes('resistance')) {
-    res = true
+    return true
   }
 
   let dataIdx = ignoredStats.findIndex(i => i.name === slot.slotName)
@@ -1116,9 +1115,7 @@ const IsIgnoredStat = (stat: Stat, slot: SlotCard): boolean => {
   if (dataIdx >= 0) {
     const idx = ignoredStats[dataIdx].statNames.indexOf(statNameLower)
 
-    res = idx >= 0
-
-    // console.log('aaaa', shortSlotName, statNameLower, res);
+    return idx >= 0
   }
   else {
     const theRestIgnoredStats = ignoredStats.find(i => i.name === SlotName.None)
@@ -1128,12 +1125,8 @@ const IsIgnoredStat = (stat: Stat, slot: SlotCard): boolean => {
 
     const idx = theRestIgnoredStats.statNames.indexOf(statNameLower)
 
-    res = idx >= 0
-
-    // console.log('bbb', statNameLower, res);
+    return idx >= 0
   }
-
-  return res
 }
 
 const ConvertSlotNameToShortSlotName = (name: SlotName): SlotName => {

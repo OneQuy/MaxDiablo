@@ -56,6 +56,9 @@ const adID_Banner = Platform.OS === 'android' ?
   // 'ca-app-pub-9208244284687724/4776043942'
   TestIds.BANNER
 
+const today = new Date();
+const todayString = 'd' + today.getDate() + '_m' + (today.getMonth() + 1) + '_' + today.getFullYear()
+
 const upArrowIcon = require('./assets/images/up-arrow.png')
 const starIcon = require('./assets/images/star-icon.png')
 
@@ -338,6 +341,8 @@ function App(): JSX.Element {
 
       return
     }
+
+    FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
 
     tmpUploadFirebasePath.current = generateImgID()
     // 'tmpfile-' +
@@ -658,6 +663,11 @@ function App(): JSX.Element {
     let extractRes = ExtractSlotCard(result, stringifyResult)
     const isSuccess = typeof extractRes === 'object'
 
+    if (isSuccess)
+      FirebaseDatabase_IncreaseNumberAsync('extracted_count/success' + todayString, 0)
+    else
+      FirebaseDatabase_IncreaseNumberAsync('extracted_count/fail' + todayString, 0)
+
     if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
       FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
         result: ocrResult.current,
@@ -761,6 +771,7 @@ function App(): JSX.Element {
       userImgUri.current = ''
       setStatus('')
       Track('call_api_failed')
+      FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
     }
   }, [])
 
@@ -1195,15 +1206,12 @@ const OnPressed_StoreRate = () => {
 const TrackOnOpenApp = async () => {
   Track('app_open')
 
-  const today = new Date();
-  const s = 'd' + today.getDate() + '_m' + (today.getMonth() + 1) + '_' + today.getFullYear()
-
   const tracked_user_unique_open_app_count = await storage.getStringAsync('tracked_user_unique_open_app_count')
 
-  if (tracked_user_unique_open_app_count !== s) {
-    await storage.setStringAsync('tracked_user_unique_open_app_count', s)
-    await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + s, 0)
+  if (tracked_user_unique_open_app_count !== todayString) {
+    await storage.setStringAsync('tracked_user_unique_open_app_count', todayString)
+    await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
   }
 
-  await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + s, 0)
+  await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
 }

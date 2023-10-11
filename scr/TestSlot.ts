@@ -39,4 +39,4 @@ const testSlot: SlotCard =
     ]
 }
 
-export const forceSlot: SlotCard | undefined = testSlot
+export const forceSlot: SlotCard | undefined = undefined

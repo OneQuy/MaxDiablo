@@ -36,10 +36,10 @@ var GenerateBuildData = function (printBeauty) {
                 continue;
             var slotFileNames = fs.readdirSync(tiersDirPath + tierDirName + '/' + buildDirName);
             var slotCards = [];
-            for (var a = 0; a < buildDirs.length; a++) {
+            var _loop_1 = function (a) {
                 var slotFileName = slotFileNames[a];
                 if (!slotFileName || !slotFileName.includes('.txt'))
-                    continue;
+                    return "continue";
                 var path = tiersDirPath + tierDirName + '/' + buildDirName + '/' + slotFileName;
                 var str = fs.readFileSync(path, { encoding: 'utf8', flag: 'r' });
                 var slotCardRes = (0, ExtractSlotCardFromHTML_1.ExtractSlotCardFromHTML)(str, true);
@@ -47,8 +47,18 @@ var GenerateBuildData = function (printBeauty) {
                     countError++;
                     (0, Utils_NodeJS_1.LogRed)('can extract file: ' + path + ', error: ' + slotCardRes);
                 }
-                else
-                    slotCards.push(slotCardRes);
+                else {
+                    // find same build
+                    var sameIdx = slotCards.findIndex(function (i) { return IsSameSlotCard(i, slotCardRes); });
+                    if (sameIdx < 0)
+                        slotCards.push(slotCardRes);
+                    else {
+                        (0, Utils_NodeJS_1.LogRed)('same slot: ' + slotCardRes.slotName, 'build : ' + buildDirName);
+                    }
+                }
+            };
+            for (var a = 0; a < buildDirs.length; a++) {
+                _loop_1(a);
             }
             countSlots += slotCards.length;
             // fix build name
@@ -78,3 +88,14 @@ var GenerateBuildData = function (printBeauty) {
     return;
 };
 exports.GenerateBuildData = GenerateBuildData;
+var IsSameSlotCard = function (card1, card2) {
+    var s1 = JSON.stringify(card1);
+    var s2 = JSON.stringify(card2);
+    var slot1 = JSON.parse(s1);
+    var slot2 = JSON.parse(s2);
+    slot1.stats.sort(function (a, b) { return a.name.localeCompare(b.name); });
+    slot2.stats.sort(function (a, b) { return a.name.localeCompare(b.name); });
+    var ss1 = JSON.stringify(slot1);
+    var ss2 = JSON.stringify(slot2);
+    return ss1 === ss2;
+};

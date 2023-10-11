@@ -69,8 +69,17 @@ export const GenerateBuildData = (printBeauty = true): string | undefined => {
                     countError++
                     LogRed('can extract file: ' + path + ', error: ' + slotCardRes)
                 }
-                else
-                    slotCards.push(slotCardRes)
+                else {
+                    // find same build
+
+                    const sameIdx = slotCards.findIndex(i => IsSameSlotCard(i, slotCardRes))
+
+                    if (sameIdx < 0)
+                        slotCards.push(slotCardRes)
+                    else {
+                        LogRed('same slot: ' + slotCardRes.slotName, 'build : ' + buildDirName)
+                    }
+                }
             }
 
             countSlots += slotCards.length
@@ -80,11 +89,11 @@ export const GenerateBuildData = (printBeauty = true): string | undefined => {
             let buildName = buildDirName.replace('Endgame', '')
             buildName = buildName.replace('Guide', '')
             buildName = buildName.replace('Build', '')
-            
+
             buildName = buildName.replace('endgame', '')
             buildName = buildName.replace('guide', '')
             buildName = buildName.replace('build', '')
-            
+
             buildName = buildName.trim()
 
             builds.push({
@@ -109,4 +118,20 @@ export const GenerateBuildData = (printBeauty = true): string | undefined => {
     fs.writeFileSync('./assets/BuildsData.json', JSON.stringify(tiers, null, 1));
 
     return
+}
+
+const IsSameSlotCard = (card1: SlotCard, card2: SlotCard): boolean => {    
+    const s1 = JSON.stringify(card1)
+    const s2 = JSON.stringify(card2)
+
+    const slot1: SlotCard = JSON.parse(s1)
+    const slot2: SlotCard = JSON.parse(s2)
+
+    slot1.stats.sort((a, b) => a.name.localeCompare(b.name))
+    slot2.stats.sort((a, b) => a.name.localeCompare(b.name))
+
+    const ss1 = JSON.stringify(slot1)
+    const ss2 = JSON.stringify(slot2)
+
+    return ss1 === ss2
 }

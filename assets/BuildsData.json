@@ -3117,40 +3117,6 @@
         "value": 18.5
        }
       ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 800,
-      "stats": [
-       {
-        "name": "Maximum Life",
-        "isPercent": false,
-        "min": 559,
-        "max": 1211,
-        "value": 1211
-       },
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 4.8,
-        "max": 9,
-        "value": 9
-       },
-       {
-        "name": "Overpower Damage",
-        "isPercent": true,
-        "min": 21,
-        "max": 42,
-        "value": 42
-       },
-       {
-        "name": "Resource Generation",
-        "isPercent": true,
-        "min": 7.6,
-        "max": 18.5,
-        "value": 18.5
-       }
-      ]
      }
     ]
    },
@@ -3800,80 +3766,12 @@
         "value": 26.2
        }
       ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Resource Generation",
-        "isPercent": true,
-        "min": 7.6,
-        "max": 18.5,
-        "value": 18.5
-       },
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       },
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       }
-      ]
      }
     ]
    },
    {
     "name": "Hammer of the Ancients Barbarian",
     "slots": [
-     {
-      "slotName": "Sword",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       },
-       {
-        "name": "All Stats",
-        "isPercent": false,
-        "min": 30,
-        "max": 42,
-        "value": 42
-       },
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 24.8,
-        "max": 35.3,
-        "value": 35.3
-       }
-      ]
-     },
      {
       "slotName": "Sword",
       "itemPower": 820,
@@ -4206,40 +4104,6 @@
         "value": 14
        }
       ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Resource Generation",
-        "isPercent": true,
-        "min": 7.6,
-        "max": 18.5,
-        "value": 18.5
-       },
-       {
-        "name": "Maximum Fury",
-        "isPercent": false,
-        "min": 5,
-        "max": 14,
-        "value": 14
-       }
-      ]
      }
     ]
    },
@@ -4417,40 +4281,6 @@
       ]
      },
      {
-      "slotName": "Chest Armor",
-      "itemPower": 800,
-      "stats": [
-       {
-        "name": "Intelligence",
-        "isPercent": false,
-        "min": 42,
-        "max": 63,
-        "value": 63
-       },
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 24.8,
-        "max": 35.3,
-        "value": 35.3
-       },
-       {
-        "name": "Damage to Stunned Enemies",
-        "isPercent": true,
-        "min": 24.8,
-        "max": 35.3,
-        "value": 35.3
-       },
-       {
-        "name": "Rank of the Glass Cannon Passive",
-        "isPercent": false,
-        "min": 1,
-        "max": 1,
-        "value": 1
-       }
-      ]
-     },
-     {
       "slotName": "Focus",
       "itemPower": 800,
       "stats": [
@@ -4535,40 +4365,6 @@
         "min": 15.8,
         "max": 26.2,
         "value": 26.2
-       },
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       }
-      ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 800,
-      "stats": [
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       },
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Resource Generation",
-        "isPercent": true,
-        "min": 7.6,
-        "max": 18.5,
-        "value": 18.5
        },
        {
         "name": "Vulnerable Damage",
@@ -4889,40 +4685,6 @@
         "value": 26.2
        }
       ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       },
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 4.8,
-        "max": 9,
-        "value": 9
-       }
-      ]
      }
     ]
    },
@@ -5193,80 +4955,12 @@
         "value": 9
        }
       ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 800,
-      "stats": [
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 31.5
-       },
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 35.3
-       },
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 4.8,
-        "max": 9,
-        "value": 9
-       }
-      ]
      }
     ]
    },
    {
     "name": "Thorns Barbarian",
     "slots": [
-     {
-      "slotName": "Axe",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Strength",
-        "isPercent": false,
-        "min": 57,
-        "max": 78,
-        "value": 78
-       },
-       {
-        "name": "All Stats",
-        "isPercent": false,
-        "min": 30,
-        "max": 42,
-        "value": 42
-       },
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 24.8,
-        "max": 35.3,
-        "value": 35.3
-       }
-      ]
-     },
      {
       "slotName": "Axe",
       "itemPower": 820,
@@ -5536,40 +5230,6 @@
         "min": 21,
         "max": 31.5,
         "value": 31.5
-       }
-      ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Maximum Life",
-        "isPercent": false,
-        "min": 605,
-        "max": 1310,
-        "value": 1310
-       },
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 24.8,
-        "max": 35.3,
-        "value": 35.3
-       },
-       {
-        "name": "Damage while Berserking",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
        }
       ]
      },
@@ -5917,80 +5577,12 @@
         "value": 26.2
        }
       ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       },
-       {
-        "name": "Critical Strike Damage with Earth Skills",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       }
-      ]
      }
     ]
    },
    {
     "name": "Walking Arsenal Barbarian",
     "slots": [
-     {
-      "slotName": "Sword",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       },
-       {
-        "name": "Strength",
-        "isPercent": false,
-        "min": 57,
-        "max": 78,
-        "value": 78
-       },
-       {
-        "name": "All Stats",
-        "isPercent": false,
-        "min": 30,
-        "max": 42,
-        "value": 42
-       }
-      ]
-     },
      {
       "slotName": "Sword",
       "itemPower": 820,
@@ -7164,40 +6756,6 @@
       ]
      },
      {
-      "slotName": "Sword",
-      "itemPower": 800,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Critical Strike Damage",
-        "isPercent": true,
-        "min": 15.8,
-        "max": 26.2,
-        "value": 26.2
-       },
-       {
-        "name": "Damage to Close Enemies",
-        "isPercent": true,
-        "min": 24.8,
-        "max": 35.3,
-        "value": 35.3
-       },
-       {
-        "name": "Dexterity",
-        "isPercent": false,
-        "min": 57,
-        "max": 78,
-        "value": 78
-       }
-      ]
-     },
-     {
       "slotName": "Crossbow",
       "itemPower": 800,
       "stats": [
@@ -8064,40 +7622,6 @@
       ]
      },
      {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Maximum Life",
-        "isPercent": false,
-        "min": 605,
-        "max": 1310,
-        "value": 1310
-       },
-       {
-        "name": "Resource Generation",
-        "isPercent": true,
-        "min": 7.6,
-        "max": 18.5,
-        "value": 18.5
-       }
-      ]
-     },
-     {
       "slotName": "Totem",
       "itemPower": 820,
       "stats": [
@@ -8402,40 +7926,6 @@
       ]
      },
      {
-      "slotName": "Ring",
-      "itemPower": 700,
-      "stats": [
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 4.8,
-        "max": 9,
-        "value": 9
-       },
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Maximum Life",
-        "isPercent": false,
-        "min": 378,
-        "max": 818,
-        "value": 818
-       }
-      ]
-     },
-     {
       "slotName": "Totem",
       "itemPower": 820,
       "stats": [
@@ -8702,40 +8192,6 @@
         "min": 7.4,
         "max": 15.8,
         "value": 15.8
-       }
-      ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 4.8,
-        "max": 9,
-        "value": 9
-       },
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Maximum Life",
-        "isPercent": false,
-        "min": 605,
-        "max": 1310,
-        "value": 1310
        }
       ]
      },
@@ -9337,40 +8793,6 @@
         "min": 7.4,
         "max": 17.4,
         "value": 17.4
-       }
-      ]
-     },
-     {
-      "slotName": "Ring",
-      "itemPower": 820,
-      "stats": [
-       {
-        "name": "Critical Strike Chance",
-        "isPercent": true,
-        "min": 2.7,
-        "max": 7.5,
-        "value": 7.5
-       },
-       {
-        "name": "Vulnerable Damage",
-        "isPercent": true,
-        "min": 10.5,
-        "max": 21,
-        "value": 21
-       },
-       {
-        "name": "Maximum Life",
-        "isPercent": false,
-        "min": 605,
-        "max": 1310,
-        "value": 1310
-       },
-       {
-        "name": "Lucky Hit Chance",
-        "isPercent": true,
-        "min": 4.8,
-        "max": 9,
-        "value": 9
        }
       ]
      },

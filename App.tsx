@@ -441,6 +441,7 @@ function App(): JSX.Element {
 
           if (statEquals.length >= linesMatchIsGood) {
             suitBuilds.current.push([tier, build, slot, statEquals.length])
+            break
           }
         }
       }

@@ -82,7 +82,7 @@ export async function FirebaseDatabase_GetValueAsync(relativePath) {
  *      value: value or null if has no data,
  *      error: error or null if success }
  */
-export async function FirebaseDatabase_IncreaseNumberAsync(relativePath) {
+export async function FirebaseDatabase_IncreaseNumberAsync(relativePath, startValue = -1) {
     CheckAndInit();
 
     try
@@ -95,7 +95,7 @@ export async function FirebaseDatabase_IncreaseNumberAsync(relativePath) {
         
         if (value == null)
         {
-            value = -1;
+            value = startValue
         }
 
         // set

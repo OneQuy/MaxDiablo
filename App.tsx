@@ -867,7 +867,7 @@ function App(): JSX.Element {
 
     // tracking
 
-    Track('app_open')
+    TrackOnOpenApp()
 
     if (firstOpenApp) {
       setFirstOpenApp(false)
@@ -1190,4 +1190,20 @@ const OnPressed_StoreRate = () => {
   const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
   Linking.openURL(storeLink)
   Track('pressed_ratestore')
+}
+
+const TrackOnOpenApp = async () => {
+  Track('app_open')
+
+  const today = new Date();
+  const s = 'd' + today.getDate() + '_m' + (today.getMonth() + 1) + '_' + today.getFullYear()
+
+  const tracked_user_unique_open_app_count = await storage.getStringAsync('tracked_user_unique_open_app_count')
+
+  if (tracked_user_unique_open_app_count !== s) {
+    await storage.setStringAsync('tracked_user_unique_open_app_count', s)
+    await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + s, 0)
+  }
+
+  await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + s, 0)
 }

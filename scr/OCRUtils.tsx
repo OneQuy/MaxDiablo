@@ -1,3 +1,4 @@
+import { forceSlot } from "./TestSlot";
 import { SlotCard, SlotName, Stat } from "./Types";
 import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt, ToCanPrint } from "./common/UtilsTS";
 
@@ -359,47 +360,6 @@ function HandleWholeTextBeforeSplitLines(wholeText: string): string {
 
     return wholeText
 }
-
-const testSlot: SlotCard = 
-{
-    slotName: SlotName.Ring,
-    itemPower: 700,
-    stats: [
-        {
-            name: 'Vulnerable Damage',
-            value: 13,
-            min: 7,
-            max: 14,
-            isPercent: true
-        },
-
-        {
-            name: 'Damage to Close Enemies',
-            value: 22,
-            min: 16.5,
-            max: 23.5,
-            isPercent: true
-        },
-
-        {
-            name: 'Critical Strike Chance',
-            value: 4.6,
-            min: 1.8,
-            max: 5,
-            isPercent: true
-        },
-
-        {
-            name: 'Barrier Generation',
-            value: 12,
-            min: 7,
-            max: 14,
-            isPercent: true
-        }
-    ]
-}
-
-const forceSlot: SlotCard | undefined = undefined
 
 export function ExtractSlotCard(text: string, forceLog = false): SlotCard | string {
     if (__DEV__ && forceSlot !== undefined)

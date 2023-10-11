@@ -18,13 +18,13 @@ function ForceFixStatNameAfterExtract(name: string): string {
         if (name.toLowerCase().includes(n))
             return element[1]
     }
-    
+
     // add space. Ex: CooldownReduction
 
     if (!name.includes(' ')) {
         name = AutoAddSpaceToStatName(name)
     }
-    
+
     // fix multi space: Damage for X   Seconds After  Dodging     an Attack
 
     name = name.replace(/\s\s+/g, ' ');
@@ -239,7 +239,7 @@ function ExtractNameStat(firstCharIdx: number, line: string): string | undefined
         if (innerNum.length > 0) {
             nameStat = nameStat.replace('+' + innerNum[0].toString() + '.0', 'X')
             nameStat = nameStat.replace(innerNum[0].toString() + '.0', 'X')
-            
+
             nameStat = nameStat.replace('+' + innerNum[0].toString(), 'X')
             nameStat = nameStat.replace(innerNum[0].toString(), 'X')
         }
@@ -312,7 +312,7 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
             }
 
             max = Math.abs(floats[2])
-        }        
+        }
     }
 
     if (!IsNumType(min) ||
@@ -360,7 +360,51 @@ function HandleWholeTextBeforeSplitLines(wholeText: string): string {
     return wholeText
 }
 
+const testSlot: SlotCard = 
+{
+    slotName: SlotName.Ring,
+    itemPower: 700,
+    stats: [
+        {
+            name: 'Vulnerable Damage',
+            value: 13,
+            min: 7,
+            max: 14,
+            isPercent: true
+        },
+
+        {
+            name: 'Damage to Close Enemies',
+            value: 22,
+            min: 16.5,
+            max: 23.5,
+            isPercent: true
+        },
+
+        {
+            name: 'Critical Strike Chance',
+            value: 4.6,
+            min: 1.8,
+            max: 5,
+            isPercent: true
+        },
+
+        {
+            name: 'Barrier Generation',
+            value: 12,
+            min: 7,
+            max: 14,
+            isPercent: true
+        }
+    ]
+}
+
+const forceSlot: SlotCard | undefined = undefined
+
 export function ExtractSlotCard(text: string, forceLog = false): SlotCard | string {
+    if (__DEV__ && forceSlot !== undefined)
+        return forceSlot
+
     if (forceLog)
         isLog = true
 
@@ -514,7 +558,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
     if (lines.length <= 1)
         return 'text to regconize doesnt follow requires'
-    
+
     // extract each line
 
     let stats: Stat[] = []
@@ -573,7 +617,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
 
         if (!nameStat)
             continue
-                
+
         // range
 
         const range = ExtractRange(line, value)
@@ -581,7 +625,7 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
         if (!range) {
             continue
         }
-        
+
         // force fix stat name
 
         nameStat = ForceFixStatNameAfterExtract(nameStat)

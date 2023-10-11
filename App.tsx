@@ -104,6 +104,7 @@ function App(): JSX.Element {
   const showingInterstitial = useRef(false)
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
   const tmpUploadFirebasePath = useRef('')
+  const cheatPasteOCRResultCount = useRef(0)
 
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
@@ -245,11 +246,6 @@ function App(): JSX.Element {
     return s
   }, [])
 
-  const onPressLogStatsFromTextOCRInClipboard = useCallback(async () => {
-    const txt = await Clipboard.getString()
-    await onGotOcrResultTextAsync(txt, true)
-  }, [])
-
   const onPressTakeCamera = useCallback(async () => {
     const camRequestRes = await RequestCameraPermissionAsync()
 
@@ -275,6 +271,18 @@ function App(): JSX.Element {
 
     onSelectedImg(path)
     Track('take_camera')
+  }, [])
+
+  const onPressTotalScore = useCallback(async () => {
+    if (cheatPasteOCRResultCount.current < 5) {
+      cheatPasteOCRResultCount.current++
+      return
+    }
+
+    cheatPasteOCRResultCount.current = 0
+    
+    const txt = await Clipboard.getString()
+    await onGotOcrResultTextAsync(txt, true)
   }, [])
 
   const onPressCopyOCRResult = useCallback(async () => {
@@ -969,14 +977,9 @@ function App(): JSX.Element {
             <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current[0] === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current[1], padding: 10, borderRadius: 10 }} >
               <Text style={{ color: rateText.current[0] === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current[0]}</Text>
             </View>
-            {/* <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class.current >= 0 ? RoundNumber(rateScore_Class.current * 10, 1) : 0}/10</Text> */}
-            <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAbove3Stats.current >= 0 ? RoundNumber(rateScore_Class_BuildAbove3Stats.current * 10, 1) : 0}/10</Text>
+            <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAbove3Stats.current >= 0 ? RoundNumber(rateScore_Class_BuildAbove3Stats.current * 10, 1) : 0}/10</Text>
           </View>
         }
-        {/* dev btns */}
-        {/* <TouchableOpacity style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 5 }} onPress={onPressLogStatsFromTextOCRInClipboard}>
-          <Text style={{ color: 'gray' }}>[dev] log stats from text OCR in Clipboard</Text>
-        </TouchableOpacity> */}
         {/* builds suit */}
         {
           notShowSuitBuilds ? undefined :

@@ -191,18 +191,6 @@ function App(): JSX.Element {
       imgScale.setValue(Math.max(1, Math.min(maxScale, scale)))
     },
 
-    // onResponderTerminate: (_: GestureResponderEvent) => {
-    //   onMoveImgEnd()
-    //  },
-
-    // onResponderReject: (_: GestureResponderEvent) => {
-    //  onMoveImgEnd()
-    // },
-
-    // onResponderRelease: (_: GestureResponderEvent) => {
-    //  onMoveImgEnd()
-    // },
-
     onResponderEnd: (_: GestureResponderEvent) => {
       onMoveImgEnd()
     },

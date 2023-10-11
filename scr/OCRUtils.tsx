@@ -1,6 +1,6 @@
 import { forceSlot } from "./TestSlot";
 import { SlotCard, SlotName, Stat } from "./Types";
-import { ExtractAllNumbersInText, IsChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt, ToCanPrint } from "./common/UtilsTS";
+import { ExtractAllNumbersInText, IsChar, IsNumChar, IsNumOrDotChar, IsNumType, SplitNumberInText, StringReplaceCharAt, ToCanPrint } from "./common/UtilsTS";
 
 var isLog = false
 
@@ -273,6 +273,9 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
         const s = line.substring(openSqrBracketIdx)
         const floats = ExtractAllNumbersInText(s)
 
+        if (line.includes('aximum Li'))
+            console.log(value, floats);
+            
         if (floats.length >= 2) {
             min = floats[0]
             max = Math.abs(floats[1])
@@ -342,6 +345,17 @@ function HandleWholeTextBeforeSplitLines(wholeText: string): string {
             wholeText[index + 1] === '%' &&
             wholeText[index - 1] >= '0' && wholeText[index - 1] <= '9') {
             curChar = ']'
+            wholeText = StringReplaceCharAt(wholeText, index, curChar)
+        }
+
+        // tách số sai case có dấu phẩy hàng ngàn: 1,164 Maximum Life [537 - 1,164] 
+
+        else if (curChar === ',' &&
+            index + 3 < wholeText.length &&
+            IsNumChar(wholeText[index + 1]) &&
+            IsNumChar(wholeText[index + 2]) &&
+            IsNumChar(wholeText[index + 3])) {
+            curChar = ''
             wholeText = StringReplaceCharAt(wholeText, index, curChar)
         }
     }

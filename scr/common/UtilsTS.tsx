@@ -280,6 +280,16 @@ export const btoa = (input: string) => {
 
 // check type -----------------------------
 
+export const IsNumChar = (c: string) => {
+    if (typeof c !== 'string' || c.length !== 1)
+        return false
+
+    if (c >= '0' && c <= '9')
+        return true
+    else
+        return false
+}
+
 export const IsNumOrDotChar = (c: string) => {
     if (typeof c !== 'string' || c.length !== 1)
         return false

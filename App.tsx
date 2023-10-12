@@ -330,7 +330,7 @@ function App(): JSX.Element {
   const checkAndShowAdsInterstitial = useCallback(() => {
     if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
       return
-    
+
     console.log('cur rate success count', rateSuccessCountRef.current, '/ ' + rateSuccessCountPerInterstitialConfig.current);
 
     if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
@@ -342,7 +342,7 @@ function App(): JSX.Element {
   const showAdsInterstitial = useCallback(() => {
     if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
       return
-    
+
     reallyNeedToShowInterstitial.current = true
     Track('fire_show_ads', loadedInterstitial.current)
 
@@ -358,7 +358,7 @@ function App(): JSX.Element {
   const loadAdsInterstitial = useCallback(() => {
     if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
       return
-    
+
     console.log('loading interstitial')
     loadedInterstitial.current = false
     interstitial.load()
@@ -401,7 +401,22 @@ function App(): JSX.Element {
 
     await StorageLog_LogAsync('uploaddd', tmpUploadFirebasePath.current)
 
-    const uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
+    let uplodaErr
+
+    try {
+      uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
+    }
+    catch (e) {
+      setStatus('')
+
+      await StorageLog_LogAsync('lỗi upload', ToCanPrint(e))
+
+      cacheOrShowAlert(
+        'Lỗi upload file!',
+        'Vui lòng chọn file khác. Xin lỗi bạn!\n\n' + ToCanPrint(e))
+
+      return
+    }
 
     await StorageLog_LogAsync('upload done', uplodaErr === null)
 
@@ -425,7 +440,7 @@ function App(): JSX.Element {
     const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tmpUploadFirebasePath.current)
 
     await StorageLog_LogAsync('dl url', getURLRes.url)
-    
+
     if (getURLRes.error) {
       setStatus('')
 
@@ -542,10 +557,7 @@ function App(): JSX.Element {
     }
 
     if (slotOfClasses === undefined) {
-      // todo
-      // (
-      //   'Lỗi không rate',
-      //   'Không thể rate cho slot: ' + userSlot.slotName)
+      FirebaseDatabase_SetValueAsync('error_report/whattheheathy/' + Date.now(), userSlot.slotName)
 
       return
     }

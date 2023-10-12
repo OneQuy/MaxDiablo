@@ -33,7 +33,7 @@ import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Classs, IgnoredStatsOfSlot, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
-import { RandomInt, RoundNumber } from './scr/common/Utils';
+import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
@@ -43,8 +43,8 @@ import { Track } from './scr/common/ForageAnalytic';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
-  // 'ca-app-pub-9208244284687724/4249911866'
-  TestIds.INTERSTITIAL
+  'ca-app-pub-9208244284687724/4249911866'
+// TestIds.INTERSTITIAL
 
 const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
   requestNonPersonalizedAdsOnly: true,
@@ -53,8 +53,8 @@ const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
 
 const adID_Banner = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/5493652375' :
-  // 'ca-app-pub-9208244284687724/4776043942'
-  TestIds.BANNER
+  'ca-app-pub-9208244284687724/4776043942'
+// TestIds.BANNER
 
 const today = new Date();
 const todayString = 'd' + today.getDate() + '_m' + (today.getMonth() + 1) + '_' + today.getFullYear()
@@ -342,7 +342,8 @@ function App(): JSX.Element {
       return
     }
 
-    FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
+    if (!__DEV__)
+      FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
 
     tmpUploadFirebasePath.current = generateImgID()
     // 'tmpfile-' +
@@ -663,16 +664,18 @@ function App(): JSX.Element {
     let extractRes = ExtractSlotCard(result, stringifyResult)
     const isSuccess = typeof extractRes === 'object'
 
-    if (isSuccess)
-      FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/success', 0)
-    else
-      FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
+    if (!__DEV__) {
+      if (isSuccess)
+        FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/success', 0)
+      else
+        FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
 
-    if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
-      FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
-        result: ocrResult.current,
-        version
-      })
+      if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
+        FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
+          result: ocrResult.current,
+          version
+        })
+      }
     }
 
     if (typeof extractRes === 'object') { // success
@@ -771,6 +774,8 @@ function App(): JSX.Element {
       userImgUri.current = ''
       setStatus('')
       Track('call_api_failed')
+
+      if (!__DEV__)
       FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
     }
   }, [])
@@ -807,6 +812,7 @@ function App(): JSX.Element {
       const ver = (version as string).replaceAll('.', '_')
 
       if (last_installed_version !== version) { // new install or updated
+        if (!__DEV__)
         await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
         await storage.setStringAsync('last_installed_version', version)
       }
@@ -1210,8 +1216,11 @@ const TrackOnOpenApp = async () => {
 
   if (tracked_user_unique_open_app_count !== todayString) {
     await storage.setStringAsync('tracked_user_unique_open_app_count', todayString)
+
+    if (!__DEV__)
     await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
   }
 
+  if (!__DEV__)
   await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
 }

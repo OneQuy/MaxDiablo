@@ -807,7 +807,7 @@ function App(): JSX.Element {
       const ver = (version as string).replaceAll('.', '_')
 
       if (last_installed_version !== version) { // new install or updated
-        await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver)
+        await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
         await storage.setStringAsync('last_installed_version', version)
       }
     }

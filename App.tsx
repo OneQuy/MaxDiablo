@@ -63,7 +63,7 @@ const upArrowIcon = require('./assets/images/up-arrow.png')
 const starIcon = require('./assets/images/star-icon.png')
 
 const googleStoreOpenLink = "market://details?id=com.maxdiablo"
-const appleStoreOpenLink = "https://www.google.com/"
+const appleStoreOpenLink = "https://apps.apple.com/us/app/d4-tool/id6469034531"
 
 const version = require('./package.json')['version']
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds

@@ -664,9 +664,9 @@ function App(): JSX.Element {
     const isSuccess = typeof extractRes === 'object'
 
     if (isSuccess)
-      FirebaseDatabase_IncreaseNumberAsync('extracted_count/success' + todayString, 0)
+      FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/success', 0)
     else
-      FirebaseDatabase_IncreaseNumberAsync('extracted_count/fail' + todayString, 0)
+      FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
 
     if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
       FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {

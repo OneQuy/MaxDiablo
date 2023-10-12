@@ -9,6 +9,11 @@ const KnownWeirdStats = [
     'Rank of Hammer of the Ancients',
     'Blocked Damage Reduction',
     'Main Hand Weapon Damage',
+    'Maximum Life Socket',
+    'Rank of Concealment',
+    'Max Evade Charge',
+    'Mastery Skill Damage',
+    'Rank of the Endless Pyre Passive',
 ]
 
 export const GenerateAllStatName = () => {

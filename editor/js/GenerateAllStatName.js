@@ -9,6 +9,11 @@ var KnownWeirdStats = [
     'Rank of Hammer of the Ancients',
     'Blocked Damage Reduction',
     'Main Hand Weapon Damage',
+    'Maximum Life Socket',
+    'Rank of Concealment',
+    'Max Evade Charge',
+    'Mastery Skill Damage',
+    'Rank of the Endless Pyre Passive',
 ];
 var GenerateAllStatName = function () {
     var text = fs.readFileSync('./assets/ClassesData.json');

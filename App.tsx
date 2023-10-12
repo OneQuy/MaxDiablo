@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  Button,
   GestureResponderEvent,
   Image,
   LayoutChangeEvent,
@@ -40,6 +41,7 @@ import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { Track } from './scr/common/ForageAnalytic';
+import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -86,6 +88,7 @@ const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpaci
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
+  const [showCheat, setShowCheat] = useState(false)
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
   const [firstOpenApp, setFirstOpenApp] = useMMKVStorage('firstOpenApp', storage, true)
   const rateSuccessCountRef = useRef(0)
@@ -108,6 +111,7 @@ function App(): JSX.Element {
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
   const tmpUploadFirebasePath = useRef('')
   const cheatPasteOCRResultCount = useRef(0)
+  const showCheatTapCount = useRef(0)
 
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
@@ -287,6 +291,29 @@ function App(): JSX.Element {
 
     const txt = await Clipboard.getString()
     await onGotOcrResultTextAsync(txt, true)
+  }, [])
+
+  const OnPressed_CopyStorageLog = useCallback(async () => {
+    const t = await StorageLog_GetAsync()
+    Clipboard.setString(t === '' ? 'No Logs' : t)
+  }, [])
+
+  const OnPressed_ClearStorageLog = useCallback(async () => {
+    await StorageLog_ClearAsync()
+  }, [])
+
+  const OnPressed_CloseCheat = useCallback(() => {
+    setShowCheat(false)
+  }, [])
+
+  const OnPressed_ShowCheat = useCallback(() => {
+    if (showCheatTapCount.current < 5) {
+      showCheatTapCount.current++
+      return
+    }
+
+    showCheatTapCount.current = 0
+    setShowCheat(true)
   }, [])
 
   const onPressCopyOCRResult = useCallback(async () => {
@@ -926,7 +953,7 @@ function App(): JSX.Element {
         showsVerticalScrollIndicator={false}
         style={{ marginHorizontal: Outline.Margin }}>
         {/* select photo btns */}
-        <Text style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
+        <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
         <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
           <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
@@ -1065,6 +1092,14 @@ function App(): JSX.Element {
           <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
         </TouchableOpacityAnimated>
       </View>
+      {
+        !showCheat ? undefined :
+          <View style={{ backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>
+            <Button title='copy storage log' onPress={OnPressed_CopyStorageLog} />
+            <Button title='clear storage log' onPress={OnPressed_ClearStorageLog} />
+            <Button title='close' onPress={OnPressed_CloseCheat} />
+          </View>
+      }
     </SafeAreaView>
   )
 }

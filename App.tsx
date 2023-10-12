@@ -269,6 +269,8 @@ function App(): JSX.Element {
       quality: 0.5,
     } as CameraOptions)
 
+    await StorageLog_LogAsync('after pick', ToCanPrint(result))
+
     if (!result || !result.assets)
       return
 
@@ -276,6 +278,8 @@ function App(): JSX.Element {
 
     if (!path)
       return
+
+    await StorageLog_LogAsync('path', path)
 
     onSelectedImg(path)
     Track('take_camera')
@@ -360,6 +364,8 @@ function App(): JSX.Element {
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
 
+    await StorageLog_LogAsync('onselect img')
+
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
 
@@ -369,6 +375,8 @@ function App(): JSX.Element {
 
       return
     }
+
+    await StorageLog_LogAsync('inc select img count')
 
     if (!__DEV__)
       FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
@@ -382,7 +390,11 @@ function App(): JSX.Element {
 
     setStatus('Đang upload...')
 
+    await StorageLog_LogAsync('uploaddd', tmpUploadFirebasePath.current)
+
     const uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
+
+    await StorageLog_LogAsync('upload done', uplodaErr === null)
 
     Track('uploaded_done', {
       success: uplodaErr === null,
@@ -399,8 +411,12 @@ function App(): JSX.Element {
       return
     }
 
+    await StorageLog_LogAsync('get dl url')
+
     const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tmpUploadFirebasePath.current)
 
+    await StorageLog_LogAsync('dl url', getURLRes.url)
+    
     if (getURLRes.error) {
       setStatus('')
 
@@ -777,6 +793,8 @@ function App(): JSX.Element {
 
     setStatus('Đang phân tích...')
 
+    await StorageLog_LogAsync('check show ads')
+
     checkAndShowAdsInterstitial() // show ads
 
     try {
@@ -784,7 +802,11 @@ function App(): JSX.Element {
         fileID: tmpUploadFirebasePath.current
       })
 
+      await StorageLog_LogAsync('call api')
+
       const response = await axios.request(options);
+
+      await StorageLog_LogAsync('api done')
 
       rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
 
@@ -1020,7 +1042,7 @@ function App(): JSX.Element {
                       const scoreX10 = getScoreOfStat(stat.name, true)
 
                       return <View key={index}>
-                        <Text style={{ color, fontWeight: FontWeight.B500 }}>{stat.name}</Text>
+                        <Text style={{ color, fontWeight: FontWeight.B500 }}>{'{' + (index + 1) + '} ' + stat.name}</Text>
                         <Text style={{ color }}>
                           {stat.value}{stat.isPercent ? '%' : ''}
                           <Text style={{ color }}>

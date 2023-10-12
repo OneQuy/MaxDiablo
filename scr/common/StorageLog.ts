@@ -30,5 +30,6 @@ export const StorageLog_GetAsync = async (): Promise<string> => {
 
 export const StorageLog_ClearAsync = async () => {
     await AsyncStorage.removeItem(Key)
+    lines = ''
 }
 

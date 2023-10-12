@@ -909,7 +909,7 @@ function App(): JSX.Element {
     <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
       {
-        !remoteConfig.current.ios_show_banner ? undefined :
+        Platform.OS === 'ios' && !remoteConfig.current.ios_show_banner ? undefined :
           <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
       }
       {/* app name */}

@@ -213,7 +213,7 @@ test('text 19 RIFT STAR ', () => {
   expect(JSON.stringify(card)).toBe(expected);
 }); 
 
-test('text 20 ACCELERATING BAND (KH) 10/10 TUYỆT PHẨM', () => {
+test('text 20 ACCELERATING BAND 10/10 TUYỆT PHẨM', () => {
   const text = '\r\n\r\nACCELERATING\r\nBAND\r\nAncestral Legendary Ring\r\n788+25 Item Power\r\n◆ Upgrades: 5/5\r\n269 Armor\r\n• 35.0% Cold Resistance [35.0]% 35.0% Poison Resistance [35.0]%\r\n⚫ +21.0% Vulnerable Damage [10.5 - 21.0]%\r\n+1,164 Maximum Life [537 - 1,164] ♦ +9.0% Lucky Hit Chance [4.8 -9.0]% ⚫ +7.5% Critical Strike Chance [2.7 - 7.51%\r\n✰ Imprinted: Critical Strikes with Core Skills increase your Attack Speed by 25%[+] [15-25]% for 5 seconds. Devious Heart: Up to 50 [30-50] Distant enemies are pulled toward you while you have an Ultimate Skill\r\nactive. (Druid Only)\r\nRequires Level 80\r\nAccount Bound'
   const expected = '{"slotName":"Ring","itemPower":788,"stats":[{"name":"Cold Resistance","min":35,"max":35,"isPercent":true,"value":35},{"name":"Vulnerable Damage","min":10.5,"max":21,"isPercent":true,"value":21},{"name":"Maximum Life","min":537,"max":1164,"isPercent":false,"value":1164},{"name":"Lucky Hit Chance","min":4.8,"max":9,"isPercent":true,"value":9},{"name":"Critical Strike Chance","min":2.7,"max":7.5,"isPercent":true,"value":7.5}]}'
 

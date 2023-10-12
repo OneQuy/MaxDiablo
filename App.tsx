@@ -117,7 +117,7 @@ function App(): JSX.Element {
     auto_delete_file_if_extract_success: true,
     show_rate_app: false,
     save_ocr_result: false,
-    ios_show_banner: false,
+    ios_show_ads: false,
   })
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
@@ -328,6 +328,9 @@ function App(): JSX.Element {
   }, [])
 
   const checkAndShowAdsInterstitial = useCallback(() => {
+    if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
+      return
+    
     console.log('cur rate success count', rateSuccessCountRef.current, '/ ' + rateSuccessCountPerInterstitialConfig.current);
 
     if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
@@ -337,6 +340,9 @@ function App(): JSX.Element {
   }, [])
 
   const showAdsInterstitial = useCallback(() => {
+    if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
+      return
+    
     reallyNeedToShowInterstitial.current = true
     Track('fire_show_ads', loadedInterstitial.current)
 
@@ -350,6 +356,9 @@ function App(): JSX.Element {
   }, [])
 
   const loadAdsInterstitial = useCallback(() => {
+    if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
+      return
+    
     console.log('loading interstitial')
     loadedInterstitial.current = false
     interstitial.load()
@@ -958,7 +967,7 @@ function App(): JSX.Element {
     <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
       {
-        Platform.OS === 'ios' && !remoteConfig.current.ios_show_banner ? undefined :
+        Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads ? undefined :
           <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
       }
       {/* app name */}

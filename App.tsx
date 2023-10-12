@@ -101,7 +101,7 @@ function App(): JSX.Element {
   const rateLimitText = useRef('')
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollViewCurrentOffsetY = useRef(0)
-  const scrollTopBtnAnimatedY = useRef(new Animated.Value(50)).current
+  const scrollTopBtnAnimatedY = useRef(new Animated.Value(Platform.OS === 'android' ? 50 : 300)).current
   const loadedInterstitial = useRef(false)
   const reallyNeedToShowInterstitial = useRef(false)
   const showingInterstitial = useRef(false)
@@ -112,7 +112,8 @@ function App(): JSX.Element {
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
     show_rate_app: false,
-    save_ocr_result: false
+    save_ocr_result: false,
+    ios_show_banner: false,
   })
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
@@ -402,7 +403,7 @@ function App(): JSX.Element {
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const thresholdScrollHide = 100
-    const hideTop = Platform.OS === 'android' ? 50 : 70
+    const hideTop = Platform.OS === 'android' ? 50 : 300
 
     const native = event.nativeEvent
 
@@ -776,7 +777,7 @@ function App(): JSX.Element {
       Track('call_api_failed')
 
       if (!__DEV__)
-      FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
+        FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
     }
   }, [])
 
@@ -813,7 +814,7 @@ function App(): JSX.Element {
 
       if (last_installed_version !== version) { // new install or updated
         if (!__DEV__)
-        await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
+          await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
         await storage.setStringAsync('last_installed_version', version)
       }
     }
@@ -907,7 +908,10 @@ function App(): JSX.Element {
   return (
     <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
-      <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
+      {
+        !remoteConfig.current.ios_show_banner ? undefined :
+          <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
+      }
       {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
         <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
@@ -1218,9 +1222,9 @@ const TrackOnOpenApp = async () => {
     await storage.setStringAsync('tracked_user_unique_open_app_count', todayString)
 
     if (!__DEV__)
-    await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
+      await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
   }
 
   if (!__DEV__)
-  await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
+    await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
 }

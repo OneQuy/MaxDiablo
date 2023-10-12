@@ -10,12 +10,12 @@ export const Track = (event: string, value: any = undefined) => {
         if (!__DEV__)
             Forage.trackEvent(event, value);
 
-        console.log('tracking: ' + event, value);
+        // console.log('tracking: ' + event, value);
     }
     else {
         if (!__DEV__)
             Forage.trackEvent(event);
 
-        console.log('tracking: ' + event);
+        // console.log('tracking: ' + event);
     }
 }

@@ -364,13 +364,13 @@ function App(): JSX.Element {
 
   const onSelectedImg = useCallback(async (path: string) => {
     slotCardRef.current = undefined
-    userImgUri.current = path
     ocrResult.current = ''
     suitBuilds.current = undefined
     rateText.current = ['...', 'black']
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
-
+    userImgUri.current = path
+    
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
 
@@ -382,6 +382,7 @@ function App(): JSX.Element {
     }
 
     path = await CompressImageAsync(path)
+    userImgUri.current = path
 
     if (!__DEV__)
       FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
@@ -1274,7 +1275,7 @@ const CompressImageAsync = async (fileURI: string): Promise<string> => {
 
   console.log('file size before: ', stat.size / 1024 / 1024, fileURI);
   
-  await StorageLog_LogAsync('before', stat.size / 1024 / 1024)
+  await StorageLog_LogAsync('beforeeee', stat.size / 1024 / 1024)
 
   fileURI = await ImageCompressor.compress(
     fileURI, {
@@ -1286,8 +1287,8 @@ const CompressImageAsync = async (fileURI: string): Promise<string> => {
   stat = await RNFS.stat(fileURI);
 
   console.log('file size after: ', stat.size / 1024 / 1024, fileURI);
-  
-  StorageLog_LogAsync('after', stat.size / 1024 / 1024)
+
+  StorageLog_LogAsync('afterrrr', stat.size / 1024 / 1024)
 
   return fileURI
 }

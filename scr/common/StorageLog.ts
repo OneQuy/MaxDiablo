@@ -20,7 +20,7 @@ export const StorageLog_LogAsync = async (...args: any[]) => {
 
 export const StorageLog_GetAsync = async (): Promise<string> => {
     if (lines !== undefined) // loaded
-        return lines
+        return (new Date() + '\n\n' + lines)
 
     const res = await AsyncStorage.getItem(Key)
     lines = res === null ? '' : res

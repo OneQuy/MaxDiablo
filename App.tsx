@@ -42,7 +42,7 @@ import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { Track } from './scr/common/ForageAnalytic';
-import { StorageLog_ClearAsync, StorageLog_GetAsync } from './scr/common/StorageLog';
+import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
 import { Image as ImageCompressor } from 'react-native-compressor';
 
 const adID_Interstitial = Platform.OS === 'android' ?
@@ -1274,6 +1274,8 @@ const CompressImageAsync = async (fileURI: string): Promise<string> => {
 
   console.log('file size before: ', stat.size / 1024 / 1024, fileURI);
   
+  await StorageLog_LogAsync('before', stat.size / 1024 / 1024)
+
   fileURI = await ImageCompressor.compress(
     fileURI, {
     maxHeight: 1000,
@@ -1284,6 +1286,8 @@ const CompressImageAsync = async (fileURI: string): Promise<string> => {
   stat = await RNFS.stat(fileURI);
 
   console.log('file size after: ', stat.size / 1024 / 1024, fileURI);
+  
+  StorageLog_LogAsync('after', stat.size / 1024 / 1024)
 
   return fileURI
 }

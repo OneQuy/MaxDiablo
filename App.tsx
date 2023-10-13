@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
+import RNFS from "react-native-fs";
 
 import {
   ActivityIndicator,
@@ -42,6 +43,7 @@ import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 're
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { Track } from './scr/common/ForageAnalytic';
 import { StorageLog_ClearAsync, StorageLog_GetAsync } from './scr/common/StorageLog';
+import { Image as ImageCompressor } from 'react-native-compressor';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -378,6 +380,8 @@ function App(): JSX.Element {
 
       return
     }
+
+    path = await CompressImageAsync(path)
 
     if (!__DEV__)
       FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
@@ -1263,4 +1267,23 @@ const TrackOnOpenApp = async () => {
 
   if (!__DEV__)
     await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
+}
+
+const CompressImageAsync = async (fileURI: string): Promise<string> => {
+  let stat = await RNFS.stat(fileURI);
+
+  console.log('file size before: ', stat.size / 1024 / 1024, fileURI);
+  
+  fileURI = await ImageCompressor.compress(
+    fileURI, {
+    maxHeight: 1000,
+    maxWidth: 1000,
+    output: 'jpg'
+  })
+
+  stat = await RNFS.stat(fileURI);
+
+  console.log('file size after: ', stat.size / 1024 / 1024, fileURI);
+
+  return fileURI
 }

@@ -41,7 +41,7 @@ import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { Track } from './scr/common/ForageAnalytic';
-import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
+import { StorageLog_ClearAsync, StorageLog_GetAsync } from './scr/common/StorageLog';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -266,10 +266,8 @@ function App(): JSX.Element {
       saveToPhotos: false,
       cameraType: 'back',
       mediaType: 'photo',
-      quality: 0.5,
+      quality: Platform.OS === 'android' ? 0.5 : 0.1,
     } as CameraOptions)
-
-    await StorageLog_LogAsync('after pick', ToCanPrint(result))
 
     if (!result || !result.assets)
       return
@@ -278,8 +276,6 @@ function App(): JSX.Element {
 
     if (!path)
       return
-
-    await StorageLog_LogAsync('path', path)
 
     onSelectedImg(path)
     Track('take_camera')
@@ -373,8 +369,6 @@ function App(): JSX.Element {
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
 
-    await StorageLog_LogAsync('onselect img')
-
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
 
@@ -385,40 +379,14 @@ function App(): JSX.Element {
       return
     }
 
-    await StorageLog_LogAsync('inc select img count')
-
     if (!__DEV__)
       FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
 
     tmpUploadFirebasePath.current = generateImgID()
-    // 'tmpfile-' +
-    // Date.now() + '-' +
-    // RandomInt(1000, 9999) + '-' +
-    // version + '-' +
-    // Platform.OS
 
     setStatus('Đang upload...')
 
-    await StorageLog_LogAsync('uploaddd', tmpUploadFirebasePath.current)
-
-    let uplodaErr
-
-    try {
-      uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
-    }
-    catch (e) {
-      setStatus('')
-
-      await StorageLog_LogAsync('lỗi upload', ToCanPrint(e))
-
-      cacheOrShowAlert(
-        'Lỗi upload file!',
-        'Vui lòng chọn file khác. Xin lỗi bạn!\n\n' + ToCanPrint(e))
-
-      return
-    }
-
-    await StorageLog_LogAsync('upload done', uplodaErr === null)
+    const uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
 
     Track('uploaded_done', {
       success: uplodaErr === null,
@@ -435,11 +403,7 @@ function App(): JSX.Element {
       return
     }
 
-    await StorageLog_LogAsync('get dl url')
-
     const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tmpUploadFirebasePath.current)
-
-    await StorageLog_LogAsync('dl url', getURLRes.url)
 
     if (getURLRes.error) {
       setStatus('')
@@ -814,8 +778,6 @@ function App(): JSX.Element {
 
     setStatus('Đang phân tích...')
 
-    await StorageLog_LogAsync('check show ads')
-
     checkAndShowAdsInterstitial() // show ads
 
     try {
@@ -823,11 +785,7 @@ function App(): JSX.Element {
         fileID: tmpUploadFirebasePath.current
       })
 
-      await StorageLog_LogAsync('call api')
-
       const response = await axios.request(options);
-
-      await StorageLog_LogAsync('api done')
 
       rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
 

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -40,7 +42,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please accept the permission to pick your game item's photo for us to extract text from that one and rate it.</string>
+	<string>Please accept the permission to pick your game item&apos;s photo for us to extract text from that one and rate it.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Please accept the permission for us to track your app usage to improve it to be better. Note that we just track your in-app activities such as your open-app times count, count of rate item times, app version that you are using,... We do not track any info or data that are outside the app.</string>
 	<key>UILaunchStoryboardName</key>

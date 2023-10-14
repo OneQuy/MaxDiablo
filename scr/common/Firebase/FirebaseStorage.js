@@ -1,6 +1,6 @@
 // https://firebase.google.com/docs/storage/web/download-files
 
-import { getStorage, ref, getDownloadURL, getBytes, uploadBytes, deleteObject } from "firebase/storage";
+import { getStorage, ref, getDownloadURL, getBytes, deleteObject, uploadBytesResumable } from "firebase/storage";
 import { ErrorObject_FileNotFound, GetTempFileRLP } from "../Utils"
 import { DeleteFileAsync, DownloadFileAsync, DownloadFile_GetJsonAsync, GetFLPFromRLP, IsExistedAsync, WriteTextAsync } from "../FileUtils";
 import { ArrayBufferToBase64String, GetBlobFromFLPAsync, TimeOutError } from "../UtilsTS";
@@ -91,9 +91,9 @@ export async function FirebaseStorage_DownloadByGetBytesAsync(relativeFirebasePa
         const theRef = ref(storage, relativeFirebasePath);
         const res = await getBytes(theRef)
         const str = ArrayBufferToBase64String(res);
-    
-        await WriteTextAsync(savePath, str, isRLP, 'base64');        
-        
+
+        await WriteTextAsync(savePath, str, isRLP, 'base64');
+
         return null
     } catch (error) {
         return error;
@@ -138,8 +138,14 @@ export async function FirebaseStorage_UploadAsync(relativeFirebasePath, fileFLP)
 
         CheckAndInit();
         const theRef = ref(storage, relativeFirebasePath);
+
         const blob = await GetBlobFromFLPAsync(fileFLP);
-        await uploadBytes(theRef, blob);
+
+        // const res = await fetch(fileFLP)
+        // const blob = await res.blob()
+
+        const a = uploadBytesResumable(theRef, blob)
+        await a.then()
 
         return null;
     }

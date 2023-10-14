@@ -370,7 +370,7 @@ function App(): JSX.Element {
     rateScore_Class.current = 0
     rateScore_Class_BuildAbove3Stats.current = 0
     userImgUri.current = path
-    
+
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
 
@@ -382,6 +382,7 @@ function App(): JSX.Element {
     }
 
     path = await CompressImageAsync(path)
+
     userImgUri.current = path
 
     if (!__DEV__)
@@ -391,8 +392,9 @@ function App(): JSX.Element {
 
     setStatus('Đang upload...')
 
-    const uplodaErr = await FirebaseStorage_UploadAsync(tmpUploadFirebasePath.current, path)
-
+    const fbpath = 'user_file/' + tmpUploadFirebasePath.current
+    const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
+    
     Track('uploaded_done', {
       success: uplodaErr === null,
       fileID: tmpUploadFirebasePath.current
@@ -405,10 +407,12 @@ function App(): JSX.Element {
         'Lỗi không thể upload hình để xử lý',
         'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr))
 
+      console.error(ToCanPrint(uplodaErr))
+
       return
     }
 
-    const getURLRes = await FirebaseStorage_GetDownloadURLAsync(tmpUploadFirebasePath.current)
+    const getURLRes = await FirebaseStorage_GetDownloadURLAsync(fbpath)
 
     if (getURLRes.error) {
       setStatus('')
@@ -1274,8 +1278,9 @@ const CompressImageAsync = async (fileURI: string): Promise<string> => {
   let stat = await RNFS.stat(fileURI);
 
   console.log('file size before: ', stat.size / 1024 / 1024, fileURI);
-  
+
   await StorageLog_LogAsync('beforeeee', stat.size / 1024 / 1024)
+  const time = Date.now()
 
   fileURI = await ImageCompressor.compress(
     fileURI, {
@@ -1285,10 +1290,11 @@ const CompressImageAsync = async (fileURI: string): Promise<string> => {
   })
 
   stat = await RNFS.stat(fileURI);
+  const ctime = Date.now() - time
 
-  console.log('file size after: ', stat.size / 1024 / 1024, fileURI);
+  console.log('file size after: ', stat.size / 1024 / 1024, 'time = ' + ctime, fileURI);
 
-  StorageLog_LogAsync('afterrrr', stat.size / 1024 / 1024)
+  StorageLog_LogAsync('afterrrr', stat.size / 1024 / 1024, 'time = ' + ctime)
 
   return fileURI
 }

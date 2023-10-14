@@ -1,6 +1,6 @@
 {
   "name": "diablosenpai",
-  "version": "0.6.2",
+  "version": "0.6.4",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -19,8 +19,7 @@
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/netinfo": "^5.9.10",
     "axios": "^1.5.0",
-    "firebase": "^10.3.1",
-    "node-html-parser": "^6.1.6",
+    "firebase": "^10.5.0",
     "react": "18.2.0",
     "react-native": "0.72.4",
     "react-native-compressor": "^1.8.12",

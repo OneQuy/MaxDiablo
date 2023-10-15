@@ -42,6 +42,7 @@ import { Image as ImageCompressor } from 'react-native-compressor';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { getUniqueId } from 'react-native-device-info';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -86,6 +87,8 @@ const storage = new MMKVLoader().initialize();
 
 const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
 
+var isDevDevice = false
+
 function App(): JSX.Element {
   const [status, setStatus] = useState('')
   const [showCheat, setShowCheat] = useState(false)
@@ -118,6 +121,7 @@ function App(): JSX.Element {
     show_rate_app: false,
     save_ocr_result: false,
     ios_show_ads: false,
+    dev_devices: ''
   })
 
   const [isTouchingImg, setIsTouchingImg] = useState(false)
@@ -383,7 +387,7 @@ function App(): JSX.Element {
 
     userImgUri.current = path
 
-    if (!__DEV__)
+    if (!isDevDevice)
       FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
 
     tmpUploadFirebasePath.current = generateImgID()
@@ -700,13 +704,13 @@ function App(): JSX.Element {
     let extractRes = ExtractSlotCard(result, stringifyResult)
     const isSuccess = typeof extractRes === 'object'
 
-    if (!__DEV__) {
+    if (!isDevDevice) {
       if (isSuccess)
         FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/success', 0)
       else
         FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
 
-      if (remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
+      if (!isDevDevice && remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
         FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
           result: ocrResult.current,
           version
@@ -811,7 +815,7 @@ function App(): JSX.Element {
       setStatus('')
       Track('call_api_failed')
 
-      if (!__DEV__)
+      if (!isDevDevice)
         FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
     }
   }, [])
@@ -825,6 +829,8 @@ function App(): JSX.Element {
     }
 
     remoteConfig.current = res.value
+
+    isDevDevice = remoteConfig.current.dev_devices.includes(getUniqueId())
 
     rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
 
@@ -848,8 +854,9 @@ function App(): JSX.Element {
       const ver = (version as string).replaceAll('.', '_')
 
       if (last_installed_version !== version) { // new install or updated
-        if (!__DEV__)
+        if (!isDevDevice)
           await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
+
         await storage.setStringAsync('last_installed_version', version)
       }
     }
@@ -872,6 +879,15 @@ function App(): JSX.Element {
       await CheckAndInitAdmobAsync();
 
       loadAdsInterstitial()
+
+      // tracking
+
+      TrackOnOpenApp()
+
+      if (firstOpenApp) {
+        setFirstOpenApp(false)
+        Track('first_open_app', { os: Platform.OS })
+      }
     }
 
     initAsync()
@@ -917,18 +933,6 @@ function App(): JSX.Element {
 
       Track('ads_error', ToCanPrint(e))
     })
-
-    // tracking
-
-    TrackOnOpenApp()
-
-    if (firstOpenApp) {
-      setFirstOpenApp(false)
-
-      Track('first_open_app', {
-        os: Platform.OS
-      })
-    }
 
     return () => {
       unsubscribe_ads_interstitial_loaded()
@@ -1257,19 +1261,19 @@ const OnPressed_StoreRate = () => {
 }
 
 const TrackOnOpenApp = async () => {
-  Track('app_open')
-
   const tracked_user_unique_open_app_count = await storage.getStringAsync('tracked_user_unique_open_app_count')
 
   if (tracked_user_unique_open_app_count !== todayString) {
     await storage.setStringAsync('tracked_user_unique_open_app_count', todayString)
 
-    if (!__DEV__)
+    if (!isDevDevice)
       await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
   }
 
-  if (!__DEV__)
+  if (!isDevDevice)
     await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
+
+  Track('app_open')
 }
 
 const CompressImageAsync = async (fileURI: string): Promise<string> => {

@@ -87,7 +87,7 @@ const storage = new MMKVLoader().initialize();
 
 const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
 
-var isDevDevice = false
+export var isDevDevice = false
 
 function App(): JSX.Element {
   const [status, setStatus] = useState('')

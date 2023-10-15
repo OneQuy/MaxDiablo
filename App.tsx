@@ -1109,6 +1109,7 @@ function App(): JSX.Element {
           <View style={{ backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>
             <Button title='copy storage log' onPress={OnPressed_CopyStorageLog} />
             <Button title='clear storage log' onPress={OnPressed_ClearStorageLog} />
+            <Button title='copy device id' onPress={() => Clipboard.setString(getUniqueId())} />
             <Button title='close' onPress={OnPressed_CloseCheat} />
           </View>
       }

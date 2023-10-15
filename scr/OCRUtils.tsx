@@ -627,30 +627,3 @@ export function ExtractSlotCard(text: string, forceLog = false): SlotCard | stri
     else
         return 'cant extract any stats'
 }
-
-const IsOnlyCharAndSpaceLine = (line: string) => {
-    for (let index = 0; index < line.length; index++) {
-        const charLower = line[index].toLowerCase();
-
-        if (charLower === ' ')
-            continue
-
-        if (charLower < 'a' || charLower > 'z')
-            return false
-    }
-
-    return true
-}
-
-const IsNotIncludesAnyCharUpperLine = (line: string) => {
-    for (let index = 0; index < line.length; index++) {
-        // const charLower = line[index].toLowerCase();
-
-        const c = line[index]
-
-        if (c >= 'A' && c <= 'Z')
-            return false
-    }
-
-    return true
-}

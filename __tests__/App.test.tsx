@@ -215,7 +215,16 @@ test('text 19 RIFT STAR ', () => {
 
 test('text 20 ACCELERATING BAND 10/10 TUYỆT PHẨM', () => {
   const text = '\r\n\r\nACCELERATING\r\nBAND\r\nAncestral Legendary Ring\r\n788+25 Item Power\r\n◆ Upgrades: 5/5\r\n269 Armor\r\n• 35.0% Cold Resistance [35.0]% 35.0% Poison Resistance [35.0]%\r\n⚫ +21.0% Vulnerable Damage [10.5 - 21.0]%\r\n+1,164 Maximum Life [537 - 1,164] ♦ +9.0% Lucky Hit Chance [4.8 -9.0]% ⚫ +7.5% Critical Strike Chance [2.7 - 7.51%\r\n✰ Imprinted: Critical Strikes with Core Skills increase your Attack Speed by 25%[+] [15-25]% for 5 seconds. Devious Heart: Up to 50 [30-50] Distant enemies are pulled toward you while you have an Ultimate Skill\r\nactive. (Druid Only)\r\nRequires Level 80\r\nAccount Bound'
-  const expected = '{"slotName":"Ring","itemPower":788,"stats":[{"name":"Cold Resistance","min":35,"max":35,"isPercent":true,"value":35},{"name":"Vulnerable Damage","min":10.5,"max":21,"isPercent":true,"value":21},{"name":"Maximum Life","min":537,"max":1164,"isPercent":false,"value":1164},{"name":"Lucky Hit Chance","min":4.8,"max":9,"isPercent":true,"value":9},{"name":"Critical Strike Chance","min":2.7,"max":7.5,"isPercent":true,"value":7.5}]}'
+  const expected = '{"slotName":"Ring","itemPower":788,"stats":[{"name":"Cold Resistance","min":35,"max":35,"isPercent":true,"value":35},{"name":"Poison Resistance","min":35,"max":35,"isPercent":true,"value":35},{"name":"Vulnerable Damage","min":10.5,"max":21,"isPercent":true,"value":21},{"name":"Maximum Life","min":537,"max":1164,"isPercent":false,"value":1164},{"name":"Lucky Hit Chance","min":4.8,"max":9,"isPercent":true,"value":9},{"name":"Critical Strike Chance","min":2.7,"max":7.5,"isPercent":true,"value":7.5}]}'
+
+  const card = ExtractSlotCard(text)
+
+  expect(JSON.stringify(card)).toBe(expected);
+}); 
+
+test('text 21 SOVEREIGN MAIL OF DISOBEDIENCE', () => {
+  const text = '\r\n\r\nSOVEREIGN MAIL OF DISOBEDIENCE\r\nSacred Legendary Chest\r\nArmor\r\n651+20 Item Power\r\nUpgrades: 4/5\r\n1,174 Armor\r\n• +7.0% Shadow Damage [7.0-14.0]% • +16.8% Imbuement Skill Damage [14.0 - 21.0]%\r\n• +6.7% Total Armor [2.9 - 7.1]% 14.4% Damage Reduction from Distant Enemies [13.0 -19.7]% ★ Imprinted: You gain 0.40% [x] [0.25 - 0.50]% increased Armor for 4 seconds when you deal any form of damage,\r\nstacking up to 40.00% [x] [25.00- 50.00]%.\r\n3.0% Maximum Life\r\n3.0% Maximum Life\r\nRequires Level 45 Account Bound\r\nSell Value: 40,251 Durability: 100/100\r\nst Gaming Guides and Builds for RPGs\r\ncopyright. Learn More\r\nVisit'
+  const expected = '{"slotName":"Chest Armor","itemPower":651,"stats":[{"name":"Shadow Damage","min":7,"max":14,"isPercent":true,"value":7},{"name":"Imbuement Skill Damage","min":14,"max":21,"isPercent":true,"value":16.8},{"name":"Total Armor","min":2.9,"max":7.1,"isPercent":true,"value":6.7},{"name":"Damage Reduction from Distant Enemies","min":13,"max":19.7,"isPercent":true,"value":14.4}]}'
 
   const card = ExtractSlotCard(text)
 

@@ -275,7 +275,7 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
 
         if (line.includes('aximum Li'))
             console.log(value, floats);
-            
+
         if (floats.length >= 2) {
             min = floats[0]
             max = Math.abs(floats[1])
@@ -335,7 +335,15 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
     return [min, max]
 }
 
+function RemoveMultiSpace(text: string): string {
+    return text.replace(/  +/g, ' ');
+}
+
 function HandleWholeTextBeforeSplitLines(wholeText: string): string {
+    // remove multi space
+
+    wholeText = RemoveMultiSpace(wholeText)
+
     for (let index = 1; index + 1 < wholeText.length; index++) {
         let curChar = wholeText[index]
 
@@ -356,6 +364,17 @@ function HandleWholeTextBeforeSplitLines(wholeText: string): string {
             IsNumChar(wholeText[index + 2]) &&
             IsNumChar(wholeText[index + 3])) {
             curChar = ''
+            wholeText = StringReplaceCharAt(wholeText, index, curChar)
+        }
+
+        // 2 thông số cùng 1 hàng, phải tách hàng ra:
+        // +6.7% Total Armor [2.9 - 7.1]% 14.4% Damage Reduction from Distant Enemies [13.0 -19.7]%
+
+        else if (curChar === ' ' &&
+            index + 1 < wholeText.length &&
+            (IsNumChar(wholeText[index + 1]) || wholeText[index + 1] === '+') &&
+            (wholeText[index - 1] === '%' || wholeText[index - 1] === ']')) {
+            curChar = '⚫'
             wholeText = StringReplaceCharAt(wholeText, index, curChar)
         }
     }

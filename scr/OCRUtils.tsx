@@ -273,9 +273,6 @@ function ExtractRange(line: string, value: number): [number, number] | undefined
         const s = line.substring(openSqrBracketIdx)
         const floats = ExtractAllNumbersInText(s)
 
-        if (line.includes('aximum Li'))
-            console.log(value, floats);
-
         if (floats.length >= 2) {
             min = floats[0]
             max = Math.abs(floats[1])

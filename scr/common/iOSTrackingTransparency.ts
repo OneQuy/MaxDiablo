@@ -9,7 +9,7 @@ export const CheckAndRequestTrackingTransparencyAsync = async (): Promise<boolea
     
     let trackingStatus = await getTrackingStatus();
    
-    console.log('CheckAndRequestTrackingTransparencyAsync', trackingStatus);
+    // console.log('CheckAndRequestTrackingTransparencyAsync', trackingStatus);
 
     if (trackingStatus === 'authorized' || trackingStatus === 'unavailable') {
         // enable tracking features
@@ -18,7 +18,7 @@ export const CheckAndRequestTrackingTransparencyAsync = async (): Promise<boolea
 
     trackingStatus = await requestTrackingPermission();
 
-    console.log('CheckAndRequestTrackingTransparencyAsync', trackingStatus);
+    // console.log('CheckAndRequestTrackingTransparencyAsync', trackingStatus);
 
     if (trackingStatus === 'authorized' || trackingStatus === 'unavailable') {
         // enable tracking features

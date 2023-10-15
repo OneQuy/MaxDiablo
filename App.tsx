@@ -394,7 +394,7 @@ function App(): JSX.Element {
 
     setStatus('Đang upload...')
 
-    const fbpath = 'user_file/' + tmpUploadFirebasePath.current
+    const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + tmpUploadFirebasePath.current
     const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
 
     Track('uploaded_done', {

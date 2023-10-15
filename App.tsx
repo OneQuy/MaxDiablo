@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  AppState,
   Button,
   GestureResponderEvent,
   Image,
@@ -115,6 +116,10 @@ function App(): JSX.Element {
   const tmpUploadFirebasePath = useRef('')
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
+  const isOpeningCameraOrPhotoPicker = useRef(false)
+  const sessionSelectedImgCount = useRef(0)
+  const sessionExtractedCount = useRef(0)
+  const sessionStartTime = useRef(0)
 
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
@@ -217,6 +222,8 @@ function App(): JSX.Element {
 
   const onPressPickPhoto = useCallback(async () => {
     try {
+      isOpeningCameraOrPhotoPicker.current = true
+
       const response = await openPicker(
         {
           usedCameraButton: false,
@@ -265,6 +272,8 @@ function App(): JSX.Element {
       Alert.alert('Thiếu quyền truy cập Camera!', 'Vui lòng cấp quyền truy cập')
       return
     }
+
+    isOpeningCameraOrPhotoPicker.current = true
 
     const result = await launchCamera({
       saveToPhotos: false,
@@ -373,6 +382,8 @@ function App(): JSX.Element {
     rateScore_Class_BuildAbove3Stats.current = 0
     userImgUri.current = path
 
+    sessionSelectedImgCount.current++
+
     if (!await IsExistedAsync(path, false)) {
       setStatus('')
 
@@ -387,8 +398,9 @@ function App(): JSX.Element {
 
     userImgUri.current = path
 
-    if (!isDevDevice)
+    if (!isDevDevice) {
       FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
+    }
 
     tmpUploadFirebasePath.current = generateImgID()
 
@@ -700,6 +712,7 @@ function App(): JSX.Element {
   }, [])
 
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
+    sessionExtractedCount.current++
     ocrResult.current = JSON.stringify(result)
     let extractRes = ExtractSlotCard(result, stringifyResult)
     const isSuccess = typeof extractRes === 'object'
@@ -836,7 +849,7 @@ function App(): JSX.Element {
 
     const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
 
-    if (configVersion && version !== configVersion) {
+    if (!isDevDevice && configVersion && version !== configVersion) {
       const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
 
       Alert.alert(
@@ -879,6 +892,44 @@ function App(): JSX.Element {
       await CheckAndInitAdmobAsync();
 
       loadAdsInterstitial()
+
+      // app state
+
+      if (!isDevDevice) {
+        sessionStartTime.current = Date.now()
+
+        AppState.addEventListener('change', (e) => {
+          // console.log(ToCanPrint(e));
+
+          if (e === 'active') { // start session
+
+            if (isOpeningCameraOrPhotoPicker.current) {
+              isOpeningCameraOrPhotoPicker.current = false
+              return
+            }
+
+            sessionExtractedCount.current = 0
+            sessionSelectedImgCount.current = 0
+            sessionStartTime.current = Date.now()
+          }
+          else if (e === 'background') { // end session
+            if (isOpeningCameraOrPhotoPicker.current) {
+              return
+            }
+
+            const fbpath = 'sessions/' + todayString + '/' + getUniqueId() + '/' + Date.now()
+
+            FirebaseDatabase_SetValueAsync(fbpath, {
+              extracted_count: sessionExtractedCount.current,
+              selected_img: sessionSelectedImgCount.current,
+              duration: (Date.now() - sessionStartTime.current) / 1000,
+              version,
+              os: Platform.OS,
+              start_time: new Date(sessionStartTime.current).toString()
+            })
+          }
+        })
+      }
 
       // tracking
 
@@ -1280,9 +1331,8 @@ const TrackOnOpenApp = async () => {
 const CompressImageAsync = async (fileURI: string): Promise<string> => {
   return await ImageCompressor.compress(
     fileURI, {
-    maxHeight: 500,
-    maxWidth: 500,
-    // output: 'jpg'
+    maxHeight: 1000,
+    maxWidth: 1000,
     output: 'png'
   })
 }

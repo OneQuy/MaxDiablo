@@ -1,8 +1,3 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import Clipboard from '@react-native-clipboard/clipboard';
-import RNFS from "react-native-fs";
-
 import {
   ActivityIndicator,
   Alert,
@@ -42,8 +37,11 @@ import { CheckAndInitAdmobAsync } from './scr/common/Admob';
 import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { Track } from './scr/common/ForageAnalytic';
-import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
+import { StorageLog_ClearAsync, StorageLog_GetAsync } from './scr/common/StorageLog';
 import { Image as ImageCompressor } from 'react-native-compressor';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -394,7 +392,7 @@ function App(): JSX.Element {
 
     const fbpath = 'user_file/' + tmpUploadFirebasePath.current
     const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
-    
+
     Track('uploaded_done', {
       success: uplodaErr === null,
       fileID: tmpUploadFirebasePath.current
@@ -1275,26 +1273,11 @@ const TrackOnOpenApp = async () => {
 }
 
 const CompressImageAsync = async (fileURI: string): Promise<string> => {
-  let stat = await RNFS.stat(fileURI);
-
-  console.log('file size before: ', stat.size / 1024 / 1024, fileURI);
-
-  await StorageLog_LogAsync('beforeeee', stat.size / 1024 / 1024)
-  const time = Date.now()
-
-  fileURI = await ImageCompressor.compress(
+  return await ImageCompressor.compress(
     fileURI, {
-    maxHeight: 1000,
-    maxWidth: 1000,
-    output: 'jpg'
+    maxHeight: 500,
+    maxWidth: 500,
+    // output: 'jpg'
+    output: 'png'
   })
-
-  stat = await RNFS.stat(fileURI);
-  const ctime = Date.now() - time
-
-  console.log('file size after: ', stat.size / 1024 / 1024, 'time = ' + ctime, fileURI);
-
-  StorageLog_LogAsync('afterrrr', stat.size / 1024 / 1024, 'time = ' + ctime)
-
-  return fileURI
 }

@@ -44,6 +44,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId } from 'react-native-device-info';
+import MultiImagePage from './scr/MultiImagePage';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -68,6 +69,8 @@ const starIcon = require('./assets/images/star-icon.png')
 
 const googleStoreOpenLink = "market://details?id=com.maxdiablo"
 const appleStoreOpenLink = "https://apps.apple.com/us/app/d4-tool/id6469034531"
+
+const appName = Platform.OS === 'android' ? "Diablo 4 Tool" : 'D4 Tool'
 
 const version = require('./package.json')['version']
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
@@ -120,6 +123,8 @@ function App(): JSX.Element {
   const sessionSelectedImgCount = useRef(0)
   const sessionExtractedCount = useRef(0)
   const sessionStartTime = useRef(0)
+  
+  const multiImageUriArr = useRef<string[]>([])
 
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
@@ -230,14 +235,20 @@ function App(): JSX.Element {
           tapHereToChange: 'Thay album',
           maxSelectedAssets: 1,
           allowedVideo: false,
-          emptyMessage: 'Hãy chọn 1 tấm để phân tích',
+          emptyMessage: 'Hãy chọn hình để phân tích',
           selectedColor: '#000000',
         });
 
-      if (!response || response.length <= 0) {
-        Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
+      if (!response) {
+        Alert.alert('Hãy chọn lại', 'Vui lòng chọn ít nhất một hình!')
       }
       else {
+
+        if (response.length > 0) {
+          // onSelectedMultiImg(response.map(img => img.))
+          // return
+        }
+
         const img = response[0]
 
         if ((Platform.OS === 'android' && !img) || (Platform.OS !== 'android' && !img.path)) {
@@ -371,6 +382,9 @@ function App(): JSX.Element {
     console.log('loading interstitial')
     loadedInterstitial.current = false
     interstitial.load()
+  }, [])
+
+  const onSelectedMultiImg = useCallback(async (uris: string[]) => {
   }, [])
 
   const onSelectedImg = useCallback(async (path: string) => {
@@ -1004,7 +1018,7 @@ function App(): JSX.Element {
       }
       {/* app name */}
       <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>Diablo 4 Tool</Text>
+        <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
         <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>Đánh giá App</Text>
       </View>
       {/* the rest */}
@@ -1046,7 +1060,7 @@ function App(): JSX.Element {
             }
             {
               userImgUri.current === '' ? undefined :
-                <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {tmpUploadFirebasePath.current}</Text>
+                <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {tmpUploadFirebasePath.current} ({version})</Text>
             }
           </View>
           {/* loading & info */}
@@ -1155,6 +1169,9 @@ function App(): JSX.Element {
           <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
         </TouchableOpacityAnimated>
       </View>
+      {
+        multiImageUriArr.current.length === 0 ? undefined : <MultiImagePage multiImageUriArr={multiImageUriArr.current} />
+      }
       {
         !showCheat ? undefined :
           <View style={{ gap: Outline.Gap, backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>

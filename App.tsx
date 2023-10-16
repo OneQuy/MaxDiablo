@@ -123,8 +123,9 @@ function App(): JSX.Element {
   const sessionSelectedImgCount = useRef(0)
   const sessionExtractedCount = useRef(0)
   const sessionStartTime = useRef(0)
-  
+
   const multiImageUriArr = useRef<string[]>([])
+  const isShowMulti = useRef(false)
 
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
@@ -233,7 +234,7 @@ function App(): JSX.Element {
         {
           usedCameraButton: false,
           tapHereToChange: 'Thay album',
-          maxSelectedAssets: 1,
+          // maxSelectedAssets: 1,
           allowedVideo: false,
           emptyMessage: 'Hãy chọn hình để phân tích',
           selectedColor: '#000000',
@@ -243,20 +244,18 @@ function App(): JSX.Element {
         Alert.alert('Hãy chọn lại', 'Vui lòng chọn ít nhất một hình!')
       }
       else {
+        // multi 
 
         if (response.length > 0) {
-          // onSelectedMultiImg(response.map(img => img.))
-          // return
-        }
-
-        const img = response[0]
-
-        if ((Platform.OS === 'android' && !img) || (Platform.OS !== 'android' && !img.path)) {
-          Alert.alert('Hãy chọn lại', 'Vui lòng chọn một hình!')
+          onSelectedMultiImg(response.map(img => { return Platform.OS === 'android' ? 'file://' + img.realPath : img.path }))
           return
         }
 
-        const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path;
+        // single img
+
+        const img = response[0]
+
+        const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path
         onSelectedImg(path)
         Track('pick_photo')
       }
@@ -384,7 +383,14 @@ function App(): JSX.Element {
     interstitial.load()
   }, [])
 
+  const toggleShowMulti = useCallback(() => {
+    isShowMulti.current = !isShowMulti.current
+    setStatus(Math.random().toString())
+  }, [])
+
   const onSelectedMultiImg = useCallback(async (uris: string[]) => {
+    multiImageUriArr.current = uris
+    toggleShowMulti()
   }, [])
 
   const onSelectedImg = useCallback(async (path: string) => {
@@ -1170,8 +1176,21 @@ function App(): JSX.Element {
         </TouchableOpacityAnimated>
       </View>
       {
-        multiImageUriArr.current.length === 0 ? undefined : <MultiImagePage multiImageUriArr={multiImageUriArr.current} />
+        multiImageUriArr.current.length === 0 ? undefined :
+          <View style={{ flexDirection: 'row' }}>
+            <View onTouchEnd={toggleShowMulti} style={{ flex: 1, backgroundColor: 'gold', alignItems: 'center' }}>
+              <Text style={{ color: 'white', marginVertical: Outline.Margin }}>Show danh sách ảnh</Text>
+            </View>
+          </View>
       }
+      {/* multi page */}
+      {
+        !isShowMulti.current ? undefined :
+          <MultiImagePage
+            toggleShow={toggleShowMulti}
+            multiImageUriArr={multiImageUriArr.current} />
+      }
+      {/* cheat */}
       {
         !showCheat ? undefined :
           <View style={{ gap: Outline.Gap, backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>

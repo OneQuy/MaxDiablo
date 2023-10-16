@@ -2,6 +2,7 @@ import { View, Text, FlatList } from 'react-native'
 import React from 'react'
 import { windowSize } from './AppConstant'
 import { ToCanPrint } from './common/UtilsTS'
+import GridItem from './GridItem'
 
 type MultiImagePageProps = {
     multiImageUriArr: string[],
@@ -20,15 +21,7 @@ const MultiImagePage = (props: MultiImagePageProps) => {
                     keyExtractor={(_, index) => index.toString()}
                     numColumns={3}
                     contentContainerStyle={{ gap: 5, }}
-                    renderItem={({ item, index }) => {
-                        return <View style={{
-                            width: 100, height: 150,
-                            marginHorizontal: 5,
-                            backgroundColor: 'green'
-                        }}>
-
-                        </View>
-                    }}
+                    renderItem={({ item, index }) => <GridItem />}
                 />
             </View>
         </View>

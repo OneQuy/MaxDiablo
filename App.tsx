@@ -29,7 +29,7 @@ import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
 import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, Classs, IgnoredStatsOfSlot, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
+import { Build, Classs, IgnoredStatsOfSlot, ImgItemData, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
@@ -124,7 +124,7 @@ function App(): JSX.Element {
   const sessionExtractedCount = useRef(0)
   const sessionStartTime = useRef(0)
 
-  const multiImageUriArr = useRef<string[]>([])
+  const multiImageUriArr = useRef<ImgItemData[]>([])
   const isShowMulti = useRef(false)
 
   const remoteConfig = useRef({
@@ -234,7 +234,7 @@ function App(): JSX.Element {
         {
           usedCameraButton: false,
           tapHereToChange: 'Thay album',
-          // maxSelectedAssets: 1,
+          maxSelectedAssets: 1,
           allowedVideo: false,
           emptyMessage: 'Hãy chọn hình để phân tích',
           selectedColor: '#000000',
@@ -246,10 +246,10 @@ function App(): JSX.Element {
       else {
         // multi 
 
-        if (response.length > 0) {
-          onSelectedMultiImg(response.map(img => { return Platform.OS === 'android' ? 'file://' + img.realPath : img.path }))
-          return
-        }
+        // if (response.length > 0) {
+        //   onSelectedMultiImg(response.map(img => { return Platform.OS === 'android' ? 'file://' + img.realPath : img.path }))
+        //   return
+        // }
 
         // single img
 
@@ -388,9 +388,9 @@ function App(): JSX.Element {
     setStatus(Math.random().toString())
   }, [])
 
-  const onSelectedMultiImg = useCallback(async (uris: string[]) => {
-    multiImageUriArr.current = uris
-    toggleShowMulti()
+  const onSelectedMultiImg = useCallback(async (respone: string[]) => {
+    // multiImageUriArr.current = uris
+    // toggleShowMulti()
   }, [])
 
   const onSelectedImg = useCallback(async (path: string) => {
@@ -1175,21 +1175,22 @@ function App(): JSX.Element {
           <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
         </TouchableOpacityAnimated>
       </View>
-      {
+      {/* show list img button */}
+      {/* {
         multiImageUriArr.current.length === 0 ? undefined :
           <View style={{ flexDirection: 'row' }}>
             <View onTouchEnd={toggleShowMulti} style={{ flex: 1, backgroundColor: 'gold', alignItems: 'center' }}>
-              <Text style={{ color: 'white', marginVertical: Outline.Margin }}>Show danh sách ảnh</Text>
+              <Text style={{ color: 'black', marginVertical: Outline.Margin }}>Show danh sách ảnh</Text>
             </View>
           </View>
-      }
+      } */}
       {/* multi page */}
-      {
+      {/* {
         !isShowMulti.current ? undefined :
           <MultiImagePage
             toggleShow={toggleShowMulti}
             multiImageUriArr={multiImageUriArr.current} />
-      }
+      } */}
       {/* cheat */}
       {
         !showCheat ? undefined :

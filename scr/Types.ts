@@ -85,3 +85,11 @@ export type IgnoredStatsOfSlot = {
     name: SlotName,
     statNames: string[]
 }
+
+// others ============
+
+export type ImgItemData = {
+    uri: string,
+    ocrResultTxt?: string | undefined,
+    slot?: SlotCard | undefined
+}

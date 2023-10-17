@@ -43,7 +43,7 @@ import { Image as ImageCompressor } from 'react-native-compressor';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { getUniqueId } from 'react-native-device-info';
+import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
 
 const adID_Interstitial = Platform.OS === 'android' ?
@@ -1369,6 +1369,8 @@ const TrackOnOpenApp = async () => {
 
     if (!isDevDevice)
       await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
+      await FirebaseDatabase_IncreaseNumberAsync('device_info/platform/' + Platform.OS, 0)
+      await FirebaseDatabase_IncreaseNumberAsync('device_info/brand/' + getBrand(), 0)
   }
 
   if (!isDevDevice)

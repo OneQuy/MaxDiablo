@@ -123,6 +123,7 @@ function App(): JSX.Element {
   const sessionSelectedImgCount = useRef(0)
   const sessionExtractedCount = useRef(0)
   const sessionStartTime = useRef(0)
+  const sessionFileIDs = useRef('')
 
   const multiImageItems = useRef<ImgItemData[]>([])
   const isShowMulti = useRef(false)
@@ -429,6 +430,7 @@ const onSelectedImgAsync = useCallback(async (path: string) => {
   }
 
   tmpUploadFirebasePath.current = generateImgID()
+  sessionFileIDs.current += ('[' + tmpUploadFirebasePath.current + ']')
 
   setStatus('Đang upload...')
 
@@ -936,6 +938,7 @@ useEffect(() => {
 
           sessionExtractedCount.current = 0
           sessionSelectedImgCount.current = 0
+          sessionFileIDs.current = ''
           sessionStartTime.current = Date.now()
         }
         else if (e === 'background') { // end session
@@ -948,9 +951,9 @@ useEffect(() => {
           FirebaseDatabase_SetValueAsync(fbpath, {
             extracted_count: sessionExtractedCount.current,
             selected_img: sessionSelectedImgCount.current,
-            duration: (Date.now() - sessionStartTime.current) / 1000,
+            duration: (Date.now() - sessionStartTime.current) / 1000 + 's',
             version,
-            os: Platform.OS,
+            files: sessionFileIDs.current,
             start_time: new Date(sessionStartTime.current).toString()
           })
         }

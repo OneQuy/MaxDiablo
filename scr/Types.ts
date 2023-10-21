@@ -101,13 +101,15 @@ export type SuitBuildType = [Tier, Build, SlotCard, number] // user stat, class,
 
 export type ImgItemData = {
     uri: string,
+    slot?: SlotCard | undefined,
+    errorAlert?: [string, string] | undefined,
+    suitBuilds?: SuitBuildType[],
+    rateResult?: RateResult,
 
     /**
-     * undefined: not called api yet
-     * empty string: got api result but has no text
+     * @undefined: not called api yet
+     * @empty string: got api result but has no text
+     * @string: api result text
      */
     ocrResultTxt?: string | undefined,
-    
-    slot?: SlotCard | undefined,
-    errorAlert?: [string, string] | undefined
 }

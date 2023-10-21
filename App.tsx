@@ -378,7 +378,7 @@ function App(): JSX.Element {
     if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
       return
 
-    console.log('loading interstitial')
+    // console.log('loading interstitial')
     loadedInterstitial.current = false
     interstitial.load()
   }, [])
@@ -390,7 +390,7 @@ function App(): JSX.Element {
 
   const updateMultiStateAsync = useCallback(async () => {
     // console.log(index, response?.data?.text);
-
+    setStatus(Math.random().toString())
   }, [])
 
   const startHandleMulti = useCallback(() => {
@@ -445,6 +445,9 @@ function App(): JSX.Element {
         updateMultiStateAsync()
         return
       }
+      else {
+        item.ocrResultTxt = resultText
+      }
 
       // extract 
 
@@ -459,9 +462,23 @@ function App(): JSX.Element {
         const suitBuilds = findSuitBuilds(slot)
         const rateRes = rate(slot, suitBuilds)
 
+        item.suitBuilds = suitBuilds
+        item.rateResult = rateRes
+
+        updateMultiStateAsync()
+        return
+      }
+      else { // extract fail
+        // @ts-ignore
+        item.errorAlert = getAlertContentWhenExtractFail(slot)
+        
+        updateMultiStateAsync()
+        return
       }
     }
 
+    for (let i = 0; i < multiImageItems.current.length; i++)
+      Handle(multiImageItems.current[i])
   }, [])
 
   const onSelectedMultiImgAsync = useCallback(async (response: Asset[]) => {
@@ -854,26 +871,32 @@ function App(): JSX.Element {
     else { // fail
       setStatus('')
 
-      if (extractRes === 'miss brackets') {
-        cacheOrShowAlert(
-          'Lỗi không thể rate hình',
-          'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
-          'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' +
-          '* Advanced Tooltip Compare\n' +
-          '* Advanced Tooltip Information')
-      }
-      else if (extractRes === 'unique') {
-        cacheOrShowAlert(
-          'Ooops!',
-          'Không thể rate item UNIQUE. Vui lòng chọn hình khác!')
-      }
-      else { // other errors
-        cacheOrShowAlert(
-          'Lỗi không thể phân tích hình',
-          'Vui lòng chụp lại hay chọn ảnh khác!\n\nExtract result:\n' + extractRes)
-      }
+      const [title, content] = getAlertContentWhenExtractFail(extractRes)
+      cacheOrShowAlert(title, content)
 
       Track('extract_failed')
+    }
+  }, [])
+
+  const getAlertContentWhenExtractFail = useCallback((extractRes: string) => {
+    if (extractRes === 'miss brackets') {
+      return [
+        'Lỗi không thể rate hình',
+
+        'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
+        'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' +
+        '* Advanced Tooltip Compare\n' +
+        '* Advanced Tooltip Information']
+    }
+    else if (extractRes === 'unique') {
+      return [
+        'Ooops!',
+        'Không thể rate item UNIQUE. Vui lòng chọn hình khác!']
+    }
+    else { // other errors
+      return [
+        'Lỗi không thể phân tích hình',
+        'Vui lòng chụp lại hay chọn ảnh khác!\n\nExtract result:\n' + extractRes]
     }
   }, [])
 

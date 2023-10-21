@@ -102,12 +102,10 @@ function App(): JSX.Element {
   const rateSuccessCountRef = useRef(0)
   const rateSuccessCountPerInterstitialConfig = useRef(2)
   const userImgUri = useRef('')
-  const slotCardRef = useRef<SlotCard | undefined>()
+  const currentSlot = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
   const suitBuilds = useRef<SuitBuildType[]>()
-
   const rateResult = useRef<RateResult>(DefaultRateResult)
-
   const rateLimitText = useRef('') // api remain limit text
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollViewCurrentOffsetY = useRef(0)
@@ -450,8 +448,18 @@ function App(): JSX.Element {
 
       // extract 
 
-      // onGotOcrResultTextAsync(resultText, false)
+      let slot = ExtractSlotCard(resultText, false)
+      const isSuccess = typeof slot === 'object'
 
+      if (isSuccess) {
+        // @ts-ignore
+        slot = HandleWeirdStatNames(slot)
+        slot = FilterStats(slot)
+
+        const suitBuilds = findSuitBuilds(slot)
+        const rateRes = rate(slot, suitBuilds)
+
+      }
     }
 
   }, [])
@@ -466,7 +474,7 @@ function App(): JSX.Element {
   }, [])
 
   const onSelectedImgAsync = useCallback(async (path: string) => {
-    slotCardRef.current = undefined
+    currentSlot.current = undefined
     ocrResult.current = ''
     suitBuilds.current = undefined
     rateResult.current = DefaultRateResult
@@ -745,11 +753,11 @@ function App(): JSX.Element {
     } as RateResult
   }, [])
 
-  const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
-    if (!slotCardRef.current)
+  const getStatNameColorCompareWithBuild = useCallback((stat: string, slot: SlotCard) => {
+    if (!slot)
       return 'white'
 
-    const idx = slotCardRef.current.stats.findIndex(i => i.name.toLowerCase() === stat.toLowerCase())
+    const idx = slot.stats.findIndex(i => i.name.toLowerCase() === stat.toLowerCase())
 
     return idx >= 0 ? 'white' : 'gray'
   }, [])
@@ -786,11 +794,11 @@ function App(): JSX.Element {
   }, [])
 
   const getRateStatColor = useCallback((statName: string, statsForRating: StatForRatingType[]) => {
-    if (!slotCardRef.current)
+    if (!statsForRating)
       return 'green'
 
-    if (!statsForRating || statsForRating.length === 0)
-      return 'green'
+    if (statsForRating.length === 0)
+      return 'gray'
 
     const stat = statsForRating.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
 
@@ -831,10 +839,10 @@ function App(): JSX.Element {
         FirebaseStorage_DeleteAsync(tmpUploadFirebasePath.current)
 
       extractRes = HandleWeirdStatNames(extractRes)
-      slotCardRef.current = FilterStats(extractRes)
+      currentSlot.current = FilterStats(extractRes)
 
-      suitBuilds.current = findSuitBuilds(slotCardRef.current)
-      rateResult.current = rate(slotCardRef.current, suitBuilds.current)
+      suitBuilds.current = findSuitBuilds(currentSlot.current)
+      rateResult.current = rate(currentSlot.current, suitBuilds.current)
 
       rateSuccessCountRef.current++
       setRateSuccessCount(rateSuccessCountRef.current)
@@ -1159,7 +1167,7 @@ function App(): JSX.Element {
           {/* loading & info */}
           {
             // loading
-            !slotCardRef.current ?
+            !currentSlot.current ?
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                 {
                   userImgUri.current === '' || ocrResult.current ? undefined :
@@ -1174,18 +1182,18 @@ function App(): JSX.Element {
                 {/* slot name  */}
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
-                    {slotCardRef.current.slotName}
+                    {currentSlot.current.slotName}
                   </Text>
                   <View style={{ flex: 1 }} />
                 </View>
                 {/* item power */}
                 <Text style={{ marginTop: Outline.Gap / 2, color: 'white' }}>
-                  Item Power: {slotCardRef.current.itemPower}
+                  Item Power: {currentSlot.current.itemPower}
                 </Text>
                 {/* stats */}
                 <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
                   {
-                    slotCardRef.current.stats.map((stat, index) => {
+                    currentSlot.current.stats.map((stat, index) => {
                       const color = getRateStatColor(stat.name, rateResult.current.statsForRating)
                       const scoreX10 = getScoreOfStat(stat.name, true, rateResult.current.statsForRating)
 

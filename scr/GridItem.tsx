@@ -1,12 +1,13 @@
-import { View, Text, ImageBackground, ActivityIndicator } from 'react-native'
-import React from 'react'
+import { View, Text, ImageBackground, ActivityIndicator, TouchableOpacity } from 'react-native'
+import React, { useCallback } from 'react'
 import { ImgItemData } from './Types'
 import { Outline, windowSize } from './AppConstant'
 import { RoundNumber } from './common/Utils'
 
 type Props = {
-  itemData: ImgItemData
+  itemData: ImgItemData,
   index: number,
+  onPress: (item: ImgItemData) => void,
 }
 
 export const numColumnGrid = 3
@@ -40,8 +41,12 @@ const GridItem = (props: Props) => {
 
   const bgColor = ratedSuccess ? props.itemData.rateResult?.color : 'white'
 
+  const onPress = useCallback(() => {
+    props.onPress(props.itemData)
+  }, [])
+
   return (
-    <View style={{ width: itemWidth, height: itemHeight, backgroundColor: 'black', marginHorizontal: Outline.Gap / 2 }}>
+    <TouchableOpacity onPress={onPress} style={{ width: itemWidth, height: itemHeight, backgroundColor: 'black', marginHorizontal: Outline.Gap / 2 }}>
       <ImageBackground style={{ flex: 1 }} source={{ uri: props.itemData.uri }} />
       <View style={{ width: '100%', height: '100%', position: 'absolute', alignItems: 'center', justifyContent: 'flex-end' }}>
         <View style={{ width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>
@@ -55,7 +60,7 @@ const GridItem = (props: Props) => {
           <Text>{displayLine_2}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 

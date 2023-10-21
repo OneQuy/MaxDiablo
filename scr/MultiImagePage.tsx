@@ -8,6 +8,7 @@ import { ImgItemData } from './Types'
 type MultiImagePageProps = {
     items: ImgItemData[],
     toggleShow: () => void,
+    onPressItem: (item: ImgItemData) => void,
 }
 
 const MultiImagePage = (props: MultiImagePageProps) => {
@@ -24,6 +25,7 @@ const MultiImagePage = (props: MultiImagePageProps) => {
                     contentContainerStyle={{ gap: Outline.Gap, }}
                     renderItem={({ item, index }) => <GridItem
                         index={index}
+                        onPress={props.onPressItem}
                         itemData={item} />}
                 />
             </View>

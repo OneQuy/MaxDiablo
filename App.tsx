@@ -345,6 +345,10 @@ function App(): JSX.Element {
     Clipboard.setString(ocrResult.current)
   }, [])
 
+  const onPressItemInMulti = useCallback((item: ImgItemData) => {
+    
+  }, [])
+
   const checkAndShowAdsInterstitial = useCallback(() => {
     if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
       return
@@ -471,7 +475,7 @@ function App(): JSX.Element {
       else { // extract fail
         // @ts-ignore
         item.errorAlert = getAlertContentWhenExtractFail(slot)
-        
+
         updateMultiStateAsync()
         return
       }
@@ -1273,7 +1277,12 @@ function App(): JSX.Element {
                     <View style={{ gap: Outline.Gap }}>
                       {
                         slot.stats.map((stat, index) => {
-                          return <Text key={stat.name + index} style={{ color: getStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}</Text>
+                          return <Text
+                            key={stat.name + index}
+                            // @ts-ignore
+                            style={{ color: getStatNameColorCompareWithBuild(stat.name, currentSlot.current) }}>
+                              {stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
+                          </Text>
                         })
                       }
                     </View>
@@ -1307,6 +1316,7 @@ function App(): JSX.Element {
         !isShowMulti.current ? undefined :
           <MultiImagePage
             toggleShow={toggleShowMulti}
+            onPressItem={onPressItemInMulti}
             items={multiImageItems.current} />
       }
       {/* cheat */}

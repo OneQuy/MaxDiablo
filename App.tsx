@@ -900,7 +900,7 @@ function App(): JSX.Element {
         rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
 
       // handle 
-      
+
       const result = response.data?.text
 
       if (!result)
@@ -1357,7 +1357,8 @@ const IsIgnoredStat = (stat: Stat, slot: SlotCard): boolean => {
   const statNameLower = stat.name.toLowerCase()
 
   if (statNameLower.includes('resistance') ||
-    statNameLower.includes('ranks of')) {
+    statNameLower.includes('ranks of') ||
+    statNameLower.includes('rank of')) {
     return true
   }
 

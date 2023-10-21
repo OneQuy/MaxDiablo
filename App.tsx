@@ -90,7 +90,7 @@ const storage = new MMKVLoader().initialize();
 
 const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
 
-const DefaultRateResult: RateResult = { score: -1, text: '...', color: 'black', statsForRating: []}
+const DefaultRateResult: RateResult = { score: -1, text: '...', color: 'black', statsForRating: [] }
 
 export var isDevDevice = false
 
@@ -105,9 +105,9 @@ function App(): JSX.Element {
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
   const suitBuilds = useRef<SuitBuildType[]>()
-  
+
   const rateResult = useRef<RateResult>(DefaultRateResult)
-  
+
   const rateLimitText = useRef('') // api remain limit text
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollViewCurrentOffsetY = useRef(0)
@@ -120,7 +120,7 @@ function App(): JSX.Element {
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
   const isOpeningCameraOrPhotoPicker = useRef(false)
-  
+
   const sessionSelectedImgCount = useRef(0)
   const sessionExtractedCount = useRef(0)
   const sessionStartTime = useRef(0)
@@ -638,7 +638,7 @@ function App(): JSX.Element {
     // start find
 
     const arrStatsForRating: StatForRatingType[] = []
-    
+
     for (let istat = 0; istat < userSlot.stats.length; istat++) {
       const stat = userSlot.stats[istat]
 
@@ -730,7 +730,7 @@ function App(): JSX.Element {
 
     const finalScore = Math.max(rateScore_Class, rateScore_Class_Above3, valuableStatsScore)
     const resultRate = getRateTypeByScore(finalScore)
-    
+
     Track('rated', {
       finalScore,
       stats: arrStatsForRating.length,
@@ -888,10 +888,19 @@ function App(): JSX.Element {
         fileID: tmpUploadFirebasePath.current
       })
 
+      // call api
+
       const response = await axios.request(GetAPIOption(imgUrl));
 
-      rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
+      // api limit text
 
+      if (response.headers['x-ratelimit-requests-remaining'] > 0)
+        rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
+      else
+        rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
+
+      // handle 
+      
       const result = response.data?.text
 
       if (!result)

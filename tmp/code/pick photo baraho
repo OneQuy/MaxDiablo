@@ -1,0 +1,47 @@
+
+  // const onPressPickPhotoOLD = useCallback(async () => {
+  //   try {
+  //     isOpeningCameraOrPhotoPicker.current = true
+
+  //     const response = await openPicker(
+  //       {
+  //         usedCameraButton: false,
+  //         tapHereToChange: 'Thay album',
+  //         maxSelectedAssets: 1,
+  //         allowedVideo: false,
+  //         emptyMessage: 'Hãy chọn hình để phân tích',
+  //         selectedColor: '#000000',
+  //       });
+
+  //       await StorageLog_ClearAsync()
+  //       StorageLog_LogAsync(ToCanPrint(response))
+
+  //     if (!response) {
+  //       Alert.alert('Hãy chọn lại', 'Vui lòng chọn ít nhất một hình!')
+  //     }
+  //     else {
+  //       // multi 
+
+  //       // if (response.length > 0) {
+  //       //   onSelectedMultiImgAsync(response)
+  //       //   return
+  //       // }
+
+  //       // single img
+
+  //       const img = response[0]
+
+  //       const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path
+  //       onSelectedImgAsync(path)
+  //       Track('pick_photo')
+
+  //       StorageLog_LogAsync('path', path)
+  //     }
+  //   }
+  //   catch (e: any) {
+  //     if (e.toString().includes('User has canceled'))
+  //       return
+
+  //     console.error('pick img error: ' + e);
+  //   }
+  // }, [])

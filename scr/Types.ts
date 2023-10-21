@@ -88,8 +88,26 @@ export type IgnoredStatsOfSlot = {
 
 // others ============
 
+export type StatForRatingType = [Stat, Classs | undefined, Stat | undefined, number] // user stat, class, class data stat, rate score
+
+export type RateResult = {
+    score: number,
+    text: string, 
+    color: string,
+    statsForRating: StatForRatingType[]
+}
+
+export type SuitBuildType = [Tier, Build, SlotCard, number] // user stat, class, class data stat, rate score
+
 export type ImgItemData = {
     uri: string,
+
+    /**
+     * undefined: not called api yet
+     * empty string: got api result but has no text
+     */
     ocrResultTxt?: string | undefined,
-    slot?: SlotCard | undefined
+    
+    slot?: SlotCard | undefined,
+    errorAlert?: [string, string] | undefined
 }

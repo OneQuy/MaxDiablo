@@ -1,8 +1,8 @@
 import { View, Text, FlatList } from 'react-native'
 import React from 'react'
-import { windowSize } from './AppConstant'
+import { Outline, windowSize } from './AppConstant'
 import { ToCanPrint } from './common/UtilsTS'
-import GridItem from './GridItem'
+import GridItem, { numColumnGrid } from './GridItem'
 import { ImgItemData } from './Types'
 
 type MultiImagePageProps = {
@@ -20,8 +20,8 @@ const MultiImagePage = (props: MultiImagePageProps) => {
                 <FlatList
                     data={props.items}
                     keyExtractor={(item, _) => item.uri}
-                    numColumns={3}
-                    contentContainerStyle={{ gap: 5, }}
+                    numColumns={numColumnGrid}
+                    contentContainerStyle={{ gap: Outline.Gap, }}
                     renderItem={({ item, index }) => <GridItem
                         index={index}
                         itemData={item} />}

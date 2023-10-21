@@ -8,6 +8,7 @@ import {
   Image,
   LayoutChangeEvent,
   Linking,
+  NativeEventSubscription,
   NativeScrollEvent,
   NativeSyntheticEvent,
   NativeTouchEvent,
@@ -21,27 +22,25 @@ import {
   ViewProps
 } from 'react-native';
 
-// @ts-ignore
-import { ImageResults, VideoResults, openPicker } from '@baronha/react-native-multiple-image-picker'
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
-import { CameraOptions, launchCamera } from 'react-native-image-picker';
+import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, Classs, IgnoredStatsOfSlot, ImgItemData, SlotCard, SlotName, SlotOfClasses, Stat, Tier } from './scr/Types';
+import { Build, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
-import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { InterstitialAd, AdEventType, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { Track } from './scr/common/ForageAnalytic';
-import { StorageLog_ClearAsync, StorageLog_GetAsync } from './scr/common/StorageLog';
+import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
 import { Image as ImageCompressor } from 'react-native-compressor';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
@@ -91,6 +90,8 @@ const storage = new MMKVLoader().initialize();
 
 const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
 
+const DefaultRateResult: RateResult = { score: -1, text: '...', color: 'black', statsForRating: []}
+
 export var isDevDevice = false
 
 function App(): JSX.Element {
@@ -103,12 +104,11 @@ function App(): JSX.Element {
   const userImgUri = useRef('')
   const slotCardRef = useRef<SlotCard | undefined>()
   const ocrResult = useRef('')
-  const rateText = useRef<[string, string]>(['...', 'black']) // rate text, rate box bg color
-  const suitBuilds = useRef<[Tier, Build, SlotCard, number][]>()
-  const statsForRating = useRef<[Stat, Classs | undefined, Stat | undefined, number][]>([]) // user stat, class, class data stat, rate score
-  const rateScore_Class = useRef(-1)
-  const rateScore_Class_BuildAbove3Stats = useRef(-1)
-  const rateLimitText = useRef('')
+  const suitBuilds = useRef<SuitBuildType[]>()
+  
+  const rateResult = useRef<RateResult>(DefaultRateResult)
+  
+  const rateLimitText = useRef('') // api remain limit text
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollViewCurrentOffsetY = useRef(0)
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(Platform.OS === 'android' ? 50 : 300)).current
@@ -120,10 +120,13 @@ function App(): JSX.Element {
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
   const isOpeningCameraOrPhotoPicker = useRef(false)
+  
   const sessionSelectedImgCount = useRef(0)
   const sessionExtractedCount = useRef(0)
   const sessionStartTime = useRef(0)
   const sessionFileIDs = useRef('')
+  const sessionRequestAds = useRef(0)
+  const sessionClosedAds = useRef(0)
 
   const multiImageItems = useRef<ImgItemData[]>([])
   const isShowMulti = useRef(false)
@@ -229,44 +232,41 @@ function App(): JSX.Element {
   }, [])
 
   const onPressPickPhoto = useCallback(async () => {
-    try {
-      isOpeningCameraOrPhotoPicker.current = true
+    isOpeningCameraOrPhotoPicker.current = true
 
-      const response = await openPicker(
-        {
-          usedCameraButton: false,
-          tapHereToChange: 'Thay album',
-          maxSelectedAssets: 1,
-          allowedVideo: false,
-          emptyMessage: 'Hãy chọn hình để phân tích',
-          selectedColor: '#000000',
-        });
+    const response = await launchImageLibrary({
+      mediaType: 'photo',
+      maxHeight: 1000,
+      maxWidth: 1000,
+      selectionLimit: 10,
+    })
 
-      if (!response) {
-        Alert.alert('Hãy chọn lại', 'Vui lòng chọn ít nhất một hình!')
-      }
-      else {
-        // multi 
-
-        // if (response.length > 0) {
-        //   onSelectedMultiImgAsync(response)
-        //   return
-        // }
-
-        // single img
-
-        const img = response[0]
-
-        const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path
-        onSelectedImgAsync(path)
-        Track('pick_photo')
-      }
+    if (response.didCancel)
+      return
+    else if (!response.assets || response.assets.length <= 0) {
+      Alert.alert('Có lỗi khi chọn hình', 'Lỗi:\n\n' + ToCanPrint(response))
+      return
     }
-    catch (e: any) {
-      if (e.toString().includes('User has canceled'))
-        return
+    else {
+      // multi 
 
-      console.error('pick img error: ' + e);
+      if (response.assets.length > 1) {
+        onSelectedMultiImgAsync(response.assets)
+        return
+      }
+
+      // single img
+
+      // const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path
+      const path = response.assets[0].uri
+
+      if (!path) {
+        Alert.alert('Có lỗi khi chọn hình', 'Lỗi path empty.\n\n' + ToCanPrint(response))
+        return
+      }
+
+      onSelectedImgAsync(path)
+      Track('pick_photo')
     }
   }, [])
 
@@ -352,7 +352,7 @@ function App(): JSX.Element {
     if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
       return
 
-    console.log('cur rate success count', rateSuccessCountRef.current, '/ ' + rateSuccessCountPerInterstitialConfig.current);
+    // console.log('cur rate success count', rateSuccessCountRef.current, '/ ' + rateSuccessCountPerInterstitialConfig.current);
 
     if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
       return
@@ -369,6 +369,7 @@ function App(): JSX.Element {
 
     if (loadedInterstitial.current) {
       loadedInterstitial.current = false
+      sessionRequestAds.current++
       interstitial.show()
     }
     else {
@@ -390,831 +391,898 @@ function App(): JSX.Element {
     setStatus(Math.random().toString())
   }, [])
 
-  const onSelectedMultiImgAsync = useCallback(async (response: (ImageResults | VideoResults)[]) => {
-    multiImageItems.current = response.map(img => {
-      return {
-        uri: Platform.OS === 'android' ? 'file://' + img.realPath : img.path,
-      } as ImgItemData
+  const updateMultiStateAsync = useCallback(async () => {
+    // console.log(index, response?.data?.text);
+
+  }, [])
+
+  const startHandleMulti = useCallback(() => {
+    async function Handle(item: ImgItemData) {
+      let path = item.uri
+
+      // compress
+
+      path = await CompressImageAsync(path)
+
+      const id = generateImgID()
+
+      const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + id
+      const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
+
+      if (uplodaErr) { // upload fail
+        item.errorAlert = [
+          'Lỗi không thể upload hình để xử lý',
+          'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr)
+        ]
+
+        updateMultiStateAsync()
+        return
+      }
+
+      const getURLRes = await FirebaseStorage_GetDownloadURLAsync(fbpath)
+
+      if (getURLRes.error) {
+        item.errorAlert = [
+          'Lỗi lấy url ảnh',
+          'Mã lỗi: ' + ToCanPrint(getURLRes.error)
+        ]
+
+        updateMultiStateAsync()
+        return
+      }
+
+      // call api
+
+      const response = await axios.request(GetAPIOption(getURLRes.url))
+
+      const resultText = response.data?.text
+
+      if (!resultText) {
+        item.ocrResultTxt = ''
+
+        item.errorAlert = [
+          'Lỗi không thể phân tích hình',
+          'Vui lòng chụp lại hay chọn ảnh khác!\n\nMã lỗi: No result text.'
+        ]
+
+        updateMultiStateAsync()
+        return
+      }
+
+      // extract 
+
+      // onGotOcrResultTextAsync(resultText, false)
+
+    }
+
+  }, [])
+
+  const onSelectedMultiImgAsync = useCallback(async (response: Asset[]) => {
+    multiImageItems.current = response.map((img) => {
+      return { uri: img.uri } as ImgItemData
     })
 
-  toggleShowMulti()
-}, [])
+    toggleShowMulti()
+    startHandleMulti()
+  }, [])
 
-const onSelectedImgAsync = useCallback(async (path: string) => {
-  slotCardRef.current = undefined
-  ocrResult.current = ''
-  suitBuilds.current = undefined
-  rateText.current = ['...', 'black']
-  rateScore_Class.current = 0
-  rateScore_Class_BuildAbove3Stats.current = 0
-  userImgUri.current = path
+  const onSelectedImgAsync = useCallback(async (path: string) => {
+    slotCardRef.current = undefined
+    ocrResult.current = ''
+    suitBuilds.current = undefined
+    rateResult.current = DefaultRateResult
+    userImgUri.current = ''
 
-  sessionSelectedImgCount.current++
+    sessionSelectedImgCount.current++
 
-  if (!await IsExistedAsync(path, false)) {
-    setStatus('')
+    if (!await IsExistedAsync(path, false)) {
+      setStatus('')
 
-    Alert.alert(
-      'File không tồn tại để upload',
-      'Path: ' + path)
+      Alert.alert(
+        'File không tồn tại để upload',
+        'Path: ' + path)
 
-    return
-  }
-
-  path = await CompressImageAsync(path)
-
-  userImgUri.current = path
-
-  if (!isDevDevice) {
-    FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
-  }
-
-  tmpUploadFirebasePath.current = generateImgID()
-  sessionFileIDs.current += ('[' + tmpUploadFirebasePath.current + ']')
-
-  setStatus('Đang upload...')
-
-  const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + tmpUploadFirebasePath.current
-  const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
-
-  Track('uploaded_done', {
-    success: uplodaErr === null,
-    fileID: tmpUploadFirebasePath.current
-  })
-
-  if (uplodaErr) {
-    setStatus('')
-
-    Alert.alert(
-      'Lỗi không thể upload hình để xử lý',
-      'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr))
-
-    console.error(ToCanPrint(uplodaErr))
-
-    return
-  }
-
-  const getURLRes = await FirebaseStorage_GetDownloadURLAsync(fbpath)
-
-  if (getURLRes.error) {
-    setStatus('')
-
-    Alert.alert(
-      'Lỗi lấy url ảnh',
-      'Mã lỗi: ' + ToCanPrint(getURLRes.error))
-
-    return
-  }
-
-  await detectFromImgUrlAsync_ImageToText(getURLRes.url)
-}, [])
-
-const scrollToTop = useCallback(() => {
-  if (!scrollViewRef.current)
-    return
-
-  scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true })
-  Track('scroll_top')
-}, [])
-
-const imgOnLayout = useCallback((_: LayoutChangeEvent) => {
-  imgViewMeasure.current.GetOrMessure((res) => {
-    imgViewMeasureResult.current = res
-  })
-}, [])
-
-const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-  const thresholdScrollHide = 100
-  const hideTop = Platform.OS === 'android' ? 50 : 300
-
-  const native = event.nativeEvent
-
-  const nowY = native.contentOffset.y
-  scrollViewCurrentOffsetY.current = nowY
-
-  const value = nowY > thresholdScrollHide ? 0 : hideTop
-
-  Animated.spring(
-    scrollTopBtnAnimatedY,
-    {
-      toValue: value,
-      useNativeDriver: false,
+      return
     }
-  ).start()
-}, [])
 
-const findSuitBuilds = useCallback(() => {
-  if (!slotCardRef.current)
-    return
+    path = await CompressImageAsync(path)
+    StorageLog_LogAsync('after', path)
+    userImgUri.current = path
 
-  const userSlot = slotCardRef.current
+    if (!isDevDevice) {
+      FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
+    }
 
-  // find suits
+    tmpUploadFirebasePath.current = generateImgID()
+    sessionFileIDs.current += ('[' + tmpUploadFirebasePath.current + ']')
 
-  suitBuilds.current = []
-  const linesMatchIsGood = 1
+    setStatus('Đang upload...')
 
-  for (let itier = 0; itier < buildsData.length; itier++) {
-    const tier = buildsData[itier]
+    const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + tmpUploadFirebasePath.current
+    const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
 
-    for (let ibuild = 0; ibuild < tier.builds.length; ibuild++) {
-      const build = tier.builds[ibuild]
+    Track('uploaded_done', {
+      success: uplodaErr === null,
+      fileID: tmpUploadFirebasePath.current
+    })
 
-      for (let islot = 0; islot < build.slots.length; islot++) {
-        const slot = build.slots[islot]
+    if (uplodaErr) {
+      setStatus('')
 
-        if (slot.slotName !== userSlot.slotName)
-          continue
+      Alert.alert(
+        'Lỗi không thể upload hình để xử lý',
+        'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr))
 
-        const statEquals = slot.stats.filter(stat => userSlot.stats.findIndex(a => a.name.toLowerCase() === stat.name.toLowerCase()) >= 0)
+      console.error(ToCanPrint(uplodaErr))
 
-        if (statEquals.length >= linesMatchIsGood) {
-          suitBuilds.current.push([tier, build, slot, statEquals.length])
+      return
+    }
+
+    const getURLRes = await FirebaseStorage_GetDownloadURLAsync(fbpath)
+
+    if (getURLRes.error) {
+      setStatus('')
+
+      Alert.alert(
+        'Lỗi lấy url ảnh',
+        'Mã lỗi: ' + ToCanPrint(getURLRes.error))
+
+      return
+    }
+
+    await detectFromImgUrlAsync_ImageToText(getURLRes.url)
+  }, [])
+
+  const scrollToTop = useCallback(() => {
+    if (!scrollViewRef.current)
+      return
+
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true })
+    Track('scroll_top')
+  }, [])
+
+  const imgOnLayout = useCallback((_: LayoutChangeEvent) => {
+    imgViewMeasure.current.GetOrMessure((res) => {
+      imgViewMeasureResult.current = res
+    })
+  }, [])
+
+  const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const thresholdScrollHide = 100
+    const hideTop = Platform.OS === 'android' ? 50 : 300
+
+    const native = event.nativeEvent
+
+    const nowY = native.contentOffset.y
+    scrollViewCurrentOffsetY.current = nowY
+
+    const value = nowY > thresholdScrollHide ? 0 : hideTop
+
+    Animated.spring(
+      scrollTopBtnAnimatedY,
+      {
+        toValue: value,
+        useNativeDriver: false,
+      }
+    ).start()
+  }, [])
+
+  const findSuitBuilds = useCallback((userSlot: SlotCard) => {
+    // find suits
+
+    const arr: [Tier, Build, SlotCard, number][] = []
+
+    const linesMatchIsGood = 3
+
+    for (let itier = 0; itier < buildsData.length; itier++) {
+      const tier = buildsData[itier]
+
+      for (let ibuild = 0; ibuild < tier.builds.length; ibuild++) {
+        const build = tier.builds[ibuild]
+
+        for (let islot = 0; islot < build.slots.length; islot++) {
+          const slot = build.slots[islot]
+
+          if (slot.slotName !== userSlot.slotName)
+            continue
+
+          const statEquals = slot.stats.filter(stat => userSlot.stats.findIndex(a => a.name.toLowerCase() === stat.name.toLowerCase()) >= 0)
+
+          if (statEquals.length >= linesMatchIsGood) {
+            arr.push([tier, build, slot, statEquals.length])
+            break
+          }
+        }
+      }
+    }
+
+    // sort
+
+    if (arr.length > 0) {
+      arr.sort((a, b) => {
+        if (a[3] < b[3]) {
+          return 1;
+        } else if (a[3] > b[3]) {
+          return -1;
+        }
+
+        return 0;
+      })
+    }
+
+    // return
+
+    return arr
+  }, [])
+
+  const rate = useCallback((userSlot: SlotCard, suitBuilds: SuitBuildType[]) => {
+    // find in DefaultGoodStats 
+
+    const userGoodStats: Stat[] = userSlot.stats.filter(stat => DefaultGoodStats.includes(stat.name.toLowerCase()))
+
+    // find in class data
+
+    let slotOfClasses = classesData.find(slot => slot.name === userSlot.slotName)
+
+    if (!slotOfClasses) {
+      const convertName = ConvertSlotNameToShortSlotName(userSlot.slotName)
+
+      slotOfClasses = classesData.find(slot => slot.name === convertName)
+    }
+
+    if (slotOfClasses === undefined) {
+      FirebaseDatabase_SetValueAsync('error_report/whattheheathy/' + Date.now(), userSlot.slotName)
+      return DefaultRateResult
+    }
+
+    // start find
+
+    const arrStatsForRating: StatForRatingType[] = []
+    
+    for (let istat = 0; istat < userSlot.stats.length; istat++) {
+      const stat = userSlot.stats[istat]
+
+      // ingored stat
+
+      if (IsIgnoredStat(stat, userSlot)) {
+        continue
+      }
+
+      // find in classes
+
+      for (let iclass = 0; iclass < slotOfClasses.classes.length; iclass++) {
+        const classs = slotOfClasses.classes[iclass]
+
+        const findStats = classs.stats.filter(istat => stat.name.toLowerCase() === istat.name.toLowerCase())
+
+        if (findStats.length > 0) {
+          arrStatsForRating.push([stat, classs, findStats[0], -1])
           break
         }
       }
     }
-  }
 
-  // sort
+    // append default good stats
 
-  if (suitBuilds.current.length > 0) {
-    suitBuilds.current.sort((a, b) => {
-      if (a[3] < b[3]) {
-        return 1;
-      } else if (a[3] > b[3]) {
-        return -1;
+    userGoodStats.forEach(stat => {
+      if (arrStatsForRating.findIndex(tuple => tuple[0].name.toLowerCase() === stat.name.toLowerCase()) < 0) {
+        arrStatsForRating.push([stat, undefined, undefined, -1])
       }
-
-      return 0;
     })
-  }
-}, [])
 
-const rate = useCallback(() => {
-  if (!slotCardRef.current)
-    return
+    // rate
 
-  const userSlot = slotCardRef.current
+    let totalScore_Class = 0
 
-  // find in DefaultGoodStats 
+    for (let i = 0; i < arrStatsForRating.length; i++) {
+      const [userStat, classs, classStat, score] = arrStatsForRating[i]
 
-  const userGoodStats: Stat[] = userSlot.stats.filter(stat => DefaultGoodStats.includes(stat.name.toLowerCase()))
+      // this stat score
 
-  // find in class data
+      let curScore = 0
 
-  let slotOfClasses = classesData.find(slot => slot.name === userSlot.slotName)
+      if (userStat.max === userStat.min)
+        curScore = 0
+      else
+        curScore = (userStat.value - userStat.min) / (userStat.max - userStat.min)
 
-  if (!slotOfClasses) {
-    const convertName = ConvertSlotNameToShortSlotName(userSlot.slotName)
+      // sum score
 
-    slotOfClasses = classesData.find(slot => slot.name === convertName)
-  }
+      totalScore_Class += curScore
+      arrStatsForRating[i][3] = curScore
+    };
 
-  if (slotOfClasses === undefined) {
-    FirebaseDatabase_SetValueAsync('error_report/whattheheathy/' + Date.now(), userSlot.slotName)
+    // calc rateScore_Class
 
-    return
-  }
-
-  // start find
-
-  statsForRating.current = []
-
-  for (let istat = 0; istat < userSlot.stats.length; istat++) {
-    const stat = userSlot.stats[istat]
-
-    // ingored stat
-
-    if (IsIgnoredStat(stat, userSlot)) {
-      continue
-    }
-
-    // find in classes
-
-    for (let iclass = 0; iclass < slotOfClasses.classes.length; iclass++) {
-      const classs = slotOfClasses.classes[iclass]
-
-      const findStats = classs.stats.filter(istat => stat.name.toLowerCase() === istat.name.toLowerCase())
-
-      if (findStats.length > 0) {
-        statsForRating.current.push([stat, classs, findStats[0], -1])
-
-        break
-      }
-    }
-  }
-
-  // append default good stats
-
-  userGoodStats.forEach(stat => {
-    if (statsForRating.current.findIndex(tuple => tuple[0].name.toLowerCase() === stat.name.toLowerCase()) < 0) {
-      statsForRating.current.push([stat, undefined, undefined, -1])
-    }
-  })
-
-  // rate
-
-  let totalScore_Class = 0
-
-  for (let i = 0; i < statsForRating.current.length; i++) {
-    const [userStat, classs, classStat, score] = statsForRating.current[i]
-
-    // this stat score
-
-    let curScore = 0
-
-    if (userStat.max === userStat.min)
-      curScore = 0
-    else
-      curScore = (userStat.value - userStat.min) / (userStat.max - userStat.min)
-
-    // sum score
-
-    totalScore_Class += curScore
-    statsForRating.current[i][3] = curScore
-  };
-
-  // calc rateScore_Class
-
-  rateScore_Class.current = totalScore_Class / 4
-  let valuedStatsScore = (totalScore_Class + (statsForRating.current.length / 4)) / 5
-
-  // calc rateScore_Class_BuildAbove3Stats
-
-  if (suitBuilds.current && suitBuilds.current.length > 0) {
-    // count
-
-    let totalScore_above3stats = 0
-
-    let count_above3stats = 0
-
-    for (let i = 0; i < suitBuilds.current.length; i++) {
-      let matchStatCount = suitBuilds.current[i][3]
-      let score = Math.min(1, matchStatCount / 4)
-
-      if (matchStatCount >= 3) { // from and above 3
-        totalScore_above3stats += score
-        count_above3stats++
-      }
-    }
+    const rateScore_Class = totalScore_Class / 4
+    let rateScore_Class_Above3: number
+    let valuableStatsScore = (totalScore_Class + (arrStatsForRating.length / 4)) / 5
 
     // calc rateScore_Class_BuildAbove3Stats
 
-    rateScore_Class_BuildAbove3Stats.current = (totalScore_above3stats + totalScore_Class) / (count_above3stats + 4)
-    valuedStatsScore = (totalScore_above3stats + totalScore_Class + (statsForRating.current.length / 4)) / (count_above3stats + 4 + 1)
-  }
-  else {
-    rateScore_Class_BuildAbove3Stats.current = rateScore_Class.current
-  }
+    if (suitBuilds.length > 0) {
+      // count
 
-  // rate final
+      let totalScore_above3stats = 0
 
-  const finalScore = Math.max(rateScore_Class.current, rateScore_Class_BuildAbove3Stats.current, valuedStatsScore)
-  rateScore_Class_BuildAbove3Stats.current = finalScore
-  const resultRate = getRateTypeByScore(finalScore)
-  rateText.current = [resultRate[1], resultRate[0]]
+      let count_above3stats = 0
 
-  Track('rated', {
-    finalScore,
-    stats: statsForRating.current.length,
-    result: resultRate[1],
-    fileID: tmpUploadFirebasePath.current,
-  })
-}, [])
+      for (let i = 0; i < suitBuilds.length; i++) {
+        let matchStatCount = suitBuilds[i][3]
+        let score = Math.min(1, matchStatCount / 4)
 
-const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
-  if (!slotCardRef.current)
-    return 'white'
+        if (matchStatCount >= 3) { // from and above 3
+          totalScore_above3stats += score
+          count_above3stats++
+        }
+      }
 
-  const idx = slotCardRef.current.stats.findIndex(i => i.name.toLowerCase() === stat.toLowerCase())
+      // calc rateScore_Class_BuildAbove3Stats
 
-  return idx >= 0 ? 'white' : 'gray'
-}, [])
-
-const getRateTypeByScore = useCallback((rawFloatScore: number) => {
-  rawFloatScore = RoundNumber(rawFloatScore, 2)
-
-  if (rawFloatScore >= 1) // perfect
-    return ['tomato', 'TUYỆT PHẨM!']
-  else if (rawFloatScore >= 0.75) // good
-    return ['gold', 'RẤT TỐT']
-  else if (rawFloatScore >= 0.5) // fair
-    return ['moccasin', 'TỐT']
-  else if (rawFloatScore >= 0.25) // normal
-    return ['paleturquoise', 'BÌNH THƯỜNG']
-  else // trash
-    return ['dodgerblue', 'RÁC RƯỞI']
-}, [])
-
-const getScoreOfStat = useCallback((statName: string, x10: boolean) => {
-  if (!statsForRating.current || statsForRating.current.length === 0)
-    return 0
-
-  const stat = statsForRating.current.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
-
-  if (stat !== undefined) {
-    if (x10)
-      return RoundNumber(stat[3] * 10, 1)
-    else
-      return stat[3]
-  }
-  else
-    return -1
-}, [])
-
-const getRateStatColor = useCallback((statName: string) => {
-  if (!slotCardRef.current)
-    return 'green'
-
-  if (!statsForRating.current || statsForRating.current.length === 0)
-    return 'green'
-
-  const stat = statsForRating.current.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
-
-  if (stat !== undefined) {
-    return getRateTypeByScore(stat[3])[0]
-  }
-  else
-    return 'gray'
-}, [])
-
-const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
-  sessionExtractedCount.current++
-  ocrResult.current = JSON.stringify(result)
-  let extractRes = ExtractSlotCard(result, stringifyResult)
-  const isSuccess = typeof extractRes === 'object'
-
-  if (!isDevDevice) {
-    if (isSuccess)
-      FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/success', 0)
-    else
-      FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
-
-    if (!isDevDevice && remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
-      FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
-        result: ocrResult.current,
-        version
-      })
+      rateScore_Class_Above3 = (totalScore_above3stats + totalScore_Class) / (count_above3stats + 4)
+      valuableStatsScore = (totalScore_above3stats + totalScore_Class + (arrStatsForRating.length / 4)) / (count_above3stats + 4 + 1)
     }
-  }
-
-  if (typeof extractRes === 'object') { // success
-    if (stringifyResult) {
-      console.log(JSON.stringify(extractRes))
-      console.log(JSON.stringify(extractRes, null, 1));
+    else {
+      rateScore_Class_Above3 = rateScore_Class
     }
 
-    if (remoteConfig.current.auto_delete_file_if_extract_success === true)
-      FirebaseStorage_DeleteAsync(tmpUploadFirebasePath.current)
+    // rate final
 
-    extractRes = HandleWeirdStatNames(extractRes)
-    slotCardRef.current = FilterStats(extractRes)
-
-    findSuitBuilds()
-    rate()
-
-    rateSuccessCountRef.current++
-    setRateSuccessCount(rateSuccessCountRef.current)
-
-    // done
-
-    setStatus(Math.random().toString())
-  }
-  else { // fail
-    setStatus('')
-
-    if (extractRes === 'miss brackets') {
-      cacheOrShowAlert(
-        'Lỗi không thể rate hình',
-        'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
-        'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' +
-        '* Advanced Tooltip Compare\n' +
-        '* Advanced Tooltip Information')
-    }
-    else if (extractRes === 'unique') {
-      cacheOrShowAlert(
-        'Ooops!',
-        'Không thể rate item UNIQUE. Vui lòng chọn hình khác!')
-    }
-    else { // other errors
-      cacheOrShowAlert(
-        'Lỗi không thể phân tích hình',
-        'Vui lòng chụp lại hay chọn ảnh khác!\n\nExtract result:\n' + extractRes)
-    }
-
-    Track('extract_failed')
-  }
-}, [])
-
-const cacheOrShowAlert = useCallback((title: string, content: string) => {
-  if (showingInterstitial.current) { // showing ads
-    cachedAlert.current = [title, content]
-  }
-  else // not showing ads
-    AlertWithCopy(title, content)
-}, [])
-
-const detectFromImgUrlAsync_ImageToText = useCallback(async (imgUrl: string) => {
-  const options = {
-    method: 'GET',
-    url: 'https://image-to-text9.p.rapidapi.com/ocr',
-    params: {
-      url: imgUrl
-    },
-    headers: {
-      'X-RapidAPI-Key': '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a',
-      'X-RapidAPI-Host': 'image-to-text9.p.rapidapi.com'
-    }
-  };
-
-  setStatus('Đang phân tích...')
-
-  checkAndShowAdsInterstitial() // show ads
-
-  try {
-    Track('call_api', {
-      fileID: tmpUploadFirebasePath.current
+    const finalScore = Math.max(rateScore_Class, rateScore_Class_Above3, valuableStatsScore)
+    const resultRate = getRateTypeByScore(finalScore)
+    
+    Track('rated', {
+      finalScore,
+      stats: arrStatsForRating.length,
+      result: resultRate[1],
+      fileID: tmpUploadFirebasePath.current,
     })
 
-    const response = await axios.request(options);
+    return {
+      score: finalScore,
+      text: resultRate[1],
+      color: resultRate[0],
+      statsForRating: arrStatsForRating,
+    } as RateResult
+  }, [])
 
-    rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
+  const getStatNameColorCompareWithBuild = useCallback((stat: string) => {
+    if (!slotCardRef.current)
+      return 'white'
 
-    const result = response.data?.text
+    const idx = slotCardRef.current.stats.findIndex(i => i.name.toLowerCase() === stat.toLowerCase())
 
-    if (!result)
-      throw 'ImageToText API have no result. Response:\n\n' + ToCanPrint(response)
+    return idx >= 0 ? 'white' : 'gray'
+  }, [])
 
-    onGotOcrResultTextAsync(result, false)
-  } catch (error) {
-    cacheOrShowAlert(
-      'Lỗi không thể phân tích hình',
-      'Vui lòng chụp lại hay chọn ảnh khác!\n\nMã lỗi:\n' + ToCanPrint(error))
+  const getRateTypeByScore = useCallback((rawFloatScore: number) => {
+    rawFloatScore = RoundNumber(rawFloatScore, 2)
 
-    userImgUri.current = ''
-    setStatus('')
-    Track('call_api_failed')
+    if (rawFloatScore >= 1) // perfect
+      return ['tomato', 'TUYỆT PHẨM!']
+    else if (rawFloatScore >= 0.75) // good
+      return ['gold', 'RẤT TỐT']
+    else if (rawFloatScore >= 0.5) // fair
+      return ['moccasin', 'TỐT']
+    else if (rawFloatScore >= 0.25) // normal
+      return ['paleturquoise', 'BÌNH THƯỜNG']
+    else // trash
+      return ['dodgerblue', 'RÁC RƯỞI']
+  }, [])
 
-    if (!isDevDevice)
-      FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
-  }
-}, [])
+  const getScoreOfStat = useCallback((statName: string, x10: boolean, statsForRating: StatForRatingType[]) => {
+    if (!statsForRating || statsForRating.length === 0)
+      return 0
 
-const getFirebaseConfigAsync = useCallback(async () => {
-  const res = await FirebaseDatabase_GetValueAsync('app_config')
+    const stat = statsForRating.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
 
-  if (!res.value) {
-    Alert.alert('Không thể download remote config!', 'Có lỗi gì đó hoặc bạn vui lòng kiểm tra internet.\n\nLỗi:\n' + ToCanPrint(res.error))
-    return
-  }
-
-  remoteConfig.current = res.value
-
-  isDevDevice = remoteConfig.current.dev_devices.includes(getUniqueId())
-
-  rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
-
-  const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
-
-  if (!isDevDevice && configVersion && version !== configVersion) {
-    const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
-
-    Alert.alert(
-      'Có bản cập nhật mới!',
-      'Vui lòng lên app store cập nhật phiên bản mới nhất.',
-      [
-        {
-          text: 'Cập nhật',
-          onPress: () => Linking.openURL(storeLink)
-        }
-      ])
-  }
-  else { // đag là version mới rồi
-    const last_installed_version = await storage.getStringAsync('last_installed_version')
-    const ver = (version as string).replaceAll('.', '_')
-
-    if (last_installed_version !== version) { // new install or updated
-      if (!isDevDevice)
-        await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
-
-      await storage.setStringAsync('last_installed_version', version)
+    if (stat !== undefined) {
+      if (x10)
+        return RoundNumber(stat[3] * 10, 1)
+      else
+        return stat[3]
     }
-  }
-}, [])
+    else
+      return -1
+  }, [])
 
-// init once 
+  const getRateStatColor = useCallback((statName: string, statsForRating: StatForRatingType[]) => {
+    if (!slotCardRef.current)
+      return 'green'
 
-useEffect(() => {
-  const initAsync = async () => {
-    // firebase
+    if (!statsForRating || statsForRating.length === 0)
+      return 'green'
 
-    FirebaseInit()
+    const stat = statsForRating.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
 
-    // remote config
+    if (stat !== undefined) {
+      return getRateTypeByScore(stat[3])[0]
+    }
+    else
+      return 'gray'
+  }, [])
 
-    await getFirebaseConfigAsync()
-
-    // ads
-
-    await CheckAndInitAdmobAsync();
-
-    loadAdsInterstitial()
-
-    // app state
+  const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
+    sessionExtractedCount.current++
+    ocrResult.current = JSON.stringify(result)
+    let extractRes = ExtractSlotCard(result, stringifyResult)
+    const isSuccess = typeof extractRes === 'object'
 
     if (!isDevDevice) {
-      sessionStartTime.current = Date.now()
+      if (isSuccess)
+        FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/success', 0)
+      else
+        FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
 
-      AppState.addEventListener('change', (e) => {
-        // console.log(ToCanPrint(e));
+      if (!isDevDevice && remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
+        FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
+          result: ocrResult.current,
+          version
+        })
+      }
+    }
 
-        if (e === 'active') { // start session
+    if (typeof extractRes === 'object') { // success
+      if (stringifyResult) {
+        console.log(JSON.stringify(extractRes))
+        console.log(JSON.stringify(extractRes, null, 1));
+      }
 
-          if (isOpeningCameraOrPhotoPicker.current) {
-            isOpeningCameraOrPhotoPicker.current = false
-            return
-          }
+      if (remoteConfig.current.auto_delete_file_if_extract_success === true)
+        FirebaseStorage_DeleteAsync(tmpUploadFirebasePath.current)
 
-          sessionExtractedCount.current = 0
-          sessionSelectedImgCount.current = 0
-          sessionFileIDs.current = ''
-          sessionStartTime.current = Date.now()
-        }
-        else if (e === 'background') { // end session
-          if (isOpeningCameraOrPhotoPicker.current) {
-            return
-          }
+      extractRes = HandleWeirdStatNames(extractRes)
+      slotCardRef.current = FilterStats(extractRes)
 
-          const fbpath = 'sessions/' + todayString + '/' + getUniqueId() + '/' + Date.now()
+      suitBuilds.current = findSuitBuilds(slotCardRef.current)
+      rateResult.current = rate(slotCardRef.current, suitBuilds.current)
 
-          FirebaseDatabase_SetValueAsync(fbpath, {
-            extracted_count: sessionExtractedCount.current,
-            selected_img: sessionSelectedImgCount.current,
-            duration: (Date.now() - sessionStartTime.current) / 1000 + 's',
-            version,
-            files: sessionFileIDs.current,
-            start_time: new Date(sessionStartTime.current).toString()
-          })
-        }
+      rateSuccessCountRef.current++
+      setRateSuccessCount(rateSuccessCountRef.current)
+
+      // done
+
+      setStatus(Math.random().toString())
+    }
+    else { // fail
+      setStatus('')
+
+      if (extractRes === 'miss brackets') {
+        cacheOrShowAlert(
+          'Lỗi không thể rate hình',
+          'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
+          'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' +
+          '* Advanced Tooltip Compare\n' +
+          '* Advanced Tooltip Information')
+      }
+      else if (extractRes === 'unique') {
+        cacheOrShowAlert(
+          'Ooops!',
+          'Không thể rate item UNIQUE. Vui lòng chọn hình khác!')
+      }
+      else { // other errors
+        cacheOrShowAlert(
+          'Lỗi không thể phân tích hình',
+          'Vui lòng chụp lại hay chọn ảnh khác!\n\nExtract result:\n' + extractRes)
+      }
+
+      Track('extract_failed')
+    }
+  }, [])
+
+  const cacheOrShowAlert = useCallback((title: string, content: string) => {
+    if (showingInterstitial.current) { // showing ads
+      cachedAlert.current = [title, content]
+    }
+    else // not showing ads
+      AlertWithCopy(title, content)
+  }, [])
+
+  const detectFromImgUrlAsync_ImageToText = useCallback(async (imgUrl: string) => {
+    setStatus('Đang phân tích...')
+
+    checkAndShowAdsInterstitial() // show ads
+
+    try {
+      Track('call_api', {
+        fileID: tmpUploadFirebasePath.current
       })
+
+      const response = await axios.request(GetAPIOption(imgUrl));
+
+      rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
+
+      const result = response.data?.text
+
+      if (!result)
+        throw 'ImageToText API has no result.'
+
+      onGotOcrResultTextAsync(result, false)
+    } catch (error) {
+      cacheOrShowAlert(
+        'Lỗi không thể phân tích hình',
+        'Vui lòng chụp lại hay chọn ảnh khác!\n\nMã lỗi:\n' + ToCanPrint(error))
+
+      userImgUri.current = ''
+      setStatus('')
+      Track('call_api_failed')
+
+      if (!isDevDevice)
+        FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
+    }
+  }, [])
+
+  const getFirebaseConfigAsync = useCallback(async () => {
+    const res = await FirebaseDatabase_GetValueAsync('app_config')
+
+    if (!res.value) {
+      Alert.alert('Không thể download remote config!', 'Có lỗi gì đó hoặc bạn vui lòng kiểm tra internet.\n\nLỗi:\n' + ToCanPrint(res.error))
+      return
     }
 
-    // tracking
+    remoteConfig.current = res.value
 
-    TrackOnOpenApp()
+    isDevDevice = remoteConfig.current.dev_devices.includes(getUniqueId())
 
-    if (firstOpenApp) {
-      setFirstOpenApp(false)
-      Track('first_open_app', { os: Platform.OS })
+    rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
+
+    const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
+
+    if (!isDevDevice && configVersion && version !== configVersion) {
+      const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
+
+      Alert.alert(
+        'Có bản cập nhật mới!',
+        'Vui lòng lên app store cập nhật phiên bản mới nhất.',
+        [
+          {
+            text: 'Cập nhật',
+            onPress: () => Linking.openURL(storeLink)
+          }
+        ])
     }
-  }
+    else { // đag là version mới rồi
+      const last_installed_version = await storage.getStringAsync('last_installed_version')
+      const ver = (version as string).replaceAll('.', '_')
 
-  initAsync()
+      if (last_installed_version !== version) { // new install or updated
+        if (!isDevDevice)
+          await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
 
-  const unsubscribe_ads_interstitial_loaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-    console.log('loaded interstitial')
-    loadedInterstitial.current = true
-
-    if (reallyNeedToShowInterstitial.current)
-      showAdsInterstitial()
-  });
-
-  const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
-    console.log('open interstitial')
-    showingInterstitial.current = true
-    Track('ads_opened')
-  });
-
-  const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-    console.log('closed interstitial')
-    reallyNeedToShowInterstitial.current = false
-    showingInterstitial.current = false
-    loadAdsInterstitial()
-
-    setRateSuccessCount(0)
-    rateSuccessCountRef.current = 0
-
-    // show cached alert
-
-    if (cachedAlert.current !== undefined) {
-      AlertWithCopy(cachedAlert.current[0], cachedAlert.current[1])
-      cachedAlert.current = undefined
+        await storage.setStringAsync('last_installed_version', version)
+      }
     }
+  }, [])
 
-    Track('ads_closed')
-  });
+  // init once 
 
-  const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
-    console.log('error interstitial', e)
+  useEffect(() => {
+    let appStateRemove: NativeEventSubscription
 
-    if (reallyNeedToShowInterstitial.current)
+    const initAsync = async () => {
+      // firebase
+
+      FirebaseInit()
+
+      // remote config
+
+      await getFirebaseConfigAsync()
+
+      // ads
+
+      await CheckAndInitAdmobAsync();
+
       loadAdsInterstitial()
 
-    Track('ads_error', ToCanPrint(e))
-  })
+      // app state
 
-  return () => {
-    unsubscribe_ads_interstitial_loaded()
-    unsubscribe_ads_interstitial_opened()
-    unsubscribe_ads_interstitial_closed()
-    unsubscribe_ads_interstitial_error()
-  }
-}, [])
+      if (!isDevDevice) {
+        sessionStartTime.current = Date.now()
 
-const notShowSuitBuilds = 
-  !suitBuilds.current || 
-  suitBuilds.current.length === 0 ||
-  (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build)
+        appStateRemove = AppState.addEventListener('change', (e) => {
+          // console.log(ToCanPrint(e));
 
-return (
-  <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
-    <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
-    {
-      Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads ? undefined :
-        <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
-    }
-    {/* app name */}
-    <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
-      <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
-      <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>Đánh giá App</Text>
-    </View>
-    {/* the rest */}
-    <ScrollView
-      scrollEnabled={!isTouchingImg}
-      ref={scrollViewRef}
-      onScroll={onScroll}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-      style={{ marginHorizontal: Outline.Margin }}>
-      {/* select photo btns */}
-      <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
-      <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
-        <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
-        </TouchableOpacity>
-      </View>
-      {/* user upload image & info */}
-      <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
-        {/* image */}
-        <View
-          ref={imgViewMeasure.current.theRef}
-          onLayout={imgOnLayout}
-          style={{ flex: 0.8 }}>
-          {
-            userImgUri.current === '' ? undefined :
-              <Animated.Image
-                style={[
-                  { width: '100%', height: windowSize.height * 0.4, },
-                  imgMove.getLayout(),
-                  {
-                    transform: [{ scale: imgScale }]
-                  }]}
-                resizeMode='contain'
-                source={{ uri: userImgUri.current }} />
+          if (e === 'active') { // start session
+
+            if (isOpeningCameraOrPhotoPicker.current) {
+              isOpeningCameraOrPhotoPicker.current = false
+              return
+            }
+
+            sessionExtractedCount.current = 0
+            sessionSelectedImgCount.current = 0
+            sessionClosedAds.current = 0
+            sessionRequestAds.current = 0
+            sessionFileIDs.current = ''
+            sessionStartTime.current = Date.now()
           }
-          {
-            userImgUri.current === '' ? undefined :
-              <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {tmpUploadFirebasePath.current} ({version})</Text>
-          }
-        </View>
-        {/* loading & info */}
-        {
-          // loading
-          !slotCardRef.current ?
-            <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
-              {
-                userImgUri.current === '' || ocrResult.current ? undefined :
-                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
-                    <ActivityIndicator color={'tomato'} />
-                    <Text style={{ color: 'white' }}>{status}</Text>
-                  </View>
-              }
-            </View> :
-            // user stats info
-            <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
-              {/* slot name  */}
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
-                  {slotCardRef.current.slotName}
-                </Text>
-                <View style={{ flex: 1 }} />
-              </View>
-              {/* item power */}
-              <Text style={{ marginTop: Outline.Gap / 2, color: 'white' }}>
-                Item Power: {slotCardRef.current.itemPower}
-              </Text>
-              {/* stats */}
-              <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
-                {
-                  slotCardRef.current.stats.map((stat, index) => {
-                    const color = getRateStatColor(stat.name)
-                    const scoreX10 = getScoreOfStat(stat.name, true)
+          else if (e === 'background') { // end session
+            if (isOpeningCameraOrPhotoPicker.current) {
+              return
+            }
 
-                    return <View key={index}>
-                      <Text style={{ color, fontWeight: FontWeight.B500 }}>{'{' + (index + 1) + '} ' + stat.name}</Text>
-                      <Text style={{ color }}>
-                        {stat.value}{stat.isPercent ? '%' : ''}
-                        <Text style={{ color }}>
-                          {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
-                        </Text>
-                        <Text style={{ color: 'black', backgroundColor: color }}>
-                          {scoreX10 >= 0 ? `${scoreX10}/10` : ''}
-                        </Text>
-                      </Text>
-                    </View>
-                  })
-                }
-              </View>
-            </View>
-        }
-      </View>
-      {/* rating result box */}
-      {
-        <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
-          <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateText.current[0] === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateText.current[1], padding: 10, borderRadius: 10 }} >
-            <Text style={{ color: rateText.current[0] === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateText.current[0]}</Text>
-          </View>
-          <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateScore_Class_BuildAbove3Stats.current >= 0 ? RoundNumber(rateScore_Class_BuildAbove3Stats.current * 10, 1) : 0}/10</Text>
-        </View>
+            // const fbpath = 'sessions_v2/' + todayString + '/' + Date.now() + '/' + getUniqueId()
+            const fbpath =
+              'sessions_v3/' +
+              todayString + '/' +
+              (new Date()).getHours() + 'h/' +
+              getUniqueId() + '/' +
+              Date.now()
+
+            FirebaseDatabase_SetValueAsync(fbpath, {
+              extracted_count: sessionExtractedCount.current,
+              selected_img: sessionSelectedImgCount.current,
+              duration: (Date.now() - sessionStartTime.current) / 1000 + 's',
+              version,
+              files: sessionFileIDs.current,
+              start_time: new Date(sessionStartTime.current).toString(),
+              calledShowAds: sessionRequestAds.current,
+              closedAds: sessionClosedAds.current,
+            })
+          }
+        })
       }
-      {/* builds suit */}
+
+      // tracking
+
+      TrackOnOpenApp()
+
+      if (firstOpenApp) {
+        setFirstOpenApp(false)
+        Track('first_open_app', { os: Platform.OS })
+      }
+    }
+
+    initAsync()
+
+    const unsubscribe_ads_interstitial_loaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      // console.log('loaded interstitial')
+      loadedInterstitial.current = true
+
+      if (reallyNeedToShowInterstitial.current)
+        showAdsInterstitial()
+    });
+
+    const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
+      // console.log('open interstitial')
+      showingInterstitial.current = true
+      Track('ads_opened')
+    });
+
+    const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      // console.log('closed interstitial')
+      reallyNeedToShowInterstitial.current = false
+      showingInterstitial.current = false
+      sessionClosedAds.current++
+      loadAdsInterstitial()
+
+      setRateSuccessCount(0)
+      rateSuccessCountRef.current = 0
+
+      // show cached alert
+
+      if (cachedAlert.current !== undefined) {
+        AlertWithCopy(cachedAlert.current[0], cachedAlert.current[1])
+        cachedAlert.current = undefined
+      }
+
+      Track('ads_closed')
+    });
+
+    const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
+      console.log('error interstitial', e)
+
+      if (reallyNeedToShowInterstitial.current)
+        loadAdsInterstitial()
+
+      Track('ads_error', ToCanPrint(e))
+    })
+
+    return () => {
+      unsubscribe_ads_interstitial_loaded()
+      unsubscribe_ads_interstitial_opened()
+      unsubscribe_ads_interstitial_closed()
+      unsubscribe_ads_interstitial_error()
+
+      if (appStateRemove && appStateRemove.remove)
+        appStateRemove.remove()
+    }
+  }, [])
+
+  const notShowSuitBuilds =
+    !suitBuilds.current ||
+    suitBuilds.current.length === 0 ||
+    (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build)
+
+  return (
+    <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
+      <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
       {
-        notShowSuitBuilds ? undefined :
-          <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
-            <Text style={{ color: 'white', fontSize: FontSize.Normal }}>Danh sách build thích hợp ({suitBuilds.current?.length} build):</Text>
+        Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads ? undefined :
+          <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
+      }
+      {/* app name */}
+      <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
+        <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>Đánh giá App</Text>
+      </View>
+      {/* the rest */}
+      <ScrollView
+        scrollEnabled={!isTouchingImg}
+        ref={scrollViewRef}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        style={{ marginHorizontal: Outline.Margin }}>
+        {/* select photo btns */}
+        <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
+        <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
+          <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
+          </TouchableOpacity>
+        </View>
+        {/* user upload image & info */}
+        <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
+          {/* image */}
+          <View
+            ref={imgViewMeasure.current.theRef}
+            onLayout={imgOnLayout}
+            style={{ flex: 0.8 }}>
             {
-              suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
-                return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
-                  {/* build name  */}
-                  <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{(index + 1) + '. ' + build.name}</Text>
-                  {/* tier & slot name */}
-                  <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
-                    <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
-                    <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+              userImgUri.current === '' ? undefined :
+                <Animated.Image
+                  style={[
+                    { width: '100%', height: windowSize.height * 0.4, },
+                    imgMove.getLayout(),
                     {
-                      statsMatchedCount < 3 ? undefined :
-                        <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
-                          <Image source={starIcon} style={{ width: 14, height: 14 }} />
-                          <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? 'Quá ngon' : 'Ngon'}</Text>
-                        </View>
-                    }
-                    <View style={{ flex: 1 }} />
-                  </View>
-                  <View style={{ gap: Outline.Gap }}>
-                    {
-                      slot.stats.map((stat, index) => {
-                        return <Text key={stat.name + index} style={{ color: getStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}</Text>
-                      })
-                    }
-                  </View>
-                </View>
-              })
+                      transform: [{ scale: imgScale }]
+                    }]}
+                  resizeMode='contain'
+                  source={{ uri: userImgUri.current }} />
+            }
+            {
+              userImgUri.current === '' ? undefined :
+                <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {tmpUploadFirebasePath.current} ({version})</Text>
             }
           </View>
-      }
-      {/* debug text, version, remain ocr count */}
-      <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
-    </ScrollView>
-    {/* scrollToTop btn */}
-    <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-      <TouchableOpacityAnimated
-        onPress={scrollToTop}
-        style={{ top: scrollTopBtnAnimatedY, justifyContent: 'center', alignItems: 'center', width: 35, height: 35, marginRight: 15, marginBottom: 15, borderRadius: 17, backgroundColor: 'white' }}>
-        <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
-      </TouchableOpacityAnimated>
-    </View>
-    {/* show list img button */}
-    {
-      multiImageItems.current.length === 0 ? undefined :
-        <View style={{ flexDirection: 'row' }}>
-          <View onTouchEnd={toggleShowMulti} style={{ flex: 1, backgroundColor: 'gold', alignItems: 'center' }}>
-            <Text style={{ color: 'black', marginVertical: Outline.Margin }}>Show danh sách ảnh</Text>
+          {/* loading & info */}
+          {
+            // loading
+            !slotCardRef.current ?
+              <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
+                {
+                  userImgUri.current === '' || ocrResult.current ? undefined :
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
+                      <ActivityIndicator color={'tomato'} />
+                      <Text style={{ color: 'white' }}>{status}</Text>
+                    </View>
+                }
+              </View> :
+              // user stats info
+              <View style={{ opacity: ((Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) || isTouchingImg) ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
+                {/* slot name  */}
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
+                    {slotCardRef.current.slotName}
+                  </Text>
+                  <View style={{ flex: 1 }} />
+                </View>
+                {/* item power */}
+                <Text style={{ marginTop: Outline.Gap / 2, color: 'white' }}>
+                  Item Power: {slotCardRef.current.itemPower}
+                </Text>
+                {/* stats */}
+                <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
+                  {
+                    slotCardRef.current.stats.map((stat, index) => {
+                      const color = getRateStatColor(stat.name, rateResult.current.statsForRating)
+                      const scoreX10 = getScoreOfStat(stat.name, true, rateResult.current.statsForRating)
+
+                      return <View key={index}>
+                        <Text style={{ color, fontWeight: FontWeight.B500 }}>{'{' + (index + 1) + '} ' + stat.name}</Text>
+                        <Text style={{ color }}>
+                          {stat.value}{stat.isPercent ? '%' : ''}
+                          <Text style={{ color }}>
+                            {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
+                          </Text>
+                          <Text style={{ color: 'black', backgroundColor: color }}>
+                            {scoreX10 >= 0 ? `${scoreX10}/10` : ''}
+                          </Text>
+                        </Text>
+                      </View>
+                    })
+                  }
+                </View>
+              </View>
+          }
+        </View>
+        {/* rating result box */}
+        {
+          <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateResult.current.text === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateResult.current.color, padding: 10, borderRadius: 10 }} >
+              <Text style={{ color: rateResult.current.text === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.text}</Text>
+            </View>
+            <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.score >= 0 ? RoundNumber(rateResult.current.score * 10, 1) : 0}/10</Text>
           </View>
-        </View>
-    }
-    {/* multi page */}
-    {
-      !isShowMulti.current ? undefined :
-        <MultiImagePage
-          toggleShow={toggleShowMulti}
-          items={multiImageItems.current} />
-    }
-    {/* cheat */}
-    {
-      !showCheat ? undefined :
-        <View style={{ gap: Outline.Gap, backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>
-          <Button title='copy storage log' onPress={OnPressed_CopyStorageLog} />
-          <Button title='clear storage log' onPress={OnPressed_ClearStorageLog} />
-          <Button title='copy device id' onPress={() => Clipboard.setString(getUniqueId())} />
-          <Button title='close' onPress={OnPressed_CloseCheat} />
-        </View>
-    }
-  </SafeAreaView>
-)
+        }
+        {/* builds suit */}
+        {
+          notShowSuitBuilds ? undefined :
+            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
+              <Text style={{ color: 'white', fontSize: FontSize.Normal }}>Danh sách build thích hợp ({suitBuilds.current?.length} build):</Text>
+              {
+                suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
+                  return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
+                    {/* build name  */}
+                    <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{(index + 1) + '. ' + build.name}</Text>
+                    {/* tier & slot name */}
+                    <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
+                      <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
+                      <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                      {
+                        statsMatchedCount < 3 ? undefined :
+                          <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
+                            <Image source={starIcon} style={{ width: 14, height: 14 }} />
+                            <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? 'Quá ngon' : 'Ngon'}</Text>
+                          </View>
+                      }
+                      <View style={{ flex: 1 }} />
+                    </View>
+                    <View style={{ gap: Outline.Gap }}>
+                      {
+                        slot.stats.map((stat, index) => {
+                          return <Text key={stat.name + index} style={{ color: getStatNameColorCompareWithBuild(stat.name) }}>{stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}</Text>
+                        })
+                      }
+                    </View>
+                  </View>
+                })
+              }
+            </View>
+        }
+        {/* debug text, version, remain ocr count */}
+        <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
+      </ScrollView>
+      {/* scrollToTop btn */}
+      <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+        <TouchableOpacityAnimated
+          onPress={scrollToTop}
+          style={{ top: scrollTopBtnAnimatedY, justifyContent: 'center', alignItems: 'center', width: 35, height: 35, marginRight: 15, marginBottom: 15, borderRadius: 17, backgroundColor: 'white' }}>
+          <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
+        </TouchableOpacityAnimated>
+      </View>
+      {/* show list img button */}
+      {
+        multiImageItems.current.length === 0 ? undefined :
+          <View style={{ flexDirection: 'row' }}>
+            <View onTouchEnd={toggleShowMulti} style={{ flex: 1, backgroundColor: 'gold', alignItems: 'center' }}>
+              <Text style={{ color: 'black', marginVertical: Outline.Margin }}>Show danh sách ảnh</Text>
+            </View>
+          </View>
+      }
+      {/* multi page */}
+      {
+        !isShowMulti.current ? undefined :
+          <MultiImagePage
+            toggleShow={toggleShowMulti}
+            items={multiImageItems.current} />
+      }
+      {/* cheat */}
+      {
+        !showCheat ? undefined :
+          <View style={{ gap: Outline.Gap, backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>
+            <Text style={{ color: 'black' }}>{getUniqueId()}</Text>
+            <Button title='copy storage log' onPress={OnPressed_CopyStorageLog} />
+            <Button title='clear storage log' onPress={OnPressed_ClearStorageLog} />
+            <Button title='copy device id' onPress={() => Clipboard.setString(getUniqueId())} />
+            <Button title='close' onPress={OnPressed_CloseCheat} />
+          </View>
+      }
+    </SafeAreaView>
+  )
 }
 
 export default App;
@@ -1279,7 +1347,8 @@ const FilterStats = (slot: SlotCard): SlotCard => {
 const IsIgnoredStat = (stat: Stat, slot: SlotCard): boolean => {
   const statNameLower = stat.name.toLowerCase()
 
-  if (statNameLower.includes('resistance')) {
+  if (statNameLower.includes('resistance') ||
+    statNameLower.includes('ranks of')) {
     return true
   }
 
@@ -1361,6 +1430,20 @@ const OnPressed_StoreRate = () => {
   Track('pressed_ratestore')
 }
 
+const GetAPIOption = (url: string) => {
+  return {
+    method: 'GET',
+    url: 'https://image-to-text9.p.rapidapi.com/ocr',
+    params: {
+      url
+    },
+    headers: {
+      'X-RapidAPI-Key': '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a',
+      'X-RapidAPI-Host': 'image-to-text9.p.rapidapi.com'
+    }
+  };
+}
+
 const TrackOnOpenApp = async () => {
   const tracked_user_unique_open_app_count = await storage.getStringAsync('tracked_user_unique_open_app_count')
 
@@ -1369,8 +1452,8 @@ const TrackOnOpenApp = async () => {
 
     if (!isDevDevice)
       await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
-      await FirebaseDatabase_IncreaseNumberAsync('device_info/platform/' + Platform.OS, 0)
-      await FirebaseDatabase_IncreaseNumberAsync('device_info/brand/' + getBrand(), 0)
+    await FirebaseDatabase_IncreaseNumberAsync('device_info/platform/' + Platform.OS, 0)
+    await FirebaseDatabase_IncreaseNumberAsync('device_info/brand/' + getBrand(), 0)
   }
 
   if (!isDevDevice)

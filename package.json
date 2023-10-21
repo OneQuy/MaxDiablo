@@ -1,6 +1,6 @@
 {
   "name": "diablosenpai",
-  "version": "0.6.8",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -14,7 +14,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@baronha/react-native-multiple-image-picker": "^1.1.5",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/netinfo": "^5.9.10",

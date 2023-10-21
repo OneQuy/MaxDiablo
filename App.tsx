@@ -257,7 +257,6 @@ function App(): JSX.Element {
 
       // single img
 
-      // const path = Platform.OS === 'android' ? 'file://' + img.realPath : img.path
       const path = response.assets[0].uri
 
       if (!path) {

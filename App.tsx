@@ -142,6 +142,7 @@ function App(): JSX.Element {
 
   const multiImageItems = useRef<ImgItemData[]>([])
   const isShowMulti = useRef(false)
+  const multiSelectedItem = useRef<ImgItemData | undefined>(undefined)
 
   // remote config
 
@@ -164,9 +165,9 @@ function App(): JSX.Element {
   const imgViewMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
   const imgViewMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
 
-  rateSuccessCountRef.current = rateSuccessCount
-
   // funcs
+
+  rateSuccessCountRef.current = rateSuccessCount
 
   const imageResponse = useRef<ViewProps>({
     onMoveShouldSetResponder: (event: GestureResponderEvent) => {
@@ -265,7 +266,7 @@ function App(): JSX.Element {
       Alert.alert('Có lỗi khi chọn hình', 'Lỗi:\n\n' + ToCanPrint(response))
       return
     }
-    else {
+    else { // pick success
       // multi 
 
       if (response.assets.length > 1) {
@@ -319,6 +320,8 @@ function App(): JSX.Element {
     if (!path)
       return
 
+    // take success
+
     onSelectedImgAsync(path)
     Track('take_camera')
   }, [])
@@ -366,6 +369,17 @@ function App(): JSX.Element {
   }, [])
 
   const onPressItemInMulti = useCallback((item: ImgItemData) => {
+    multiSelectedItem.current = item
+    updateSelectedItemStateToMainScreen()
+    toggleShowMulti()
+  }, [])
+
+  const updateSelectedItemStateToMainScreen = useCallback(() => {
+    if (!multiSelectedItem.current)
+      return
+
+    const item = multiSelectedItem.current
+
     userImgUri.current = item.uri
     currentSlot.current = item.slot
     ocrResultTextOnly.current = item.ocrResultTxt ? item.ocrResultTxt : ''
@@ -389,7 +403,7 @@ function App(): JSX.Element {
         cacheOrShowAlert(item.errorAlert[0], item.errorAlert[1])
     }
 
-    toggleShowMulti()
+    forceUpdate()
   }, [])
 
   const checkAndShowAdsInterstitial = useCallback(() => {
@@ -436,11 +450,14 @@ function App(): JSX.Element {
   }, [])
 
   const updateMultiStateAsync = useCallback(async () => {
+    if (!isShowMulti.current)
+      updateSelectedItemStateToMainScreen()
+
     forceUpdate()
   }, [])
 
   const startHandleMulti = useCallback(() => {
-    async function Handle(item: ImgItemData) {
+    async function StartFlowAsync(item: ImgItemData) {
       let path = item.uri
 
       // compress
@@ -524,8 +541,10 @@ function App(): JSX.Element {
       }
     }
 
+    multiSelectedItem.current = undefined
+
     for (let i = 0; i < multiImageItems.current.length; i++)
-      Handle(multiImageItems.current[i])
+      StartFlowAsync(multiImageItems.current[i])
   }, [])
 
   const onSelectedMultiImgAsync = useCallback(async (response: Asset[]) => {
@@ -549,7 +568,7 @@ function App(): JSX.Element {
     if (!await IsExistedAsync(path, false)) {
       status.current = ''
       forceUpdate()
-      
+
       Alert.alert(
         'File không tồn tại để upload',
         'Path: ' + path)
@@ -624,14 +643,15 @@ function App(): JSX.Element {
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const thresholdScrollHide = 100
-    const hideTop = Platform.OS === 'android' ? 50 : 300
+    const hideTopY = Platform.OS === 'android' ? 50 : 300
+    const showTopY = multiImageItems.current.length === 0 ? 0 : -50
 
     const native = event.nativeEvent
 
     const nowY = native.contentOffset.y
     scrollViewCurrentOffsetY.current = nowY
 
-    const value = nowY > thresholdScrollHide ? 0 : hideTop
+    const value = nowY > thresholdScrollHide ? showTopY : hideTopY
 
     Animated.spring(
       scrollTopBtnAnimatedY,
@@ -1358,7 +1378,7 @@ function App(): JSX.Element {
         multiImageItems.current.length === 0 ? undefined :
           <View style={{ flexDirection: 'row' }}>
             <View onTouchEnd={toggleShowMulti} style={{ flex: 1, backgroundColor: 'gold', alignItems: 'center' }}>
-              <Text style={{ color: 'black', marginVertical: Outline.Margin }}>Show danh sách ảnh</Text>
+              <Text style={{ color: 'black', marginVertical: Outline.Margin }}>{lang.current.show_multi_btn}</Text>
             </View>
           </View>
       }

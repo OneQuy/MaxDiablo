@@ -1,9 +1,10 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, FlatList, Image, SafeAreaView } from 'react-native'
 import React from 'react'
 import { Outline, windowSize } from './AppConstant'
-import { ToCanPrint } from './common/UtilsTS'
 import GridItem, { numColumnGrid } from './GridItem'
 import { ImgItemData } from './Types'
+
+const closeIcon = require('../assets/images/x-icon.png')
 
 type MultiImagePageProps = {
     items: ImgItemData[],
@@ -13,21 +14,23 @@ type MultiImagePageProps = {
 
 const MultiImagePage = (props: MultiImagePageProps) => {
     return (
-        <View style={{ backgroundColor: 'gray', position: 'absolute', width: '100%', height: windowSize.height, justifyContent: 'flex-start' }}>
-            <View onTouchEnd={props.toggleShow} style={{ flex: 0.1, backgroundColor: 'red' }} />
-            <View style={{ flex: 1, backgroundColor: 'blue' }} >
+        <SafeAreaView style={{ position: 'absolute', width: '100%', height: windowSize.height, justifyContent: 'flex-start' }}>
+            <View onTouchEnd={props.toggleShow} style={{ paddingTop: 20, alignItems: 'center', justifyContent: 'center', flex: 0.1, backgroundColor: 'black' }} >
+                <Image source={closeIcon} style={{ marginBottom: Outline.Margin, width: 40, height: 40}} />
+            </View>
+            <View style={{ flex: 1, backgroundColor: 'black' }} >
                 <FlatList
                     data={props.items}
                     keyExtractor={(item, _) => item.uri}
                     numColumns={numColumnGrid}
-                    contentContainerStyle={{ gap: Outline.Gap, }}
+                    contentContainerStyle={{ marginTop: Outline.Margin, gap: Outline.Gap, }}
                     renderItem={({ item, index }) => <GridItem
                         index={index}
                         onPress={props.onPressItem}
                         itemData={item} />}
                 />
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 

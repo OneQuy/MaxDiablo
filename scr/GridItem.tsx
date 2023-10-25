@@ -1,9 +1,9 @@
 import { View, Text, ImageBackground, ActivityIndicator, TouchableOpacity } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { ImgItemData } from './Types'
-import { Outline, windowSize } from './AppConstant'
+import { FontWeight, Outline, windowSize } from './AppConstant'
 import { RoundNumber } from './common/Utils'
-import { ToCanPrint } from './common/UtilsTS'
+import { GetLang } from './Language'
 
 type Props = {
   itemData: ImgItemData,
@@ -18,7 +18,6 @@ const itemHeight = windowSize.height * 0.25
 
 const GridItem = (props: Props) => {
   const isWaitingAPI = props.itemData.ocrResultTxt === undefined
-
   const ratedSuccess = props.itemData.rateResult !== undefined
 
   let displayLine_1: string // indicator | result rate text
@@ -31,7 +30,7 @@ const GridItem = (props: Props) => {
 
   // line 2
 
-  let displayLine_2: string // score | 'đang xử lý..'
+  let displayLine_2: string // score | 'rating..'
 
   if (ratedSuccess)
     // @ts-ignore
@@ -41,7 +40,7 @@ const GridItem = (props: Props) => {
   else
     displayLine_2 = 'Lỗi'
 
-  const bgColor = ratedSuccess ? props.itemData.rateResult?.color : 'white'
+  const bgColor = ratedSuccess ? props.itemData.rateResult?.color : 'gray'
 
   const onPress = useCallback(() => {
     props.onPress(props.itemData)
@@ -51,15 +50,17 @@ const GridItem = (props: Props) => {
     <TouchableOpacity onPress={onPress} style={{ width: itemWidth, height: itemHeight, backgroundColor: 'black', marginHorizontal: Outline.Gap / 2 }}>
       <ImageBackground style={{ flex: 1 }} source={{ uri: props.itemData.uri }} />
       <View style={{ width: '100%', height: '100%', position: 'absolute', alignItems: 'center', justifyContent: 'flex-end' }}>
-        <View style={{ width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>
+        {/* line 1 */}
+        <View style={{ paddingTop: Outline.Margin / 2, width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>
           {
             isWaitingAPI ?
               <ActivityIndicator color={'black'} /> :
-              <Text>{displayLine_1}</Text>
+              <Text style={{color: 'black', fontWeight: FontWeight.B500 }}>{displayLine_1}</Text>
           }
         </View>
-        <View style={{ width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>
-          <Text>{displayLine_2}</Text>
+        {/* line 2 */}
+        <View style={{ paddingBottom: Outline.Margin / 2, width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>
+          <Text style={{color: 'black', fontWeight: FontWeight.B500 }}>{displayLine_2}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -68,9 +69,7 @@ const GridItem = (props: Props) => {
 
 export default GridItem
 
-export const GetItemState = (item: ImgItemData) =>  {
-  // console.log(ToCanPrint(item));
-  
+export const GetItemState = (item: ImgItemData) =>  {  
   if (item.errorAlert !== undefined)
     return 'fail'
   else if (item.ocrResultTxt === undefined)

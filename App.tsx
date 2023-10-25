@@ -66,6 +66,7 @@ const todayString = 'd' + today.getDate() + '_m' + (today.getMonth() + 1) + '_' 
 
 const upArrowIcon = require('./assets/images/up-arrow.png')
 const starIcon = require('./assets/images/star-icon.png')
+const leftIcon = require('./assets/images/left-icon.png')
 
 const googleStoreOpenLink = "market://details?id=com.maxdiablo"
 const appleStoreOpenLink = "https://apps.apple.com/us/app/d4-tool/id6469034531"
@@ -364,6 +365,11 @@ function App(): JSX.Element {
       return
 
     Clipboard.setString(ocrResultTextOnly.current)
+  }, [])
+
+  const onPressNextItemInMulti = useCallback((isNext: boolean) => {
+
+    updateSelectedItemStateToMainScreen()
   }, [])
 
   const onPressItemInMulti = useCallback((item: ImgItemData) => {
@@ -1375,12 +1381,18 @@ function App(): JSX.Element {
         </View>
         {/* show list img button */}
         {
-          multiImageItems.current.length === 0 ? undefined :
-            <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
-              <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
-                <Text style={{ color: 'black', }}>{lang.current.show_multi_btn}</Text>
-              </View>
+          // multiImageItems.current.length === 0 ? undefined :
+          <View style={{ gap: Outline.Gap, marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
+            <View onTouchEnd={undefined} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
+              <Image source={leftIcon} style={{ width: 20, height: 20 }} />
             </View>
+            <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
+              <Text style={{ color: 'black', fontSize: FontSize.Normal, }}>{lang.current.show_multi_btn}</Text>
+            </View>
+            <View onTouchEnd={undefined} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
+              <Image source={leftIcon} style={[{ width: 20, height: 20 }, { transform: [{ scale: -1 }] }]} />
+            </View>
+          </View>
         }
         {/* multi page */}
         {

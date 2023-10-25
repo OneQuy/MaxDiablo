@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import { ImgItemData } from './Types'
 import { Outline, windowSize } from './AppConstant'
 import { RoundNumber } from './common/Utils'
+import { ToCanPrint } from './common/UtilsTS'
 
 type Props = {
   itemData: ImgItemData,
@@ -11,6 +12,7 @@ type Props = {
 }
 
 export const numColumnGrid = 3
+
 const itemWidth = (windowSize.width - Outline.Gap * (numColumnGrid - 1) - Outline.Gap * 2) / numColumnGrid
 const itemHeight = windowSize.height * 0.25
 
@@ -65,3 +67,16 @@ const GridItem = (props: Props) => {
 }
 
 export default GridItem
+
+export const GetItemState = (item: ImgItemData) =>  {
+  // console.log(ToCanPrint(item));
+  
+  if (item.errorAlert !== undefined)
+    return 'fail'
+  else if (item.ocrResultTxt === undefined)
+    return 'wait_api'
+  else if (item.rateResult !== undefined)
+    return 'success'
+  else
+    return 'fail'
+}

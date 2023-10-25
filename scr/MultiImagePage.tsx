@@ -12,8 +12,6 @@ type MultiImagePageProps = {
 }
 
 const MultiImagePage = (props: MultiImagePageProps) => {
-    // console.log(ToCanPrint(multiImageUriArr));
-
     return (
         <View style={{ backgroundColor: 'gray', position: 'absolute', width: '100%', height: windowSize.height, justifyContent: 'flex-start' }}>
             <View onTouchEnd={props.toggleShow} style={{ flex: 0.1, backgroundColor: 'red' }} />

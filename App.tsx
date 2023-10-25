@@ -40,10 +40,13 @@ import { Track } from './scr/common/ForageAnalytic';
 import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
 import { Image as ImageCompressor } from 'react-native-compressor';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
+import { GetItemState } from './scr/GridItem';
+import { GetLang } from './scr/Language';
+import { useForceUpdate } from './scr/common/useForceUpdate';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -95,17 +98,22 @@ const DefaultRateResult: RateResult = { score: -1, text: '...', color: 'black', 
 export var isDevDevice = false
 
 function App(): JSX.Element {
-  const [status, setStatus] = useState('')
+  // current item
+
+  const status = useRef('')
+  const userImgUri = useRef('')
+  const currentSlot = useRef<SlotCard | undefined>()
+  const ocrResultTextOnly = useRef('')
+  const suitBuilds = useRef<SuitBuildType[]>()
+  const rateResult = useRef<RateResult>(DefaultRateResult)
+
+  // other
+
   const [showCheat, setShowCheat] = useState(false)
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
   const [firstOpenApp, setFirstOpenApp] = useMMKVStorage('firstOpenApp', storage, true)
   const rateSuccessCountRef = useRef(0)
   const rateSuccessCountPerInterstitialConfig = useRef(2)
-  const userImgUri = useRef('')
-  const currentSlot = useRef<SlotCard | undefined>()
-  const ocrResult = useRef('')
-  const suitBuilds = useRef<SuitBuildType[]>()
-  const rateResult = useRef<RateResult>(DefaultRateResult)
   const rateLimitText = useRef('') // api remain limit text
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollViewCurrentOffsetY = useRef(0)
@@ -114,10 +122,14 @@ function App(): JSX.Element {
   const reallyNeedToShowInterstitial = useRef(false)
   const showingInterstitial = useRef(false)
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
-  const tmpUploadFirebasePath = useRef('')
+  const currentFileID = useRef('')
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
   const isOpeningCameraOrPhotoPicker = useRef(false)
+  const lang = useRef(GetLang(false))
+  const forceUpdate = useForceUpdate()
+
+  // session
 
   const sessionSelectedImgCount = useRef(0)
   const sessionExtractedCount = useRef(0)
@@ -126,8 +138,12 @@ function App(): JSX.Element {
   const sessionRequestAds = useRef(0)
   const sessionClosedAds = useRef(0)
 
+  // multi
+
   const multiImageItems = useRef<ImgItemData[]>([])
   const isShowMulti = useRef(false)
+
+  // remote config
 
   const remoteConfig = useRef({
     auto_delete_file_if_extract_success: true,
@@ -138,6 +154,8 @@ function App(): JSX.Element {
     dev_devices: '',
   })
 
+  // moving pic
+
   const [isTouchingImg, setIsTouchingImg] = useState(false)
   const imgScale = useRef(new Animated.Value(1)).current
   const imgMove = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
@@ -147,6 +165,8 @@ function App(): JSX.Element {
   const imgViewMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
 
   rateSuccessCountRef.current = rateSuccessCount
+
+  // funcs
 
   const imageResponse = useRef<ViewProps>({
     onMoveShouldSetResponder: (event: GestureResponderEvent) => {
@@ -339,14 +359,37 @@ function App(): JSX.Element {
   }, [])
 
   const onPressCopyOCRResult = useCallback(async () => {
-    if (!ocrResult.current)
+    if (!ocrResultTextOnly.current)
       return
 
-    Clipboard.setString(ocrResult.current)
+    Clipboard.setString(ocrResultTextOnly.current)
   }, [])
 
   const onPressItemInMulti = useCallback((item: ImgItemData) => {
-    
+    userImgUri.current = item.uri
+    currentSlot.current = item.slot
+    ocrResultTextOnly.current = item.ocrResultTxt ? item.ocrResultTxt : ''
+    suitBuilds.current = item.suitBuilds
+    rateResult.current = item.rateResult ? item.rateResult : DefaultRateResult
+
+    const state = GetItemState(item)
+
+    if (state === 'success') {
+      status.current = ''
+    }
+
+    else if (state === 'wait_api') {
+      status.current = lang.current.wait_api
+    }
+
+    else { // fail
+      status.current = ''
+
+      if (item.errorAlert)
+        cacheOrShowAlert(item.errorAlert[0], item.errorAlert[1])
+    }
+
+    toggleShowMulti()
   }, [])
 
   const checkAndShowAdsInterstitial = useCallback(() => {
@@ -389,12 +432,11 @@ function App(): JSX.Element {
 
   const toggleShowMulti = useCallback(() => {
     isShowMulti.current = !isShowMulti.current
-    setStatus(Math.random().toString())
+    forceUpdate()
   }, [])
 
   const updateMultiStateAsync = useCallback(async () => {
-    // console.log(index, response?.data?.text);
-    setStatus(Math.random().toString())
+    forceUpdate()
   }, [])
 
   const startHandleMulti = useCallback(() => {
@@ -466,6 +508,7 @@ function App(): JSX.Element {
         const suitBuilds = findSuitBuilds(slot)
         const rateRes = rate(slot, suitBuilds)
 
+        item.slot = slot
         item.suitBuilds = suitBuilds
         item.rateResult = rateRes
 
@@ -496,7 +539,7 @@ function App(): JSX.Element {
 
   const onSelectedImgAsync = useCallback(async (path: string) => {
     currentSlot.current = undefined
-    ocrResult.current = ''
+    ocrResultTextOnly.current = ''
     suitBuilds.current = undefined
     rateResult.current = DefaultRateResult
     userImgUri.current = ''
@@ -504,8 +547,9 @@ function App(): JSX.Element {
     sessionSelectedImgCount.current++
 
     if (!await IsExistedAsync(path, false)) {
-      setStatus('')
-
+      status.current = ''
+      forceUpdate()
+      
       Alert.alert(
         'File không tồn tại để upload',
         'Path: ' + path)
@@ -521,21 +565,23 @@ function App(): JSX.Element {
       FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
     }
 
-    tmpUploadFirebasePath.current = generateImgID()
-    sessionFileIDs.current += ('[' + tmpUploadFirebasePath.current + ']')
+    currentFileID.current = generateImgID()
+    sessionFileIDs.current += ('[' + currentFileID.current + ']')
 
-    setStatus('Đang upload...')
+    status.current = lang.current.uploading
+    forceUpdate()
 
-    const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + tmpUploadFirebasePath.current
+    const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + currentFileID.current
     const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
 
     Track('uploaded_done', {
       success: uplodaErr === null,
-      fileID: tmpUploadFirebasePath.current
+      fileID: currentFileID.current
     })
 
     if (uplodaErr) {
-      setStatus('')
+      status.current = ''
+      forceUpdate()
 
       Alert.alert(
         'Lỗi không thể upload hình để xử lý',
@@ -549,7 +595,8 @@ function App(): JSX.Element {
     const getURLRes = await FirebaseStorage_GetDownloadURLAsync(fbpath)
 
     if (getURLRes.error) {
-      setStatus('')
+      status.current = ''
+      forceUpdate()
 
       Alert.alert(
         'Lỗi lấy url ảnh',
@@ -763,7 +810,7 @@ function App(): JSX.Element {
       finalScore,
       stats: arrStatsForRating.length,
       result: resultRate[1],
-      fileID: tmpUploadFirebasePath.current,
+      fileID: currentFileID.current,
     })
 
     return {
@@ -832,7 +879,7 @@ function App(): JSX.Element {
 
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
     sessionExtractedCount.current++
-    ocrResult.current = JSON.stringify(result)
+    ocrResultTextOnly.current = JSON.stringify(result)
     let extractRes = ExtractSlotCard(result, stringifyResult)
     const isSuccess = typeof extractRes === 'object'
 
@@ -842,9 +889,9 @@ function App(): JSX.Element {
       else
         FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
 
-      if (!isDevDevice && remoteConfig.current.save_ocr_result && tmpUploadFirebasePath.current !== '') {
-        FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + tmpUploadFirebasePath.current, {
-          result: ocrResult.current,
+      if (!isDevDevice && remoteConfig.current.save_ocr_result && currentFileID.current !== '') {
+        FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + currentFileID.current, {
+          result: ocrResultTextOnly.current,
           version
         })
       }
@@ -857,7 +904,7 @@ function App(): JSX.Element {
       }
 
       if (remoteConfig.current.auto_delete_file_if_extract_success === true)
-        FirebaseStorage_DeleteAsync(tmpUploadFirebasePath.current)
+        FirebaseStorage_DeleteAsync(currentFileID.current)
 
       extractRes = HandleWeirdStatNames(extractRes)
       currentSlot.current = FilterStats(extractRes)
@@ -870,10 +917,11 @@ function App(): JSX.Element {
 
       // done
 
-      setStatus(Math.random().toString())
+      forceUpdate()
     }
     else { // fail
-      setStatus('')
+      status.current = ''
+      forceUpdate()
 
       const [title, content] = getAlertContentWhenExtractFail(extractRes)
       cacheOrShowAlert(title, content)
@@ -913,13 +961,14 @@ function App(): JSX.Element {
   }, [])
 
   const detectFromImgUrlAsync_ImageToText = useCallback(async (imgUrl: string) => {
-    setStatus('Đang phân tích...')
+    status.current = lang.current.wait_api
+    forceUpdate()
 
     checkAndShowAdsInterstitial() // show ads
 
     try {
       Track('call_api', {
-        fileID: tmpUploadFirebasePath.current
+        fileID: currentFileID.current
       })
 
       // call api
@@ -947,7 +996,9 @@ function App(): JSX.Element {
         'Vui lòng chụp lại hay chọn ảnh khác!\n\nMã lỗi:\n' + ToCanPrint(error))
 
       userImgUri.current = ''
-      setStatus('')
+      status.current = ''
+      forceUpdate()
+
       Track('call_api_failed')
 
       if (!isDevDevice)
@@ -1188,7 +1239,7 @@ function App(): JSX.Element {
             }
             {
               userImgUri.current === '' ? undefined :
-                <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {tmpUploadFirebasePath.current} ({version})</Text>
+                <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {currentFileID.current} ({version})</Text>
             }
           </View>
           {/* loading & info */}
@@ -1197,10 +1248,10 @@ function App(): JSX.Element {
             !currentSlot.current ?
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                 {
-                  userImgUri.current === '' || ocrResult.current ? undefined :
+                  userImgUri.current === '' || ocrResultTextOnly.current ? undefined :
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
                       <ActivityIndicator color={'tomato'} />
-                      <Text style={{ color: 'white' }}>{status}</Text>
+                      <Text style={{ color: 'white' }}>{status.current}</Text>
                     </View>
                 }
               </View> :
@@ -1281,7 +1332,7 @@ function App(): JSX.Element {
                             key={stat.name + index}
                             // @ts-ignore
                             style={{ color: getStatNameColorCompareWithBuild(stat.name, currentSlot.current) }}>
-                              {stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
+                            {stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
                           </Text>
                         })
                       }

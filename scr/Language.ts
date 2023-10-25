@@ -5,6 +5,11 @@ const viet = {
     wait_api: 'Đang phân tích...',
     show_multi_btn: 'Show danh sách ảnh',
     fail: 'Lỗi',
+    perfect: 'TUYỆT PHẨM!',
+    very_good: 'RẤT TỐT',
+    good: 'TỐT',
+    normal: 'BÌNH THƯỜNG',
+    trash: 'RÁC RƯỞI',
 }
 
 const eng: Lang = {
@@ -12,6 +17,11 @@ const eng: Lang = {
     wait_api: 'Rating...',
     show_multi_btn: 'Show list images',
     fail: 'Failed',
+    perfect: 'PERFECT!',
+    very_good: 'VERY GOOD',
+    good: 'GOOD',
+    normal: 'NORMAL',
+    trash: 'TRASH',
 }
 
 export type Lang = typeof viet

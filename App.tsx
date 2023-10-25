@@ -853,15 +853,15 @@ function App(): JSX.Element {
     rawFloatScore = RoundNumber(rawFloatScore, 2)
 
     if (rawFloatScore >= 1) // perfect
-      return ['tomato', 'TUYỆT PHẨM!']
-    else if (rawFloatScore >= 0.75) // good
-      return ['gold', 'RẤT TỐT']
-    else if (rawFloatScore >= 0.5) // fair
-      return ['moccasin', 'TỐT']
+      return ['tomato', lang.current.perfect]
+    else if (rawFloatScore >= 0.75) // very good
+      return ['gold', lang.current.very_good]
+    else if (rawFloatScore >= 0.5) // good
+      return ['moccasin', lang.current.good]
     else if (rawFloatScore >= 0.25) // normal
-      return ['paleturquoise', 'BÌNH THƯỜNG']
+      return ['paleturquoise', lang.current.normal]
     else // trash
-      return ['dodgerblue', 'RÁC RƯỞI']
+      return ['dodgerblue', lang.current.trash]
   }, [])
 
   const getScoreOfStat = useCallback((statName: string, x10: boolean, statsForRating: StatForRatingType[]) => {

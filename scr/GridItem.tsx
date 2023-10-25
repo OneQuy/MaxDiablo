@@ -1,9 +1,9 @@
 import { View, Text, ImageBackground, ActivityIndicator, TouchableOpacity } from 'react-native'
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { ImgItemData } from './Types'
 import { FontWeight, Outline, windowSize } from './AppConstant'
 import { RoundNumber } from './common/Utils'
-import { GetLang } from './Language'
+import { GetLang, LangContext } from './Language'
 
 type Props = {
   itemData: ImgItemData,
@@ -17,6 +17,7 @@ const itemWidth = (windowSize.width - Outline.Gap * (numColumnGrid - 1) - Outlin
 const itemHeight = windowSize.height * 0.25
 
 const GridItem = (props: Props) => {
+  const lang = useContext(LangContext)
   const isWaitingAPI = props.itemData.ocrResultTxt === undefined
   const ratedSuccess = props.itemData.rateResult !== undefined
 
@@ -36,9 +37,9 @@ const GridItem = (props: Props) => {
     // @ts-ignore
     displayLine_2 = RoundNumber(props.itemData.rateResult?.score * 10, 1) + '/10'
   else if (props.itemData.ocrResultTxt === undefined)
-    displayLine_2 = 'Đang xử lý...'
+    displayLine_2 = lang.wait_api
   else
-    displayLine_2 = 'Lỗi'
+    displayLine_2 = lang.fail
 
   const bgColor = ratedSuccess ? props.itemData.rateResult?.color : 'gray'
 

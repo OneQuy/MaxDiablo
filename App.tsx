@@ -45,13 +45,12 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
 import { GetItemState } from './scr/GridItem';
-import { GetLang } from './scr/Language';
+import { GetLang, LangContext } from './scr/Language';
 import { useForceUpdate } from './scr/common/useForceUpdate';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
   'ca-app-pub-9208244284687724/4249911866'
-// TestIds.INTERSTITIAL
 
 const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
   requestNonPersonalizedAdsOnly: true,
@@ -61,7 +60,6 @@ const interstitial = InterstitialAd.createForAdRequest(adID_Interstitial, {
 const adID_Banner = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/5493652375' :
   'ca-app-pub-9208244284687724/4776043942'
-// TestIds.BANNER
 
 const today = new Date();
 const todayString = 'd' + today.getDate() + '_m' + (today.getMonth() + 1) + '_' + today.getFullYear()
@@ -1210,199 +1208,201 @@ function App(): JSX.Element {
     (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build)
 
   return (
-    <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
-      <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
-      {
-        Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads ? undefined :
-          <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
-      }
-      {/* app name */}
-      <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
-        <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>Đánh giá App</Text>
-      </View>
-      {/* the rest */}
-      <ScrollView
-        scrollEnabled={!isTouchingImg}
-        ref={scrollViewRef}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        style={{ marginHorizontal: Outline.Margin }}>
-        {/* select photo btns */}
-        <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
-        <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
-          <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
-          </TouchableOpacity>
-        </View>
-        {/* user upload image & info */}
-        <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
-          {/* image */}
-          <View
-            ref={imgViewMeasure.current.theRef}
-            onLayout={imgOnLayout}
-            style={{ flex: 0.8 }}>
-            {
-              userImgUri.current === '' ? undefined :
-                <Animated.Image
-                  style={[
-                    { width: '100%', height: windowSize.height * 0.4, },
-                    imgMove.getLayout(),
-                    {
-                      transform: [{ scale: imgScale }]
-                    }]}
-                  resizeMode='contain'
-                  source={{ uri: userImgUri.current }} />
-            }
-            {
-              userImgUri.current === '' ? undefined :
-                <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {currentFileID.current} ({version})</Text>
-            }
-          </View>
-          {/* loading & info */}
-          {
-            // loading
-            !currentSlot.current ?
-              <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
-                {
-                  userImgUri.current === '' || ocrResultTextOnly.current ? undefined :
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
-                      <ActivityIndicator color={'tomato'} />
-                      <Text style={{ color: 'white' }}>{status.current}</Text>
-                    </View>
-                }
-              </View> :
-              // user stats info
-              <View style={{ opacity: ((Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) || isTouchingImg) ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
-                {/* slot name  */}
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
-                    {currentSlot.current.slotName}
-                  </Text>
-                  <View style={{ flex: 1 }} />
-                </View>
-                {/* item power */}
-                <Text style={{ marginTop: Outline.Gap / 2, color: 'white' }}>
-                  Item Power: {currentSlot.current.itemPower}
-                </Text>
-                {/* stats */}
-                <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
-                  {
-                    currentSlot.current.stats.map((stat, index) => {
-                      const color = getRateStatColor(stat.name, rateResult.current.statsForRating)
-                      const scoreX10 = getScoreOfStat(stat.name, true, rateResult.current.statsForRating)
-
-                      return <View key={index}>
-                        <Text style={{ color, fontWeight: FontWeight.B500 }}>{'{' + (index + 1) + '} ' + stat.name}</Text>
-                        <Text style={{ color }}>
-                          {stat.value}{stat.isPercent ? '%' : ''}
-                          <Text style={{ color }}>
-                            {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
-                          </Text>
-                          <Text style={{ color: 'black', backgroundColor: color }}>
-                            {scoreX10 >= 0 ? `${scoreX10}/10` : ''}
-                          </Text>
-                        </Text>
-                      </View>
-                    })
-                  }
-                </View>
-              </View>
-          }
-        </View>
-        {/* rating result box */}
+    <LangContext.Provider value={lang.current}>
+      <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
+        <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
         {
-          <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
-            <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateResult.current.text === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateResult.current.color, padding: 10, borderRadius: 10 }} >
-              <Text style={{ color: rateResult.current.text === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.text}</Text>
-            </View>
-            <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.score >= 0 ? RoundNumber(rateResult.current.score * 10, 1) : 0}/10</Text>
-          </View>
+          Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads ? undefined :
+            <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
         }
-        {/* builds suit */}
-        {
-          notShowSuitBuilds ? undefined :
-            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
-              <Text style={{ color: 'white', fontSize: FontSize.Normal }}>Danh sách build thích hợp ({suitBuilds.current?.length} build):</Text>
+        {/* app name */}
+        <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
+          <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>Đánh giá App</Text>
+        </View>
+        {/* the rest */}
+        <ScrollView
+          scrollEnabled={!isTouchingImg}
+          ref={scrollViewRef}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          style={{ marginHorizontal: Outline.Margin }}>
+          {/* select photo btns */}
+          <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
+          <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
+            <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
+            </TouchableOpacity>
+          </View>
+          {/* user upload image & info */}
+          <View style={{ marginTop: Outline.Gap, flexDirection: 'row' }}>
+            {/* image */}
+            <View
+              ref={imgViewMeasure.current.theRef}
+              onLayout={imgOnLayout}
+              style={{ flex: 0.8 }}>
               {
-                suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
-                  return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
-                    {/* build name  */}
-                    <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{(index + 1) + '. ' + build.name}</Text>
-                    {/* tier & slot name */}
-                    <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
-                      <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
-                      <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                userImgUri.current === '' ? undefined :
+                  <Animated.Image
+                    style={[
+                      { width: '100%', height: windowSize.height * 0.4, },
+                      imgMove.getLayout(),
                       {
-                        statsMatchedCount < 3 ? undefined :
-                          <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
-                            <Image source={starIcon} style={{ width: 14, height: 14 }} />
-                            <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? 'Quá ngon' : 'Ngon'}</Text>
-                          </View>
-                      }
-                      <View style={{ flex: 1 }} />
-                    </View>
-                    <View style={{ gap: Outline.Gap }}>
-                      {
-                        slot.stats.map((stat, index) => {
-                          return <Text
-                            key={stat.name + index}
-                            // @ts-ignore
-                            style={{ color: getStatNameColorCompareWithBuild(stat.name, currentSlot.current) }}>
-                            {stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
-                          </Text>
-                        })
-                      }
-                    </View>
-                  </View>
-                })
+                        transform: [{ scale: imgScale }]
+                      }]}
+                    resizeMode='contain'
+                    source={{ uri: userImgUri.current }} />
+              }
+              {
+                userImgUri.current === '' ? undefined :
+                  <Text style={{ opacity: isTouchingImg ? 0 : 1, fontSize: 15, color: 'gray' }}>ID: {currentFileID.current} ({version})</Text>
               }
             </View>
-        }
-        {/* debug text, version, remain ocr count */}
-        <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
-      </ScrollView>
-      {/* scrollToTop btn */}
-      <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-        <TouchableOpacityAnimated
-          onPress={scrollToTop}
-          style={{ top: scrollTopBtnAnimatedY, justifyContent: 'center', alignItems: 'center', width: 35, height: 35, marginRight: 15, marginBottom: 15, borderRadius: 17, backgroundColor: 'white' }}>
-          <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
-        </TouchableOpacityAnimated>
-      </View>
-      {/* show list img button */}
-      {
-        multiImageItems.current.length === 0 ? undefined :
-          <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
-            <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
-              <Text style={{ color: 'black',  }}>{lang.current.show_multi_btn}</Text>
+            {/* loading & info */}
+            {
+              // loading
+              !currentSlot.current ?
+                <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
+                  {
+                    userImgUri.current === '' || ocrResultTextOnly.current ? undefined :
+                      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
+                        <ActivityIndicator color={'tomato'} />
+                        <Text style={{ color: 'white' }}>{status.current}</Text>
+                      </View>
+                  }
+                </View> :
+                // user stats info
+                <View style={{ opacity: ((Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) || isTouchingImg) ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
+                  {/* slot name  */}
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
+                      {currentSlot.current.slotName}
+                    </Text>
+                    <View style={{ flex: 1 }} />
+                  </View>
+                  {/* item power */}
+                  <Text style={{ marginTop: Outline.Gap / 2, color: 'white' }}>
+                    Item Power: {currentSlot.current.itemPower}
+                  </Text>
+                  {/* stats */}
+                  <View style={{ gap: Outline.Gap, marginTop: Outline.Gap }}>
+                    {
+                      currentSlot.current.stats.map((stat, index) => {
+                        const color = getRateStatColor(stat.name, rateResult.current.statsForRating)
+                        const scoreX10 = getScoreOfStat(stat.name, true, rateResult.current.statsForRating)
+
+                        return <View key={index}>
+                          <Text style={{ color, fontWeight: FontWeight.B500 }}>{'{' + (index + 1) + '} ' + stat.name}</Text>
+                          <Text style={{ color }}>
+                            {stat.value}{stat.isPercent ? '%' : ''}
+                            <Text style={{ color }}>
+                              {'  '}[{stat.min}-{stat.max}]{stat.isPercent ? '%  ' : '  '}
+                            </Text>
+                            <Text style={{ color: 'black', backgroundColor: color }}>
+                              {scoreX10 >= 0 ? `${scoreX10}/10` : ''}
+                            </Text>
+                          </Text>
+                        </View>
+                      })
+                    }
+                  </View>
+                </View>
+            }
+          </View>
+          {/* rating result box */}
+          {
+            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateResult.current.text === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateResult.current.color, padding: 10, borderRadius: 10 }} >
+                <Text style={{ color: rateResult.current.text === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.text}</Text>
+              </View>
+              <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.score >= 0 ? RoundNumber(rateResult.current.score * 10, 1) : 0}/10</Text>
             </View>
-          </View>
-      }
-      {/* multi page */}
-      {
-        !isShowMulti.current ? undefined :
-          <MultiImagePage
-            toggleShow={toggleShowMulti}
-            onPressItem={onPressItemInMulti}
-            items={multiImageItems.current} />
-      }
-      {/* cheat */}
-      {
-        !showCheat ? undefined :
-          <View style={{ gap: Outline.Gap, backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>
-            <Text style={{ color: 'black' }}>{getUniqueId()}</Text>
-            <Button title='copy storage log' onPress={OnPressed_CopyStorageLog} />
-            <Button title='clear storage log' onPress={OnPressed_ClearStorageLog} />
-            <Button title='copy device id' onPress={() => Clipboard.setString(getUniqueId())} />
-            <Button title='close' onPress={OnPressed_CloseCheat} />
-          </View>
-      }
-    </SafeAreaView>
+          }
+          {/* builds suit */}
+          {
+            notShowSuitBuilds ? undefined :
+              <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
+                <Text style={{ color: 'white', fontSize: FontSize.Normal }}>Danh sách build thích hợp ({suitBuilds.current?.length} build):</Text>
+                {
+                  suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
+                    return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
+                      {/* build name  */}
+                      <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{(index + 1) + '. ' + build.name}</Text>
+                      {/* tier & slot name */}
+                      <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
+                        <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
+                        <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                        {
+                          statsMatchedCount < 3 ? undefined :
+                            <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
+                              <Image source={starIcon} style={{ width: 14, height: 14 }} />
+                              <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? 'Quá ngon' : 'Ngon'}</Text>
+                            </View>
+                        }
+                        <View style={{ flex: 1 }} />
+                      </View>
+                      <View style={{ gap: Outline.Gap }}>
+                        {
+                          slot.stats.map((stat, index) => {
+                            return <Text
+                              key={stat.name + index}
+                              // @ts-ignore
+                              style={{ color: getStatNameColorCompareWithBuild(stat.name, currentSlot.current) }}>
+                              {stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
+                            </Text>
+                          })
+                        }
+                      </View>
+                    </View>
+                  })
+                }
+              </View>
+          }
+          {/* debug text, version, remain ocr count */}
+          <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
+        </ScrollView>
+        {/* scrollToTop btn */}
+        <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+          <TouchableOpacityAnimated
+            onPress={scrollToTop}
+            style={{ top: scrollTopBtnAnimatedY, justifyContent: 'center', alignItems: 'center', width: 35, height: 35, marginRight: 15, marginBottom: 15, borderRadius: 17, backgroundColor: 'white' }}>
+            <Image style={{ width: 20, height: 20 }} source={upArrowIcon} />
+          </TouchableOpacityAnimated>
+        </View>
+        {/* show list img button */}
+        {
+          multiImageItems.current.length === 0 ? undefined :
+            <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
+              <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
+                <Text style={{ color: 'black', }}>{lang.current.show_multi_btn}</Text>
+              </View>
+            </View>
+        }
+        {/* multi page */}
+        {
+          !isShowMulti.current ? undefined :
+            <MultiImagePage
+              toggleShow={toggleShowMulti}
+              onPressItem={onPressItemInMulti}
+              items={multiImageItems.current} />
+        }
+        {/* cheat */}
+        {
+          !showCheat ? undefined :
+            <View style={{ gap: Outline.Gap, backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>
+              <Text style={{ color: 'black' }}>{getUniqueId()}</Text>
+              <Button title='copy storage log' onPress={OnPressed_CopyStorageLog} />
+              <Button title='clear storage log' onPress={OnPressed_ClearStorageLog} />
+              <Button title='copy device id' onPress={() => Clipboard.setString(getUniqueId())} />
+              <Button title='close' onPress={OnPressed_CloseCheat} />
+            </View>
+        }
+      </SafeAreaView>
+    </LangContext.Provider>
   )
 }
 

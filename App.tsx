@@ -562,6 +562,7 @@ function App(): JSX.Element {
     suitBuilds.current = undefined
     rateResult.current = DefaultRateResult
     userImgUri.current = ''
+    multiImageItems.current = []
 
     sessionSelectedImgCount.current++
 
@@ -1376,9 +1377,9 @@ function App(): JSX.Element {
       {/* show list img button */}
       {
         multiImageItems.current.length === 0 ? undefined :
-          <View style={{ flexDirection: 'row' }}>
-            <View onTouchEnd={toggleShowMulti} style={{ flex: 1, backgroundColor: 'gold', alignItems: 'center' }}>
-              <Text style={{ color: 'black', marginVertical: Outline.Margin }}>{lang.current.show_multi_btn}</Text>
+          <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
+            <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
+              <Text style={{ color: 'black',  }}>{lang.current.show_multi_btn}</Text>
             </View>
           </View>
       }

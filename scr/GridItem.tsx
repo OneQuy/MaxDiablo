@@ -60,7 +60,7 @@ const GridItem = (props: Props) => {
           }
         </View>
         {/* line 2 */}
-        <View style={{ paddingBottom: Outline.Margin / 2, width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>
+        <View style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: Outline.Margin / 2, width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>
           <Text style={{color: 'black', fontWeight: FontWeight.B500 }}>{displayLine_2}</Text>
         </View>
       </View>

@@ -48,8 +48,8 @@ const GridItem = (props: Props) => {
   }, [])
 
   return (
-    <TouchableOpacity onPress={onPress} style={{ width: itemWidth, height: itemHeight, backgroundColor: 'black', marginHorizontal: Outline.Gap / 2 }}>
-      <ImageBackground style={{ flex: 1 }} source={{ uri: props.itemData.uri }} />
+    <TouchableOpacity onPress={onPress} style={{ borderRadius: 10, width: itemWidth, height: itemHeight, backgroundColor: 'whitesmoke', marginHorizontal: Outline.Gap / 2 }}>
+      <ImageBackground style={{ flex: 1 }} resizeMode='contain' source={{ uri: props.itemData.uri }} />
       <View style={{ width: '100%', height: '100%', position: 'absolute', alignItems: 'center', justifyContent: 'flex-end' }}>
         {/* line 1 */}
         <View style={{ paddingTop: Outline.Margin / 2, width: '100%', backgroundColor: bgColor, opacity: 0.7, alignItems: 'center' }}>

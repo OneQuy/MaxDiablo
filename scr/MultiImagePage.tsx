@@ -23,7 +23,7 @@ const MultiImagePage = (props: MultiImagePageProps) => {
                     data={props.items}
                     keyExtractor={(item, _) => item.uri}
                     numColumns={numColumnGrid}
-                    contentContainerStyle={{ marginTop: Outline.Margin, gap: Outline.Gap, }}
+                    contentContainerStyle={{ marginLeft: Outline.Gap / 2, marginTop: Outline.Margin, gap: Outline.Gap, }}
                     renderItem={({ item, index }) => <GridItem
                         index={index}
                         onPress={props.onPressItem}

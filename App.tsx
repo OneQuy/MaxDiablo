@@ -134,6 +134,7 @@ function App(): JSX.Element {
   const sessionExtractedCount = useRef(0)
   const sessionStartTime = useRef(0)
   const sessionFileIDs = useRef('')
+  const sessionRatedResult = useRef('')
   const sessionRequestAds = useRef(0)
   const sessionClosedAds = useRef(0)
 
@@ -539,6 +540,8 @@ function App(): JSX.Element {
       Track('call_api', { fileID: id })
 
       const response = await axios.request(GetAPIOption(getURLRes.url))
+   
+      sessionExtractedCount.current++
 
       updateTextLimitRate(response)
 
@@ -565,7 +568,6 @@ function App(): JSX.Element {
       // extract 
 
       let slot = ExtractSlotCard(resultText, false)
-      sessionExtractedCount.current++
       const isSuccess = typeof slot === 'object'
 
       if (!isDevDevice && remoteConfig.current.save_ocr_result) {
@@ -591,6 +593,8 @@ function App(): JSX.Element {
         item.slot = slot
         item.suitBuilds = suitBuilds
         item.rateResult = rateRes
+
+        sessionRatedResult.current += ('[' + rateRes.text + '-' + RoundNumber(rateRes.score, 1) + ']')
 
         updateMultiStateAsync()
         return
@@ -1019,6 +1023,8 @@ function App(): JSX.Element {
       suitBuilds.current = findSuitBuilds(currentSlot.current)
       rateResult.current = rate(currentSlot.current, suitBuilds.current)
 
+      sessionRatedResult.current += ('[' + rateResult.current.text + '-' + RoundNumber(rateResult.current.score, 1) + ']')
+
       rateSuccessCountRef.current++
       setRateSuccessCount(rateSuccessCountRef.current)
 
@@ -1195,6 +1201,7 @@ function App(): JSX.Element {
             sessionClosedAds.current = 0
             sessionRequestAds.current = 0
             sessionFileIDs.current = ''
+            sessionRatedResult.current = ''
             sessionStartTime.current = Date.now()
           }
           else if (e === 'background') { // end session
@@ -1220,6 +1227,7 @@ function App(): JSX.Element {
               start_time: new Date(sessionStartTime.current).toString(),
               calledShowAds: sessionRequestAds.current,
               closedAds: sessionClosedAds.current,
+              rated: sessionRatedResult.current,
             })
           }
         })

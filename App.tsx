@@ -1183,7 +1183,7 @@ function App(): JSX.Element {
 
       // app state
 
-      if (true) {
+      if (!isDevDevice) {
         sessionStartTime.current = Date.now()
 
         appStateRemove = AppState.addEventListener('change', (e) => {

@@ -574,15 +574,13 @@ function App(): JSX.Element {
       const isSuccess = typeof slot === 'object'
 
       if (!isDevDevice && remoteConfig.current.save_ocr_result) {
-        FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + id, {
-          result: resultText,
-          version
-        })
+        const setpath = (isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + id
+        FirebaseDatabase_SetValueAsync(setpath, { result: resultText, version })
       }
 
       if (isSuccess) {
         FirebaseIncrease('extracted_count/' + todayString + '/success')
-        
+
         // delete file
 
         if (remoteConfig.current.auto_delete_file_if_extract_success === true)
@@ -1098,8 +1096,6 @@ function App(): JSX.Element {
       rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
     else
       rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
-
-    console.log('rate imiiii', rateLimitText.current);
   }, [])
 
   const getFirebaseConfigAsync = useCallback(async () => {
@@ -1668,6 +1664,8 @@ const TrackOnOpenApp = async () => {
 const FirebaseIncrease = (fbpath: string, incNum: number = 1) => {
   if (isDevDevice)
     return
+
+  // console.log(fbpath);
 
   FirebaseDatabase_IncreaseNumberAsync(fbpath, 0, incNum)
 }

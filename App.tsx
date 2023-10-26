@@ -508,7 +508,7 @@ function App(): JSX.Element {
 
       const id = generateImgID()
       item.fileID = id
-      
+
       const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + id
       const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
 
@@ -1430,7 +1430,7 @@ function App(): JSX.Element {
         {/* show list img button */}
         {
           multiImageItems.current.length === 0 ? undefined :
-            <View style={{ gap: Outline.Gap, marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
+            <View style={{ gap: Outline.Gap, marginHorizontal: Outline.Margin, marginBottom: Outline.Margin, flexDirection: 'row' }}>
               <View onTouchEnd={() => onPressNextItemInMulti(false)} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: canPressPreviousItemInMulti.current ? 'white' : 'gray', alignItems: 'center', justifyContent: 'center' }}>
                 <Image source={leftIcon} style={{ width: 20, height: 20 }} />
               </View>

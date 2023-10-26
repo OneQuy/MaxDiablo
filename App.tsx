@@ -152,7 +152,6 @@ function App(): JSX.Element {
     auto_delete_file_if_extract_success: true,
     show_rate_app: false,
     save_ocr_result: false,
-    ios_show_ads: false,
     ios_disable_suit_build: true,
     dev_devices: '',
   })
@@ -447,9 +446,6 @@ function App(): JSX.Element {
   }, [])
 
   const checkAndShowAdsInterstitial = useCallback(() => {
-    if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
-      return
-
     // console.log('cur rate success count', rateSuccessCountRef.current, '/ ' + rateSuccessCountPerInterstitialConfig.current);
 
     if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
@@ -459,9 +455,6 @@ function App(): JSX.Element {
   }, [])
 
   const showAdsInterstitial = useCallback(() => {
-    if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
-      return
-
     reallyNeedToShowInterstitial.current = true
     Track('fire_show_ads', loadedInterstitial.current)
 
@@ -476,9 +469,6 @@ function App(): JSX.Element {
   }, [])
 
   const loadAdsInterstitial = useCallback(() => {
-    if (Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads)
-      return
-
     // console.log('loading interstitial')
     loadedInterstitial.current = false
     interstitial.load()
@@ -500,17 +490,17 @@ function App(): JSX.Element {
 
   const startHandleMulti = useCallback(() => {
     async function StartFlowAsync(item: ImgItemData) {
-      let path = item.uri
-
       // compress
 
-      path = await CompressImageAsync(path)
+      item.uri = await CompressImageAsync(item.uri)
+
+      // upload
 
       const id = generateImgID()
       item.fileID = id
 
       const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + id
-      const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
+      const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, item.uri)
 
       if (uplodaErr) { // upload fail
         item.errorAlert = [
@@ -613,6 +603,7 @@ function App(): JSX.Element {
     }
 
     multiSelectedItem.current = undefined
+    showAdsInterstitial()
 
     for (let i = 0; i < multiImageItems.current.length; i++)
       StartFlowAsync(multiImageItems.current[i])
@@ -1284,10 +1275,7 @@ function App(): JSX.Element {
     <LangContext.Provider value={lang.current}>
       <SafeAreaView {...imageResponse.current} style={{ flex: 1, gap: Outline.Gap, backgroundColor: 'black' }}>
         <StatusBar barStyle={'light-content'} backgroundColor={'black'} />
-        {
-          Platform.OS === 'ios' && !remoteConfig.current.ios_show_ads ? undefined :
-            <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
-        }
+        <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
         {/* app name */}
         <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
           <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>

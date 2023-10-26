@@ -142,6 +142,8 @@ function App(): JSX.Element {
   const multiImageItems = useRef<ImgItemData[]>([])
   const isShowMulti = useRef(false)
   const multiSelectedItem = useRef<ImgItemData | undefined>(undefined)
+  const canPressNextItemInMulti = useRef(false)
+  const canPressPreviousItemInMulti = useRef(false)
 
   // remote config
 
@@ -368,6 +370,21 @@ function App(): JSX.Element {
   }, [])
 
   const onPressNextItemInMulti = useCallback((isNext: boolean) => {
+    if (!multiSelectedItem.current)
+      return
+
+    if (isNext && !canPressNextItemInMulti.current)
+      return
+
+    if (!isNext && !canPressPreviousItemInMulti.current)
+      return
+
+    const idx = multiImageItems.current.indexOf(multiSelectedItem.current)
+
+    if (idx < 0)
+      return
+
+    multiSelectedItem.current = multiImageItems.current[idx + (isNext ? 1 : -1)]
 
     updateSelectedItemStateToMainScreen()
   }, [])
@@ -406,6 +423,15 @@ function App(): JSX.Element {
       if (item.errorAlert)
         cacheOrShowAlert(item.errorAlert[0], item.errorAlert[1])
     }
+
+    // update state navigate btns
+
+    const idx = multiImageItems.current.indexOf(multiSelectedItem.current)
+
+    canPressPreviousItemInMulti.current = idx > 0
+    canPressNextItemInMulti.current = idx < multiImageItems.current.length - 1
+
+    // update
 
     forceUpdate()
   }, [])
@@ -454,8 +480,10 @@ function App(): JSX.Element {
   }, [])
 
   const updateMultiStateAsync = useCallback(async () => {
-    if (!isShowMulti.current)
+    if (!isShowMulti.current) {
       updateSelectedItemStateToMainScreen()
+      return
+    }
 
     forceUpdate()
   }, [])
@@ -1381,18 +1409,18 @@ function App(): JSX.Element {
         </View>
         {/* show list img button */}
         {
-          // multiImageItems.current.length === 0 ? undefined :
-          <View style={{ gap: Outline.Gap, marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
-            <View onTouchEnd={undefined} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-              <Image source={leftIcon} style={{ width: 20, height: 20 }} />
+          multiImageItems.current.length === 0 ? undefined :
+            <View style={{ gap: Outline.Gap, marginHorizontal: Outline.Margin, flexDirection: 'row' }}>
+              <View onTouchEnd={() => onPressNextItemInMulti(false)} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: canPressPreviousItemInMulti.current ? 'white' : 'gray', alignItems: 'center', justifyContent: 'center' }}>
+                <Image source={leftIcon} style={{ width: 20, height: 20 }} />
+              </View>
+              <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
+                <Text style={{ color: 'black', fontSize: FontSize.Normal, }}>{lang.current.show_multi_btn}</Text>
+              </View>
+              <View onTouchEnd={() => onPressNextItemInMulti(true)} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: canPressNextItemInMulti.current ? 'white' : 'gray', alignItems: 'center', justifyContent: 'center' }}>
+                <Image source={leftIcon} style={[{ width: 20, height: 20 }, { transform: [{ scale: -1 }] }]} />
+              </View>
             </View>
-            <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
-              <Text style={{ color: 'black', fontSize: FontSize.Normal, }}>{lang.current.show_multi_btn}</Text>
-            </View>
-            <View onTouchEnd={undefined} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-              <Image source={leftIcon} style={[{ width: 20, height: 20 }, { transform: [{ scale: -1 }] }]} />
-            </View>
-          </View>
         }
         {/* multi page */}
         {

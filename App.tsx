@@ -1193,6 +1193,7 @@ function App(): JSX.Element {
             // const fbpath = 'sessions_v2/' + todayString + '/' + Date.now() + '/' + getUniqueId()
             const fbpath =
               'sessions_v3/' +
+              (sessionSelectedImgCount.current <= 0 ? 'Zero/' : 'NoZero/') +
               todayString + '/' +
               (new Date()).getHours() + 'h/' +
               getUniqueId() + '/' +

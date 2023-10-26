@@ -4,7 +4,15 @@ const viet = {
     uploading: 'Đang upload...',
     wait_api: 'Đang phân tích...',
     show_multi_btn: 'Show danh sách ảnh',
+    pick_photo: 'Chọn hình',
+    take_cam: 'Chụp hình',
+    pick_photo_guide: 'Chọn hình để rate:',
+    rate_app: 'Đánh giá app trên Store',
     fail: 'Lỗi',
+    list_suit_builds: 'Danh sách build thích hợp',
+    ngon: 'Ngon',
+    qua_ngon: 'Quá Ngon',
+
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
     good: 'TỐT',
@@ -16,7 +24,15 @@ const eng: Lang = {
     uploading: 'Uploading...',
     wait_api: 'Rating...',
     show_multi_btn: 'Show list images',
+    pick_photo: 'Pick photo(s)',
+    take_cam: 'Camera',
+    pick_photo_guide: 'Take a photo to rate:',
+    rate_app: 'Rate app on Store',
     fail: 'Failed',
+    list_suit_builds: 'Best fit builds',
+    ngon: 'Good',
+    qua_ngon: 'Very Good',
+
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',
     good: 'GOOD',
@@ -26,6 +42,6 @@ const eng: Lang = {
 
 export type Lang = typeof viet
 
-export const GetLang = (isViet: boolean) : Lang => isViet ? viet : eng
+export const GetLang = (isViet: boolean): Lang => isViet ? viet : eng
 
 export const LangContext = createContext(GetLang(false))

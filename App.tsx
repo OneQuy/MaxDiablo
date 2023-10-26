@@ -1261,7 +1261,7 @@ function App(): JSX.Element {
         {/* app name */}
         <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
           <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
-          <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>Đánh giá App</Text>
+          <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>{lang.current.rate_app}</Text>
         </View>
         {/* the rest */}
         <ScrollView
@@ -1272,13 +1272,13 @@ function App(): JSX.Element {
           showsVerticalScrollIndicator={false}
           style={{ marginHorizontal: Outline.Margin }}>
           {/* select photo btns */}
-          <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>Chọn hình để rate:</Text>
+          <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>{lang.current.pick_photo_guide}</Text>
           <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
             <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ color: 'black', fontSize: FontSize.Normal }}> Chọn từ thư viện</Text>
+              <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{lang.current.pick_photo}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ color: 'black', fontSize: FontSize.Normal }}>Chụp hình</Text>
+              <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{lang.current.take_cam}</Text>
             </TouchableOpacity>
           </View>
           {/* user upload image & info */}
@@ -1369,7 +1369,7 @@ function App(): JSX.Element {
           {
             notShowSuitBuilds ? undefined :
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
-                <Text style={{ color: 'white', fontSize: FontSize.Normal }}>Danh sách build thích hợp ({suitBuilds.current?.length} build):</Text>
+                <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.list_suit_builds} ({suitBuilds.current?.length} build):</Text>
                 {
                   suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
                     return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
@@ -1383,7 +1383,7 @@ function App(): JSX.Element {
                           statsMatchedCount < 3 ? undefined :
                             <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
                               <Image source={starIcon} style={{ width: 14, height: 14 }} />
-                              <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? 'Quá ngon' : 'Ngon'}</Text>
+                              <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? lang.current.qua_ngon : lang.current.ngon}</Text>
                             </View>
                         }
                         <View style={{ flex: 1 }} />

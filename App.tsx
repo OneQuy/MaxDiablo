@@ -261,6 +261,8 @@ function App(): JSX.Element {
       selectionLimit: 9,
     })
 
+    isOpeningCameraOrPhotoPicker.current = false
+
     if (response.didCancel)
       return
     else if (!response.assets || response.assets.length <= 0) {
@@ -314,6 +316,8 @@ function App(): JSX.Element {
       quality: Platform.OS === 'android' ? 0.5 : 0.1,
     } as CameraOptions)
 
+    isOpeningCameraOrPhotoPicker.current = false
+    
     if (!result || !result.assets)
       return
 
@@ -498,6 +502,7 @@ function App(): JSX.Element {
 
       const id = generateImgID()
       item.fileID = id
+      sessionFileIDs.current += ('[' + id + ']')
 
       const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + id
       const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, item.uri)
@@ -603,8 +608,9 @@ function App(): JSX.Element {
     }
 
     multiSelectedItem.current = undefined
+    sessionSelectedImgCount.current += multiImageItems.current.length
     FirebaseIncrease('multi_used_count/' + todayString)
-  
+
     FirebaseIncrease(
       'multi_selected_img_count/' + 
       todayString + '/' + 
@@ -1171,11 +1177,11 @@ function App(): JSX.Element {
 
       // app state
 
-      if (!isDevDevice) {
+      if (true) {
         sessionStartTime.current = Date.now()
 
         appStateRemove = AppState.addEventListener('change', (e) => {
-          // console.log(ToCanPrint(e));
+          console.log(ToCanPrint(e));
 
           if (e === 'active') { // start session
 

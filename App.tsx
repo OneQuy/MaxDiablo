@@ -142,6 +142,7 @@ function App(): JSX.Element {
   const multiImageItems = useRef<ImgItemData[]>([])
   const isShowMulti = useRef(false)
   const multiSelectedItem = useRef<ImgItemData | undefined>(undefined)
+  const lastUpdateStateOfItem = useRef<[ImgItemData | undefined, string]>([undefined, ''])
   const canPressNextItemInMulti = useRef(false)
   const canPressPreviousItemInMulti = useRef(false)
 
@@ -400,6 +401,15 @@ function App(): JSX.Element {
       return
 
     const item = multiSelectedItem.current
+    const state = GetItemState(item)
+
+    if (item === lastUpdateStateOfItem.current[0] &&
+      state === lastUpdateStateOfItem.current[1])
+      return
+    else {
+      lastUpdateStateOfItem.current[0] = item
+      lastUpdateStateOfItem.current[1] = state
+    }
 
     userImgUri.current = item.uri
     currentSlot.current = item.slot
@@ -407,7 +417,6 @@ function App(): JSX.Element {
     suitBuilds.current = item.suitBuilds
     rateResult.current = item.rateResult ? item.rateResult : DefaultRateResult
 
-    const state = GetItemState(item)
 
     if (state === 'success') {
       status.current = ''

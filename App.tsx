@@ -28,7 +28,7 @@ import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier } from './scr/Types';
+import { Build, Event, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
@@ -44,7 +44,7 @@ import axios, { AxiosResponse } from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
-import { GetItemState } from './scr/GridItem';
+import { GetItemState, numColumnGrid } from './scr/GridItem';
 import { GetLang, LangContext } from './scr/Language';
 import { useForceUpdate } from './scr/common/useForceUpdate';
 
@@ -93,6 +93,24 @@ const storage = new MMKVLoader().initialize();
 const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
 
 const DefaultRateResult: RateResult = { score: -1, text: '...', color: 'black', statsForRating: [] }
+
+const events: Event[] = [
+  {
+    name: 'World Boss',
+    originTime: 1698327000000, // 20h30 26/oct/2023
+    intervalInMinute: 210 // 3h30
+  },
+  {
+    name: 'Helltide',
+    originTime: 1698336000000, // 10/26/2023 11:00 PM
+    intervalInMinute: 135 // 2h15
+  },
+  {
+    name: 'Legion',
+    originTime: 1698334200000, // 10/26/2023 10:30 PM
+    intervalInMinute: 25 // 25p
+  }
+]
 
 export var isDevDevice = false
 
@@ -155,6 +173,7 @@ function App(): JSX.Element {
     save_ocr_result: false,
     ios_disable_suit_build: true,
     dev_devices: '',
+    events: [] as Event[]
   })
 
   // moving pic
@@ -318,7 +337,7 @@ function App(): JSX.Element {
     } as CameraOptions)
 
     isOpeningCameraOrPhotoPicker.current = false
-    
+
     if (!result || !result.assets)
       return
 
@@ -540,7 +559,7 @@ function App(): JSX.Element {
       Track('call_api', { fileID: id })
 
       const response = await axios.request(GetAPIOption(getURLRes.url))
-   
+
       sessionExtractedCount.current++
 
       updateTextLimitRate(response)
@@ -616,8 +635,8 @@ function App(): JSX.Element {
     FirebaseIncrease('multi_used_count/' + todayString)
 
     FirebaseIncrease(
-      'multi_selected_img_count/' + 
-      todayString + '/' + 
+      'multi_selected_img_count/' +
+      todayString + '/' +
       (Date.now()), multiImageItems.current.length)
 
     // show ads
@@ -625,7 +644,7 @@ function App(): JSX.Element {
     storage.getInt('used_multi_count', (_: any, count: any) => {
       if (typeof count !== 'number')
         count = 0
-      
+
       if (count >= 2)
         showAdsInterstitial('multi_pic')
 
@@ -1120,6 +1139,36 @@ function App(): JSX.Element {
       rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
   }, [])
 
+  const getRemainTimeTextOfEvent = useCallback((event: Event) => {
+    const origin = event.originTime
+    const intervalMS = event.intervalInMinute * 60 * 1000
+
+    let target = origin
+
+    while (true) {
+      if (target > Date.now())
+        break
+
+      target += intervalMS
+    }
+
+    // console.log(target);
+
+    const remainMS = target - Date.now()
+
+    let sec = remainMS / 1000
+
+    const hour = Math.floor(sec / 3600)
+
+    sec = sec - hour * 3600
+
+    const min = Math.floor(sec / 60)
+
+    sec = Math.floor(sec - min * 60)
+
+    return hour + ' hour, ' + min + ' minute, ' + sec + ' second'
+  }, [])
+
   const getFirebaseConfigAsync = useCallback(async () => {
     const res = await FirebaseDatabase_GetValueAsync('app_config')
 
@@ -1164,6 +1213,10 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
+    setInterval(() => {
+     forceUpdate()
+    }, 1000)
+
     let appStateRemove: NativeEventSubscription
 
     const initAsync = async () => {
@@ -1451,6 +1504,21 @@ function App(): JSX.Element {
                           })
                         }
                       </View>
+                    </View>
+                  })
+                }
+              </View>
+          }
+          {/* events */}
+          {
+              <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
+                <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.list_suit_builds}</Text>
+                {
+                  events.map((event: Event, index: number) => {
+                    return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
+                      {/* build name  */}
+                      <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{event.name}</Text>
+                      <Text style={{ color: 'white', fontSize: FontSize.Big }}>{getRemainTimeTextOfEvent(event)}</Text>
                     </View>
                   })
                 }

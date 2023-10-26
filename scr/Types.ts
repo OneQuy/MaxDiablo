@@ -1,6 +1,6 @@
 export enum SlotName {
     None = 'None',
-    
+
     Helm = 'Helm',
     ChestArmor = 'Chest Armor',
     Gloves = 'Gloves',
@@ -67,7 +67,7 @@ export enum ClassName {
     Necromancer = 'Necromancer',
     Rogue = 'Rogue',
     Sorcerer = 'Sorcerer',
-} 
+}
 
 export type Classs = {
     name: ClassName,
@@ -92,12 +92,18 @@ export type StatForRatingType = [Stat, Classs | undefined, Stat | undefined, num
 
 export type RateResult = {
     score: number,
-    text: string, 
+    text: string,
     color: string,
     statsForRating: StatForRatingType[]
 }
 
 export type SuitBuildType = [Tier, Build, SlotCard, number] // user stat, class, class data stat, rate score
+
+export type Event = {
+    name: string
+    originTime: number,
+    intervalInMinute: number
+}
 
 export type ImgItemData = {
     uri: string,
@@ -106,7 +112,7 @@ export type ImgItemData = {
     suitBuilds?: SuitBuildType[],
     rateResult?: RateResult,
     fileID: string,
-    
+
     /**
      * @undefined: not called api yet
      * @empty string: got api result but has no text

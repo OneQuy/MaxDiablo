@@ -338,7 +338,7 @@ function App(): JSX.Element {
     cheatPasteOCRResultCount.current = 0
 
     const txt = await Clipboard.getString()
-    await onGotOcrResultTextAsync(txt, true)
+    await onGotOcrResultTextAsync(txt, true, '')
   }, [])
 
   const OnPressed_CopyStorageLog = useCallback(async () => {
@@ -546,7 +546,7 @@ function App(): JSX.Element {
       const response = await axios.request(GetAPIOption(getURLRes.url))
 
       updateTextLimitRate(response)
-      
+
       const resultText = response.data?.text
 
       if (!resultText) {
@@ -570,9 +570,24 @@ function App(): JSX.Element {
       // extract 
 
       let slot = ExtractSlotCard(resultText, false)
+      sessionExtractedCount.current++
       const isSuccess = typeof slot === 'object'
 
+      if (!isDevDevice && remoteConfig.current.save_ocr_result) {
+        FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + id, {
+          result: resultText,
+          version
+        })
+      }
+
       if (isSuccess) {
+        FirebaseIncrease('extracted_count/' + todayString + '/success')
+        
+        // delete file
+
+        if (remoteConfig.current.auto_delete_file_if_extract_success === true)
+          FirebaseStorage_DeleteAsync(fbpath)
+
         // @ts-ignore
         slot = HandleWeirdStatNames(slot)
         slot = FilterStats(slot)
@@ -588,6 +603,9 @@ function App(): JSX.Element {
         return
       }
       else { // extract fail
+        FirebaseIncrease('extracted_count/' + todayString + '/fail')
+        Track('extract_failed')
+
         // @ts-ignore
         item.errorAlert = getAlertContentWhenExtractFail(slot)
 
@@ -677,7 +695,7 @@ function App(): JSX.Element {
       return
     }
 
-    await detectFromImgUrlAsync_ImageToText(getURLRes.url)
+    await detectFromImgUrlAsync_ImageToText(getURLRes.url, fbpath)
   }, [])
 
   const scrollToTop = useCallback(() => {
@@ -950,7 +968,7 @@ function App(): JSX.Element {
       return 'gray'
   }, [])
 
-  const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean) => {
+  const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean, fbPathToDeleteFile: string) => {
     sessionExtractedCount.current++
     ocrResultTextOnly.current = JSON.stringify(result)
     let extractRes = ExtractSlotCard(result, stringifyResult)
@@ -974,8 +992,12 @@ function App(): JSX.Element {
         console.log(JSON.stringify(extractRes, null, 1));
       }
 
+      // delete file
+
       if (remoteConfig.current.auto_delete_file_if_extract_success === true)
-        FirebaseStorage_DeleteAsync(currentFileID.current)
+        FirebaseStorage_DeleteAsync(fbPathToDeleteFile)
+
+      // rate
 
       extractRes = HandleWeirdStatNames(extractRes)
       currentSlot.current = FilterStats(extractRes)
@@ -1031,7 +1053,7 @@ function App(): JSX.Element {
       AlertWithCopy(title, content)
   }, [])
 
-  const detectFromImgUrlAsync_ImageToText = useCallback(async (imgUrl: string) => {
+  const detectFromImgUrlAsync_ImageToText = useCallback(async (imgUrl: string, fbPathToDelete: string) => {
     status.current = lang.current.wait_api
     forceUpdate()
 
@@ -1045,7 +1067,7 @@ function App(): JSX.Element {
       const response = await axios.request(GetAPIOption(imgUrl));
 
       // api limit text
-      
+
       updateTextLimitRate(response)
 
       // handle 
@@ -1055,7 +1077,7 @@ function App(): JSX.Element {
       if (!result)
         throw 'ImageToText API has no result.'
 
-      onGotOcrResultTextAsync(result, false)
+      onGotOcrResultTextAsync(result, false, fbPathToDelete)
     } catch (error) {
       cacheOrShowAlert(
         'Lỗi không thể phân tích hình',

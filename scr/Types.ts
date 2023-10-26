@@ -105,7 +105,8 @@ export type ImgItemData = {
     errorAlert?: [string, string] | undefined,
     suitBuilds?: SuitBuildType[],
     rateResult?: RateResult,
-
+    fileID: string,
+    
     /**
      * @undefined: not called api yet
      * @empty string: got api result but has no text

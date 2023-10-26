@@ -417,7 +417,7 @@ function App(): JSX.Element {
     ocrResultTextOnly.current = item.ocrResultTxt ? item.ocrResultTxt : ''
     suitBuilds.current = item.suitBuilds
     rateResult.current = item.rateResult ? item.rateResult : DefaultRateResult
-
+    currentFileID.current = item.fileID
 
     if (state === 'success') {
       status.current = ''
@@ -507,7 +507,8 @@ function App(): JSX.Element {
       path = await CompressImageAsync(path)
 
       const id = generateImgID()
-
+      item.fileID = id
+      
       const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + id
       const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
 

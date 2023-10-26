@@ -273,6 +273,7 @@ function App(): JSX.Element {
 
       if (response.assets.length > 1) {
         onSelectedMultiImgAsync(response.assets)
+        Track('pick_multi_photo')
         return
       }
 
@@ -619,12 +620,9 @@ function App(): JSX.Element {
     }
 
     path = await CompressImageAsync(path)
-    StorageLog_LogAsync('after', path)
     userImgUri.current = path
 
-    if (!isDevDevice) {
-      FirebaseDatabase_IncreaseNumberAsync('selected_img_count/' + todayString, 0)
-    }
+    FirebaseIncrease('selected_img_count/' + todayString)
 
     currentFileID.current = generateImgID()
     sessionFileIDs.current += ('[' + currentFileID.current + ']')
@@ -647,8 +645,6 @@ function App(): JSX.Element {
       Alert.alert(
         'Lỗi không thể upload hình để xử lý',
         'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr))
-
-      console.error(ToCanPrint(uplodaErr))
 
       return
     }
@@ -945,18 +941,16 @@ function App(): JSX.Element {
     let extractRes = ExtractSlotCard(result, stringifyResult)
     const isSuccess = typeof extractRes === 'object'
 
-    if (!isDevDevice) {
-      if (isSuccess)
-        FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/success', 0)
-      else
-        FirebaseDatabase_IncreaseNumberAsync('extracted_count/' + todayString + '/fail', 0)
+    if (isSuccess)
+      FirebaseIncrease('extracted_count/' + todayString + '/success')
+    else
+      FirebaseIncrease('extracted_count/' + todayString + '/fail')
 
-      if (!isDevDevice && remoteConfig.current.save_ocr_result && currentFileID.current !== '') {
-        FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + currentFileID.current, {
-          result: ocrResultTextOnly.current,
-          version
-        })
-      }
+    if (!isDevDevice && remoteConfig.current.save_ocr_result && currentFileID.current !== '') {
+      FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + currentFileID.current, {
+        result: ocrResultTextOnly.current,
+        version
+      })
     }
 
     if (typeof extractRes === 'object') { // success
@@ -1029,9 +1023,7 @@ function App(): JSX.Element {
     checkAndShowAdsInterstitial() // show ads
 
     try {
-      Track('call_api', {
-        fileID: currentFileID.current
-      })
+      Track('call_api', { fileID: currentFileID.current })
 
       // call api
 
@@ -1063,8 +1055,7 @@ function App(): JSX.Element {
 
       Track('call_api_failed')
 
-      if (!isDevDevice)
-        FirebaseDatabase_IncreaseNumberAsync('call_api_failed_count/' + todayString, 0)
+      FirebaseIncrease('call_api_failed_count/' + todayString)
     }
   }, [])
 
@@ -1631,6 +1622,13 @@ const TrackOnOpenApp = async () => {
     await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
 
   Track('app_open')
+}
+
+const FirebaseIncrease = (fbpath: string) => {
+  if (isDevDevice)
+    return
+
+  FirebaseDatabase_IncreaseNumberAsync(fbpath, 0)
 }
 
 const CompressImageAsync = async (fileURI: string): Promise<string> => {

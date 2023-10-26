@@ -603,6 +603,14 @@ function App(): JSX.Element {
     }
 
     multiSelectedItem.current = undefined
+    FirebaseIncrease('multi_used_count/' + todayString)
+  
+    FirebaseIncrease(
+      'multi_selected_img_count/' + 
+      todayString + '/' + 
+      (Date.now()), multiImageItems.current.length)
+
+    // show ads
 
     storage.getInt('used_multi_count', (_: any, count: any) => {
       if (typeof count !== 'number')
@@ -613,6 +621,8 @@ function App(): JSX.Element {
 
       storage.setInt('used_multi_count', count + 1)
     })
+
+    // handles
 
     for (let i = 0; i < multiImageItems.current.length; i++)
       StartFlowAsync(multiImageItems.current[i])

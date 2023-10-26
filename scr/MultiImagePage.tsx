@@ -15,7 +15,7 @@ type MultiImagePageProps = {
 const MultiImagePage = (props: MultiImagePageProps) => {
     return (
         <SafeAreaView style={{ position: 'absolute', width: '100%', height: windowSize.height, justifyContent: 'flex-start' }}>
-            <View onTouchEnd={props.toggleShow} style={{ paddingTop: 20, alignItems: 'center', justifyContent: 'center', flex: 0.1, backgroundColor: 'black' }} >
+            <View onTouchEnd={props.toggleShow} style={{ paddingTop: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'black' }} >
                 <Image source={closeIcon} style={{ marginBottom: Outline.Margin, width: 40, height: 40}} />
             </View>
             <View style={{ flex: 1, backgroundColor: 'black' }} >

@@ -451,10 +451,10 @@ function App(): JSX.Element {
     if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
       return
 
-    showAdsInterstitial()
+    showAdsInterstitial('single_pic')
   }, [])
 
-  const showAdsInterstitial = useCallback(() => {
+  const showAdsInterstitial = useCallback((location: string) => {
     reallyNeedToShowInterstitial.current = true
     Track('fire_show_ads', loadedInterstitial.current)
 
@@ -603,7 +603,16 @@ function App(): JSX.Element {
     }
 
     multiSelectedItem.current = undefined
-    showAdsInterstitial()
+
+    storage.getInt('used_multi_count', (_: any, count: any) => {
+      if (typeof count !== 'number')
+        count = 0
+      
+      if (count >= 2)
+        showAdsInterstitial('multi_pic')
+
+      storage.setInt('used_multi_count', count + 1)
+    })
 
     for (let i = 0; i < multiImageItems.current.length; i++)
       StartFlowAsync(multiImageItems.current[i])

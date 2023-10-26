@@ -40,7 +40,7 @@ import { Track } from './scr/common/ForageAnalytic';
 import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
 import { Image as ImageCompressor } from 'react-native-compressor';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
@@ -521,6 +521,11 @@ function App(): JSX.Element {
         return
       }
 
+      Track('uploaded_done', {
+        success: uplodaErr === null,
+        fileID: id
+      })
+
       const getURLRes = await FirebaseStorage_GetDownloadURLAsync(fbpath)
 
       if (getURLRes.error) {
@@ -535,8 +540,12 @@ function App(): JSX.Element {
 
       // call api
 
+      Track('call_api', { fileID: id })
+
       const response = await axios.request(GetAPIOption(getURLRes.url))
 
+      updateTextLimitRate(response)
+      
       const resultText = response.data?.text
 
       if (!resultText) {
@@ -548,6 +557,9 @@ function App(): JSX.Element {
         ]
 
         updateMultiStateAsync()
+
+        Track('call_api_failed')
+
         return
       }
       else {
@@ -593,6 +605,8 @@ function App(): JSX.Element {
     multiImageItems.current = response.map((img) => {
       return { uri: img.uri } as ImgItemData
     })
+
+    FirebaseIncrease('selected_img_count/' + todayString, multiImageItems.current.length)
 
     toggleShowMulti()
     startHandleMulti()
@@ -1030,11 +1044,8 @@ function App(): JSX.Element {
       const response = await axios.request(GetAPIOption(imgUrl));
 
       // api limit text
-
-      if (response.headers['x-ratelimit-requests-remaining'] > 0)
-        rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
-      else
-        rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
+      
+      updateTextLimitRate(response)
 
       // handle 
 
@@ -1057,6 +1068,15 @@ function App(): JSX.Element {
 
       FirebaseIncrease('call_api_failed_count/' + todayString)
     }
+  }, [])
+
+  const updateTextLimitRate = useCallback((response: AxiosResponse) => {
+    if (response.headers['x-ratelimit-requests-remaining'] > 0)
+      rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
+    else
+      rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
+
+    console.log('rate imiiii', rateLimitText.current);
   }, [])
 
   const getFirebaseConfigAsync = useCallback(async () => {
@@ -1093,8 +1113,7 @@ function App(): JSX.Element {
       const ver = (version as string).replaceAll('.', '_')
 
       if (last_installed_version !== version) { // new install or updated
-        if (!isDevDevice)
-          await FirebaseDatabase_IncreaseNumberAsync('new_version_user_count/' + ver, 0)
+        FirebaseIncrease('new_version_user_count/' + ver)
 
         await storage.setStringAsync('last_installed_version', version)
       }
@@ -1612,23 +1631,21 @@ const TrackOnOpenApp = async () => {
   if (tracked_user_unique_open_app_count !== todayString) {
     await storage.setStringAsync('tracked_user_unique_open_app_count', todayString)
 
-    if (!isDevDevice)
-      await FirebaseDatabase_IncreaseNumberAsync('user_unique_open_count/' + todayString, 0)
-    await FirebaseDatabase_IncreaseNumberAsync('device_info/platform/' + Platform.OS, 0)
-    await FirebaseDatabase_IncreaseNumberAsync('device_info/brand/' + getBrand(), 0)
+    FirebaseIncrease('user_unique_open_count/' + todayString)
+    FirebaseIncrease('device_info/platform/' + Platform.OS)
+    FirebaseIncrease('device_info/brand/' + getBrand())
   }
 
-  if (!isDevDevice)
-    await FirebaseDatabase_IncreaseNumberAsync('open_total_count/' + todayString, 0)
+  FirebaseIncrease('open_total_count/' + todayString)
 
   Track('app_open')
 }
 
-const FirebaseIncrease = (fbpath: string) => {
+const FirebaseIncrease = (fbpath: string, incNum: number = 1) => {
   if (isDevDevice)
     return
 
-  FirebaseDatabase_IncreaseNumberAsync(fbpath, 0)
+  FirebaseDatabase_IncreaseNumberAsync(fbpath, 0, incNum)
 }
 
 const CompressImageAsync = async (fileURI: string): Promise<string> => {

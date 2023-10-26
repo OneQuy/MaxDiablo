@@ -258,7 +258,7 @@ function App(): JSX.Element {
       mediaType: 'photo',
       maxHeight: 1000,
       maxWidth: 1000,
-      selectionLimit: 10,
+      selectionLimit: 9,
     })
 
     if (response.didCancel)

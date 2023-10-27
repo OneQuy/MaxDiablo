@@ -1519,6 +1519,7 @@ function App(): JSX.Element {
           }
           {/* events */}
           {
+            (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) ? undefined :
             <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
               <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}</Text>
               {

@@ -325,7 +325,7 @@ function App(): JSX.Element {
     const camRequestRes = await RequestCameraPermissionAsync()
 
     if (camRequestRes !== true) {
-      Alert.alert('Thiếu quyền truy cập Camera!', 'Vui lòng cấp quyền truy cập')
+      Alert.alert(lang.current.cam_permission, lang.current.pls_permit)
       return
     }
 
@@ -531,8 +531,8 @@ function App(): JSX.Element {
 
       if (uplodaErr) { // upload fail
         item.errorAlert = [
-          'Lỗi không thể upload hình để xử lý',
-          'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr)
+          lang.current.cant_upload,
+          lang.current.no_internet + '\n\n' + ToCanPrint(uplodaErr)
         ]
 
         updateMultiStateAsync()
@@ -572,8 +572,8 @@ function App(): JSX.Element {
         item.ocrResultTxt = ''
 
         item.errorAlert = [
-          'Lỗi không thể phân tích hình',
-          'Vui lòng chụp lại hay chọn ảnh khác!\n\nMã lỗi: No result text.'
+          lang.current.cant_rate,
+          lang.current.pls_pick_other + '\n\nNo result text.'
         ]
 
         updateMultiStateAsync()
@@ -715,8 +715,8 @@ function App(): JSX.Element {
       forceUpdate()
 
       Alert.alert(
-        'Lỗi không thể upload hình để xử lý',
-        'Vui lòng kiểm tra internet của bạn.\nMã lỗi: ' + ToCanPrint(uplodaErr))
+        lang.current.cant_upload,
+        lang.current.no_internet + '\n\n' + ToCanPrint(uplodaErr))
 
       return
     }
@@ -1067,12 +1067,11 @@ function App(): JSX.Element {
   const getAlertContentWhenExtractFail = useCallback((extractRes: string) => {
     if (extractRes === 'miss brackets') {
       return [
-        'Lỗi không thể rate hình',
+        lang.current.cant_rate,
 
-        'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
-        'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n' +
-        '* Advanced Tooltip Compare\n' +
-        '* Advanced Tooltip Information']
+        lang.current.miss_bracket +
+        '[] Advanced Tooltip Compare\n' +
+        '[] Advanced Tooltip Information']
     }
     else if (extractRes === 'unique') {
       return [
@@ -1081,8 +1080,8 @@ function App(): JSX.Element {
     }
     else { // other errors
       return [
-        'Lỗi không thể phân tích hình',
-        'Vui lòng chụp lại hay chọn ảnh khác!\n\nExtract result:\n' + extractRes]
+        lang.current.cant_rate,
+        lang.current.pls_pick_other + '\n\n' + extractRes]
     }
   }, [])
 
@@ -1121,8 +1120,8 @@ function App(): JSX.Element {
       onGotOcrResultTextAsync(result, false, fbPathToDelete)
     } catch (error) {
       cacheOrShowAlert(
-        'Lỗi không thể phân tích hình',
-        'Vui lòng chụp lại hay chọn ảnh khác!\n\nMã lỗi:\n' + ToCanPrint(error))
+        lang.current.cant_rate,
+        lang.current.pls_pick_other + '\n\n' + ToCanPrint(error))
 
       userImgUri.current = ''
       status.current = ''
@@ -1195,11 +1194,11 @@ function App(): JSX.Element {
       const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
 
       Alert.alert(
-        'Có bản cập nhật mới!',
-        'Vui lòng lên app store cập nhật phiên bản mới nhất.',
+        lang.current.new_update,
+        lang.current.let_update,
         [
           {
-            text: 'Cập nhật',
+            text: lang.current.update,
             onPress: () => Linking.openURL(storeLink)
           }
         ])
@@ -1532,24 +1531,24 @@ function App(): JSX.Element {
           {/* events */}
           {
             (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) ? undefined :
-            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
-              <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}</Text>
-              {
-                events.map((event: Event, index: number) => {
-                  const [remainText, targetText, isPrepareFinish] = getRemainTimeTextOfEvent(event)
-                  const bgColor = isPrepareFinish ? 'tomato' : 'whitesmoke'
-                  const titleColor = isPrepareFinish ? 'black' : 'tomato'
+              <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
+                <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}</Text>
+                {
+                  events.map((event: Event, index: number) => {
+                    const [remainText, targetText, isPrepareFinish] = getRemainTimeTextOfEvent(event)
+                    const bgColor = isPrepareFinish ? 'tomato' : 'whitesmoke'
+                    const titleColor = isPrepareFinish ? 'black' : 'tomato'
 
-                  return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, backgroundColor: bgColor }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
-                      <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
+                    return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, backgroundColor: bgColor }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
+                        <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
+                      </View>
+                      <Text style={{ color: 'black', fontSize: FontSize.Big }}>{targetText}</Text>
                     </View>
-                    <Text style={{ color: 'black', fontSize: FontSize.Big }}>{targetText}</Text>
-                  </View>
-                })
-              }
-            </View>
+                  })
+                }
+              </View>
           }
           {/* debug text, version, remain ocr count */}
           <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>

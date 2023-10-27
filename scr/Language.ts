@@ -13,7 +13,8 @@ const viet = {
     events: 'Các sự kiện sắp tới',
     ngon: 'Ngon',
     qua_ngon: 'Quá Ngon',
-    startAt: 'Bắt đầu lúc: ',
+    startAt: 'Bắt đầu lúc ',
+    update: 'Cập nhật',
 
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
@@ -26,6 +27,20 @@ const viet = {
 
     thank_for_update: 'Cảm ơn bạn đã cài đặt / cập nhật app!',
     update_detail: 'Chi tiết cập nhật',
+
+    new_update: 'Có bản cập nhật mới!',
+    let_update: 'Vui lòng lên app store cập nhật phiên bản mới nhất.',
+
+    cam_permission: 'Thiếu quyền truy cập Camera!',
+    pls_permit: 'Vui lòng cấp quyền truy cập.',
+
+    miss_bracket: 'Vui lòng bật setting hiển thị range [min-max] cho các thông số.\n\n' +
+        'Vào option -> chọn thẻ gameplay -> tick vào 2 ô:\n',
+
+    cant_upload: 'Lỗi không thể upload hình để xử lý',
+    no_internet: 'Vui lòng kiểm tra internet của bạn.',
+
+
 }
 
 const eng: Lang = {
@@ -41,7 +56,8 @@ const eng: Lang = {
     events: 'Events',
     ngon: 'Good',
     qua_ngon: 'Very Good',
-    startAt: 'Start at: ',
+    startAt: 'Start at ',
+    update: 'Update',
 
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',
@@ -54,6 +70,20 @@ const eng: Lang = {
 
     thank_for_update: 'Thanks for install / update the app!',
     update_detail: 'Release note',
+
+    new_update: 'New update!',
+    let_update: 'Please update the app for the latest version and enjoy new features.',
+
+    cam_permission: 'No permission to access your camera!',
+    pls_permit: 'Please accept the permission.',
+
+    miss_bracket: 'Please turn on the setting of showing the range [min-max] of the opts.\n\n' +
+        'Go to Option -> Select Gameplay -> Tick these 2 options:\n',
+
+    cant_upload: 'Can not upload the pic to server',
+    no_internet: 'Please check your internet',
+
+
 }
 
 export type Lang = typeof viet

@@ -108,7 +108,7 @@ const events: Event[] = [
   {
     name: 'Legion',
     originTime: 1698334200000, // 10/26/2023 10:30 PM
-    intervalInMinute: 2 // 25p
+    intervalInMinute: 25 // 25p
   }
 ]
 

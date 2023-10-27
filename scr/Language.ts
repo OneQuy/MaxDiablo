@@ -22,7 +22,10 @@ const viet = {
     trash: 'RÁC RƯỞI',
 
     cant_rate: 'Lỗi không thể phân tích hình',
-    pls_pick_other: 'Vui lòng chụp lại hay chọn ảnh khác!'
+    pls_pick_other: 'Vui lòng chụp lại hay chọn ảnh khác!',
+
+    thank_for_update: 'Cảm ơn bạn đã cài đặt / cập nhật app!',
+    update_detail: 'Chi tiết cập nhật',
 }
 
 const eng: Lang = {
@@ -47,7 +50,10 @@ const eng: Lang = {
     trash: 'TRASH',
 
     cant_rate: 'Can not rate!',
-    pls_pick_other: 'Please pick another pic!'
+    pls_pick_other: 'Please pick another pic!',
+
+    thank_for_update: 'Thanks for install / update the app!',
+    update_detail: 'Release note',
 }
 
 export type Lang = typeof viet

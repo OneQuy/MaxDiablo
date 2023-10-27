@@ -129,6 +129,7 @@ function App(): JSX.Element {
   const [showCheat, setShowCheat] = useState(false)
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
   const [firstOpenApp, setFirstOpenApp] = useMMKVStorage('firstOpenApp', storage, true)
+  const [isLangViet, _] = useMMKVStorage('isLangViet', storage, true)
   const rateSuccessCountRef = useRef(0)
   const rateSuccessCountPerInterstitialConfig = useRef(2)
   const rateLimitText = useRef('') // api remain limit text
@@ -143,7 +144,7 @@ function App(): JSX.Element {
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
   const isOpeningCameraOrPhotoPicker = useRef(false)
-  const lang = useRef(GetLang(true))
+  const lang = useRef(GetLang(isLangViet))
   const forceUpdate = useForceUpdate()
 
   // session
@@ -173,7 +174,8 @@ function App(): JSX.Element {
     save_ocr_result: false,
     ios_disable_suit_build: true,
     dev_devices: '',
-    versionNote: ''
+    version_note_vn: '',
+    version_note_en: ''
   })
 
   // moving pic
@@ -1211,9 +1213,19 @@ function App(): JSX.Element {
 
         await storage.setStringAsync('last_installed_version', version)
 
+        // alert release note
+
+        let releaseNote = isLangViet ? remoteConfig.current.version_note_vn : remoteConfig.current.version_note_en
+
+        if (!releaseNote)
+          return
+
+        const arr = releaseNote.split('@')
+        releaseNote = arr.join('\n')
+
         Alert.alert(
-          'Cảm ơn bạn đã cài đặt / cập nhật app!',
-          'Chi tiết cập nhật:\n\n' + remoteConfig.current.versionNote)
+          lang.current.thank_for_update,
+          lang.current.update_detail + ':\n\n' + releaseNote)
       }
     }
   }, [])

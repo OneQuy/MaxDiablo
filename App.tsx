@@ -30,7 +30,7 @@ import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-na
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Event, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
-import { RoundNumber } from './scr/common/Utils';
+import { RoundNumber, prependZero } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
 import { CachedMeassure, CachedMeassureResult, IsPointInRectMeasure } from './scr/common/PreservedMessure';
 import { CheckAndInitAdmobAsync } from './scr/common/Admob';
@@ -108,7 +108,7 @@ const events: Event[] = [
   {
     name: 'Legion',
     originTime: 1698334200000, // 10/26/2023 10:30 PM
-    intervalInMinute: 25 // 25p
+    intervalInMinute: 2 // 25p
   }
 ]
 
@@ -1152,8 +1152,6 @@ function App(): JSX.Element {
       target += intervalMS
     }
 
-    // console.log(target);
-
     const remainMS = target - Date.now()
 
     let sec = remainMS / 1000
@@ -1166,7 +1164,13 @@ function App(): JSX.Element {
 
     sec = Math.floor(sec - min * 60)
 
-    return hour + ' hour, ' + min + ' minute, ' + sec + ' second'
+    let remainText = prependZero(hour) + ' : ' + prependZero(min) + ' : ' + prependZero(sec)
+
+    const targetText = lang.current.startAt + new Date(target).toLocaleTimeString()
+
+    const isPrepareFinish = hour === 0 && min === 0
+
+    return [remainText, targetText, isPrepareFinish]
   }, [])
 
   const getFirebaseConfigAsync = useCallback(async () => {
@@ -1214,7 +1218,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     setInterval(() => {
-     forceUpdate()
+      forceUpdate()
     }, 1000)
 
     let appStateRemove: NativeEventSubscription
@@ -1511,18 +1515,24 @@ function App(): JSX.Element {
           }
           {/* events */}
           {
-              <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
-                <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.list_suit_builds}</Text>
-                {
-                  events.map((event: Event, index: number) => {
-                    return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, borderColor: 'white' }}>
-                      {/* build name  */}
-                      <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{event.name}</Text>
-                      <Text style={{ color: 'white', fontSize: FontSize.Big }}>{getRemainTimeTextOfEvent(event)}</Text>
+            <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
+              <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}</Text>
+              {
+                events.map((event: Event, index: number) => {
+                  const [remainText, targetText, isPrepareFinish] = getRemainTimeTextOfEvent(event)
+                  const bgColor = isPrepareFinish ? 'tomato' : 'whitesmoke'
+                  const titleColor = isPrepareFinish ? 'black' : 'tomato'
+
+                  return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, backgroundColor: bgColor }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                      <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
+                      <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
                     </View>
-                  })
-                }
-              </View>
+                    <Text style={{ color: 'black', fontSize: FontSize.Big }}>{targetText}</Text>
+                  </View>
+                })
+              }
+            </View>
           }
           {/* debug text, version, remain ocr count */}
           <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
@@ -1570,7 +1580,7 @@ function App(): JSX.Element {
             </View>
         }
       </SafeAreaView>
-    </LangContext.Provider>
+    </LangContext.Provider >
   )
 }
 

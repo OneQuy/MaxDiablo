@@ -10,8 +10,10 @@ const viet = {
     rate_app: 'Đánh giá app trên Store',
     fail: 'Lỗi',
     list_suit_builds: 'Danh sách build thích hợp',
+    events: 'Các sự kiện sắp tới',
     ngon: 'Ngon',
     qua_ngon: 'Quá Ngon',
+    startAt: 'Bắt đầu lúc: ',
 
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
@@ -29,9 +31,11 @@ const eng: Lang = {
     pick_photo_guide: 'Take a photo to rate:',
     rate_app: 'Rate app on Store',
     fail: 'Failed',
-    list_suit_builds: 'Best fit builds',
+    list_suit_builds: 'Suggest builds',
+    events: 'Events',
     ngon: 'Good',
     qua_ngon: 'Very Good',
+    startAt: 'Start at: ',
 
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',

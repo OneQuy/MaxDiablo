@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from 'react'
 import { ImgItemData } from './Types'
 import { FontWeight, Outline, windowSize } from './AppConstant'
 import { RoundNumber } from './common/Utils'
-import { GetLang, LangContext } from './Language'
+import { LangContext } from './Language'
 
 type Props = {
   itemData: ImgItemData,

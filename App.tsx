@@ -143,7 +143,7 @@ function App(): JSX.Element {
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
   const isOpeningCameraOrPhotoPicker = useRef(false)
-  const lang = useRef(GetLang(false))
+  const lang = useRef(GetLang(true))
   const forceUpdate = useForceUpdate()
 
   // session
@@ -173,7 +173,7 @@ function App(): JSX.Element {
     save_ocr_result: false,
     ios_disable_suit_build: true,
     dev_devices: '',
-    events: [] as Event[]
+    versionNote: ''
   })
 
   // moving pic
@@ -1210,6 +1210,10 @@ function App(): JSX.Element {
         FirebaseIncrease('new_version_user_count/' + ver)
 
         await storage.setStringAsync('last_installed_version', version)
+
+        Alert.alert(
+          'Cảm ơn bạn đã cài đặt / cập nhật app!',
+          'Chi tiết cập nhật:\n\n' + remoteConfig.current.versionNote)
       }
     }
   }, [])
@@ -1217,10 +1221,6 @@ function App(): JSX.Element {
   // init once 
 
   useEffect(() => {
-    setInterval(() => {
-      forceUpdate()
-    }, 1000)
-
     let appStateRemove: NativeEventSubscription
 
     const initAsync = async () => {
@@ -1345,11 +1345,15 @@ function App(): JSX.Element {
       Track('ads_error', ToCanPrint(e))
     })
 
+    const updateEventInterval = setInterval(() => { forceUpdate() }, 1000)
+
     return () => {
       unsubscribe_ads_interstitial_loaded()
       unsubscribe_ads_interstitial_opened()
       unsubscribe_ads_interstitial_closed()
       unsubscribe_ads_interstitial_error()
+
+      clearTimeout(updateEventInterval)
 
       if (appStateRemove && appStateRemove.remove)
         appStateRemove.remove()
@@ -1524,7 +1528,7 @@ function App(): JSX.Element {
                   const titleColor = isPrepareFinish ? 'black' : 'tomato'
 
                   return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, backgroundColor: bgColor }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
                       <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
                     </View>

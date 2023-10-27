@@ -20,6 +20,9 @@ const viet = {
     good: 'TỐT',
     normal: 'BÌNH THƯỜNG',
     trash: 'RÁC RƯỞI',
+
+    cant_rate: 'Lỗi không thể phân tích hình',
+    pls_pick_other: 'Vui lòng chụp lại hay chọn ảnh khác!'
 }
 
 const eng: Lang = {
@@ -42,10 +45,13 @@ const eng: Lang = {
     good: 'GOOD',
     normal: 'NORMAL',
     trash: 'TRASH',
+
+    cant_rate: 'Lỗi không thể phân tích hình',
+    pls_pick_other: 'Vui lòng chụp lại hay chọn ảnh khác!'
 }
 
 export type Lang = typeof viet
 
 export const GetLang = (isViet: boolean): Lang => isViet ? viet : eng
 
-export const LangContext = createContext(GetLang(false))
+export const LangContext = createContext(GetLang(true))

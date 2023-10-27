@@ -46,8 +46,8 @@ const eng: Lang = {
     normal: 'NORMAL',
     trash: 'TRASH',
 
-    cant_rate: 'Lỗi không thể phân tích hình',
-    pls_pick_other: 'Vui lòng chụp lại hay chọn ảnh khác!'
+    cant_rate: 'Can not rate!',
+    pls_pick_other: 'Please pick another pic!'
 }
 
 export type Lang = typeof viet

@@ -1307,7 +1307,7 @@ function App(): JSX.Element {
       loadedInterstitial.current = true
 
       if (reallyNeedToShowInterstitial.current)
-        showAdsInterstitial()
+        showAdsInterstitial('single')
     });
 
     const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
@@ -1372,7 +1372,7 @@ function App(): JSX.Element {
         <BannerAd unitId={adID_Banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true, }} />
         {/* app name */}
         <View style={{ marginHorizontal: Outline.Margin, flexDirection: 'row', gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text onPress={showAdsInterstitial} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
+          <Text onPress={() => showAdsInterstitial('test')} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
           <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>{lang.current.rate_app}</Text>
         </View>
         {/* the rest */}

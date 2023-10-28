@@ -1156,6 +1156,7 @@ function App(): JSX.Element {
         break
 
       target += intervalMS
+      event.originTime = target
     }
 
     const remainMS = target - Date.now()

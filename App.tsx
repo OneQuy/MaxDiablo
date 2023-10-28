@@ -170,6 +170,7 @@ function App(): JSX.Element {
   // remote config
 
   const remoteConfig = useRef({
+    android_version: '',
     auto_delete_file_if_extract_success: true,
     show_rate_app: false,
     save_ocr_result: false,
@@ -1196,7 +1197,7 @@ function App(): JSX.Element {
     rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
 
     const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
-    
+
     if (VersionToNumber(version) < VersionToNumber(configVersion)) {
       const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
 
@@ -1507,6 +1508,13 @@ function App(): JSX.Element {
               </View>
               <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.score >= 0 ? RoundNumber(rateResult.current.score * 10, 1) : 0}/10</Text>
             </View>
+          }
+          {/* ios updating note */}
+          {
+            (remoteConfig.current.android_version === '' || Platform.OS !== 'ios' || !remoteConfig.current.ios_disable_suit_build) ? undefined :
+              <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
+                <Text style={{ color: 'white', fontSize: FontSize.Big, }}>{lang.current.ios_updating}</Text>
+              </View>
           }
           {/* builds suit */}
           {

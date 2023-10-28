@@ -15,6 +15,7 @@ const viet = {
     qua_ngon: 'Quá Ngon',
     startAt: 'Bắt đầu lúc ',
     update: 'Cập nhật',
+    ios_updating: 'App đang bảo trì & cập nhật phiên bản mới.',
     vie: 'Tiếng Việt',
     en: 'English',
 
@@ -58,6 +59,7 @@ const eng: Lang = {
     qua_ngon: 'Very Good',
     startAt: 'Start at ',
     update: 'Update',
+    ios_updating: 'The app is under maintaining and updating the new version!',
     vie: 'Tiếng Việt',
     en: 'English',
     

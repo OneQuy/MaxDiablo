@@ -24,7 +24,7 @@ import {
 
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
-import { RequestCameraPermissionAsync, ToCanPrint } from './scr/common/UtilsTS';
+import { RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
@@ -89,6 +89,7 @@ const DefaultGoodStats = [
 ]
 
 const storage = new MMKVLoader().initialize();
+// storage.clearStore()
 
 const TouchableOpacityAnimated = Animated.createAnimatedComponent(TouchableOpacity)
 
@@ -1195,8 +1196,8 @@ function App(): JSX.Element {
     rateSuccessCountPerInterstitialConfig.current = res.value.rate_success_count_per_interstitial
 
     const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
-
-    if (!isDevDevice && configVersion && version !== configVersion) {
+    
+    if (VersionToNumber(version) < VersionToNumber(configVersion)) {
       const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
 
       Alert.alert(

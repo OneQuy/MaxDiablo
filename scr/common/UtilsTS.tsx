@@ -321,7 +321,21 @@ export const IsNumType = (o: any) => {
 
 // string utils ---------------------------
 
-export function SplitSectionsFromText(wholeTxt: string) : string[][] {
+/**
+ * @param version 0.1.1
+ * @returns 11 or NaN
+ */
+export function VersionToNumber(version: string): number {
+    try {
+        const nums = version.split('.')
+        return parseInt(nums[0]) * 100 + parseInt(nums[1]) * 10 + parseInt(nums[2])
+    }
+    catch {
+        return NaN
+    }
+}
+
+export function SplitSectionsFromText(wholeTxt: string): string[][] {
     const lines = wholeTxt.split('\n')
 
     const arrRes: string[][] = []
@@ -394,7 +408,7 @@ export const SplitNumberInText = (text: string) => {
 export const ExtractAllNumbersInText = (text: string): number[] => {
     const regex = /[+-]?\d+(\.\d+)?/g;
     let floats = text.match(regex)?.map(function (v) { return parseFloat(v); });
-    
+
     if (!floats)
         return []
 
@@ -405,8 +419,8 @@ export const ExtractAllNumbersInText = (text: string): number[] => {
 // other utils ---------------------------
 
 export const IsPointInRect = ( // main
-    x: number, 
-    y: number, 
+    x: number,
+    y: number,
     rectX: number,
     rectY: number,
     rectW: number,

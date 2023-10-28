@@ -129,7 +129,7 @@ function App(): JSX.Element {
   const [showCheat, setShowCheat] = useState(false)
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
   const [firstOpenApp, setFirstOpenApp] = useMMKVStorage('firstOpenApp', storage, true)
-  const [isLangViet, _] = useMMKVStorage('isLangViet', storage, true)
+  const [isLangViet, setIsLangViet] = useMMKVStorage('isLangViet', storage, -1)
   const rateSuccessCountRef = useRef(0)
   const rateSuccessCountPerInterstitialConfig = useRef(2)
   const rateLimitText = useRef('') // api remain limit text
@@ -144,7 +144,7 @@ function App(): JSX.Element {
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
   const isOpeningCameraOrPhotoPicker = useRef(false)
-  const lang = useRef(GetLang(isLangViet))
+  const lang = useRef(GetLang(true))
   const forceUpdate = useForceUpdate()
 
   // session
@@ -319,6 +319,11 @@ function App(): JSX.Element {
     let s = now.substring(now.length - 3) + '_' + Math.random().toString().substring(2, 5)
     // console.log(s, now);
     return s
+  }, [])
+
+  const onPressLang = useCallback((isViet: boolean) => {
+    setIsLangViet(isViet ? 0 : 1)
+    lang.current = GetLang(isViet)
   }, [])
 
   const onPressTakeCamera = useCallback(async () => {
@@ -1214,7 +1219,7 @@ function App(): JSX.Element {
 
         // alert release note
 
-        let releaseNote = isLangViet ? remoteConfig.current.version_note_vn : remoteConfig.current.version_note_en
+        let releaseNote = isLangViet !== 1 ? remoteConfig.current.version_note_vn : remoteConfig.current.version_note_en
 
         if (!releaseNote)
           return
@@ -1375,6 +1380,19 @@ function App(): JSX.Element {
     !suitBuilds.current ||
     suitBuilds.current.length === 0 ||
     (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build)
+
+  if (isLangViet === -1) {
+    return (
+      <SafeAreaView style={{ gap: Outline.Gap, flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableOpacity onPress={() => onPressLang(true)} style={{ minWidth: windowSize.width / 2, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{lang.current.vie}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onPressLang(false)} style={{ minWidth: windowSize.width / 2, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{lang.current.en}</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <LangContext.Provider value={lang.current}>

@@ -15,6 +15,8 @@ const viet = {
     qua_ngon: 'Quá Ngon',
     startAt: 'Bắt đầu lúc ',
     update: 'Cập nhật',
+    vie: 'Tiếng Việt',
+    en: 'English',
 
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
@@ -39,8 +41,6 @@ const viet = {
 
     cant_upload: 'Lỗi không thể upload hình để xử lý',
     no_internet: 'Vui lòng kiểm tra internet của bạn.',
-
-
 }
 
 const eng: Lang = {
@@ -58,7 +58,9 @@ const eng: Lang = {
     qua_ngon: 'Very Good',
     startAt: 'Start at ',
     update: 'Update',
-
+    vie: 'Tiếng Việt',
+    en: 'English',
+    
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',
     good: 'GOOD',

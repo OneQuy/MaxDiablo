@@ -321,6 +321,31 @@ export const IsNumType = (o: any) => {
 
 // string utils ---------------------------
 
+export function SplitSectionsFromText(wholeTxt: string) : string[][] {
+    const lines = wholeTxt.split('\n')
+
+    const arrRes: string[][] = []
+    let curElement: string[] | undefined = undefined
+
+    for (let iline = 0; iline < lines.length; iline++) {
+        const lineTrim = lines[iline].trim()
+
+        if (!lineTrim) {
+            curElement = undefined
+            continue
+        }
+
+        if (!curElement) {
+            curElement = []
+            arrRes.push(curElement)
+        }
+
+        curElement.push(lineTrim)
+    }
+
+    return arrRes
+}
+
 export function StringReplaceCharAt(str: string, index: number, replacement: string) {
     if (index > str.length - 1)
         return str

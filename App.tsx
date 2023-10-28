@@ -1550,7 +1550,7 @@ function App(): JSX.Element {
           {
             (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) ? undefined :
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
-                <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}</Text>
+                <Text style={{ alignSelf: 'flex-start', color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}:</Text>
                 {
                   events.map((event: Event, index: number) => {
                     const [remainText, targetText, isPrepareFinish] = getRemainTimeTextOfEvent(event)

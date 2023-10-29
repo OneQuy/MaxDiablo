@@ -104,7 +104,7 @@ export type RateResult = {
     statsForRating: StatForRatingType[]
 }
 
-export type SuitBuildType = [Tier, Build, SlotCard, number] // user stat, class, class data stat, rate score
+export type SuitBuildType = [Tier | undefined, Build, SlotCard | undefined, number | undefined] // user stat, class, class data stat, rate score
 
 export type Event = {
     name: string

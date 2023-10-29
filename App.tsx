@@ -524,6 +524,13 @@ function App(): JSX.Element {
     forceUpdate()
   }, [])
 
+  const saveOcrResult = useCallback((isSuccess: boolean, resultText: string, fileId: string) => {
+    if (!isDevDevice && remoteConfig.current.save_ocr_result) {
+      const setpath = (isSuccess ? 'ocr_result_2/success/' : 'ocr_result_2/fail/') + todayString + '/' + fileId
+      FirebaseDatabase_SetValueAsync(setpath, { result: resultText, version })
+    }
+  }, [])
+
   const startHandleMulti = useCallback(() => {
     async function StartFlowAsync(item: ImgItemData) {
       // compress
@@ -599,21 +606,14 @@ function App(): JSX.Element {
       // check unique
 
       const arrUniqueSuitBuilds = GetSuitBuildsForUnique(resultText, uniqueBuilds)
-
-      if (arrUniqueSuitBuilds.length > 0) {
-
-        return
-      }
+      const isUniqueAndHasSuitBuilds = arrUniqueSuitBuilds.length > 0
 
       // extract 
 
-      let slot = ExtractSlotCard(resultText, false)
-      const isSuccess = typeof slot === 'object'
+      let slot = isUniqueAndHasSuitBuilds ? 'unique' : ExtractSlotCard(resultText, false)
+      const isSuccess = isUniqueAndHasSuitBuilds || typeof slot === 'object'
 
-      if (!isDevDevice && remoteConfig.current.save_ocr_result) {
-        const setpath = (isSuccess ? 'ocr_result_2/success/' : 'ocr_result_2/fail/') + todayString + '/' + id
-        FirebaseDatabase_SetValueAsync(setpath, { result: resultText, version })
-      }
+      saveOcrResult(isSuccess, resultText, id)
 
       if (isSuccess) {
         FirebaseIncrease('extracted_count/' + todayString + '/success')
@@ -623,18 +623,32 @@ function App(): JSX.Element {
         if (remoteConfig.current.auto_delete_file_if_extract_success === true)
           FirebaseStorage_DeleteAsync(fbpath)
 
-        // @ts-ignore
-        slot = HandleWeirdStatNames(slot)
-        slot = FilterStats(slot)
+        if (isUniqueAndHasSuitBuilds) {
+          item.suitBuilds = arrUniqueSuitBuilds.map((buildName: string) => [
+            undefined,
+            {
+              name: buildName,
+            } as Build,
+            undefined,
+            undefined
+          ] as SuitBuildType)
 
-        const suitBuilds = findSuitBuilds(slot)
-        const rateRes = rate(slot, suitBuilds)
+          sessionRatedResult.current += '[UNIQUE]'
+        }
+        else { // normal slot
+          // @ts-ignore
+          slot = HandleWeirdStatNames(slot)
+          slot = FilterStats(slot)
 
-        item.slot = slot
-        item.suitBuilds = suitBuilds
-        item.rateResult = rateRes
+          const suitBuilds = findSuitBuilds(slot)
+          const rateRes = rate(slot, suitBuilds)
 
-        sessionRatedResult.current += ('[' + rateRes.text + '-' + RoundNumber(rateRes.score, 1) + ']')
+          item.slot = slot
+          item.suitBuilds = suitBuilds
+          item.rateResult = rateRes
+
+          sessionRatedResult.current += ('[' + rateRes.text + '-' + RoundNumber(rateRes.score, 1) + ']')
+        }
 
         updateMultiStateAsync()
         return
@@ -935,6 +949,10 @@ function App(): JSX.Element {
 
       for (let i = 0; i < suitBuilds.length; i++) {
         let matchStatCount = suitBuilds[i][3]
+
+        if (matchStatCount === undefined)
+          continue
+
         let score = Math.min(1, matchStatCount / 4)
 
         if (matchStatCount >= 3) { // from and above 3
@@ -1031,20 +1049,27 @@ function App(): JSX.Element {
   const onGotOcrResultTextAsync = useCallback(async (result: string, stringifyResult: boolean, fbPathToDeleteFile: string) => {
     sessionExtractedCount.current++
     ocrResultTextOnly.current = JSON.stringify(result)
-    let extractRes = ExtractSlotCard(result, stringifyResult)
-    const isSuccess = typeof extractRes === 'object'
+
+    // check unique
+
+    const arrUniqueSuitBuilds = GetSuitBuildsForUnique(result, uniqueBuilds)
+    const isUniqueAndHasSuitBuilds = arrUniqueSuitBuilds.length > 0
+
+    let extractRes = isUniqueAndHasSuitBuilds ? 'unique' : ExtractSlotCard(result, stringifyResult)
+    const isSuccess = isUniqueAndHasSuitBuilds || typeof extractRes === 'object'
+
+    // track
 
     if (isSuccess)
       FirebaseIncrease('extracted_count/' + todayString + '/success')
     else
       FirebaseIncrease('extracted_count/' + todayString + '/fail')
 
-    if (!isDevDevice && remoteConfig.current.save_ocr_result && currentFileID.current !== '') {
-      const setpath = (isSuccess ? 'ocr_result_2/success/' : 'ocr_result_2/fail/') + todayString + '/' + currentFileID.current
-      FirebaseDatabase_SetValueAsync(setpath, { result: ocrResultTextOnly.current, version })
-    }
+    saveOcrResult(isSuccess, ocrResultTextOnly.current, currentFileID.current)
 
-    if (typeof extractRes === 'object') { // success
+    // rate
+
+    if (isSuccess) { // success
       if (stringifyResult) {
         console.log(JSON.stringify(extractRes))
         console.log(JSON.stringify(extractRes, null, 1));
@@ -1057,13 +1082,28 @@ function App(): JSX.Element {
 
       // rate
 
-      extractRes = HandleWeirdStatNames(extractRes)
-      currentSlot.current = FilterStats(extractRes)
+      if (isUniqueAndHasSuitBuilds) { // unique
+        suitBuilds.current = arrUniqueSuitBuilds.map((buildName: string) => [
+          undefined,
+          {
+            name: buildName,
+          } as Build,
+          undefined,
+          undefined
+        ] as SuitBuildType)
 
-      suitBuilds.current = findSuitBuilds(currentSlot.current)
-      rateResult.current = rate(currentSlot.current, suitBuilds.current)
+        sessionRatedResult.current += '[UNIQUE]'
+      }
+      else { // normal slot
+        // @ts-ignore
+        extractRes = HandleWeirdStatNames(extractRes)
+        currentSlot.current = FilterStats(extractRes)
 
-      sessionRatedResult.current += ('[' + rateResult.current.text + '-' + RoundNumber(rateResult.current.score, 1) + ']')
+        suitBuilds.current = findSuitBuilds(currentSlot.current)
+        rateResult.current = rate(currentSlot.current, suitBuilds.current)
+
+        sessionRatedResult.current += ('[' + rateResult.current.text + '-' + RoundNumber(rateResult.current.score, 1) + ']')
+      }
 
       rateSuccessCountRef.current++
       setRateSuccessCount(rateSuccessCountRef.current)
@@ -1076,6 +1116,7 @@ function App(): JSX.Element {
       status.current = ''
       forceUpdate()
 
+      // @ts-ignore
       const [title, content] = getAlertContentWhenExtractFail(extractRes)
       cacheOrShowAlert(title, content)
 
@@ -1176,7 +1217,7 @@ function App(): JSX.Element {
     const remainMS = target - Date.now()
     const [hour, min, sec] = GetHourMinSecFromMs(remainMS)
 
-    let remainText = prependZero(hour) + ' : ' + prependZero(min) + ' : ' + prependZero(sec)
+    let remainText = prependZero(hour) + 'h : ' + prependZero(min) + 'm : ' + prependZero(sec) + 's'
 
     const targetText = lang.current.startAt + new Date(target).toLocaleTimeString()
 
@@ -1421,10 +1462,11 @@ function App(): JSX.Element {
           {/* select photo btns */}
           <Text onPress={OnPressed_ShowCheat} style={{ fontSize: 15, color: 'white', marginBottom: Outline.Margin }}>{lang.current.pick_photo_guide}</Text>
           <View style={{ flexDirection: 'row', gap: Outline.Gap, justifyContent: 'center' }}>
-            <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={onPressPickPhoto} style={{ flex: 1, borderRadius: 5, padding: 5, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{lang.current.pick_photo}</Text>
+              <Text style={{ color: 'black', fontSize: FontSize.Small }}>{lang.current.pick_photo_btn_guide}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={onPressTakeCamera} style={{ flex: 1, borderRadius: 5, padding: 5, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{lang.current.take_cam}</Text>
             </TouchableOpacity>
           </View>
@@ -1530,30 +1572,36 @@ function App(): JSX.Element {
                       {/* build name  */}
                       <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{(index + 1) + '. ' + build.name}</Text>
                       {/* tier & slot name */}
-                      <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
-                        <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
-                        <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
-                        {
-                          statsMatchedCount < 3 ? undefined :
-                            <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
-                              <Image source={starIcon} style={{ width: 14, height: 14 }} />
-                              <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? lang.current.qua_ngon : lang.current.ngon}</Text>
-                            </View>
-                        }
-                        <View style={{ flex: 1 }} />
-                      </View>
-                      <View style={{ gap: Outline.Gap }}>
-                        {
-                          slot.stats.map((stat, index) => {
-                            return <Text
-                              key={stat.name + index}
-                              // @ts-ignore
-                              style={{ color: getStatNameColorCompareWithBuild(stat.name, currentSlot.current) }}>
-                              {stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
-                            </Text>
-                          })
-                        }
-                      </View>
+                      {
+                        slot === undefined || tier === undefined || statsMatchedCount === undefined ? undefined :
+                          <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
+                            <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
+                            <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                            {
+                              statsMatchedCount < 3 ? undefined :
+                                <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
+                                  <Image source={starIcon} style={{ width: 14, height: 14 }} />
+                                  <Text style={{ color: 'black', fontWeight: FontWeight.B500 }}>{statsMatchedCount > 3 ? lang.current.qua_ngon : lang.current.ngon}</Text>
+                                </View>
+                            }
+                            <View style={{ flex: 1 }} />
+                          </View>
+                      }
+                      {
+                        slot === undefined ? undefined :
+                          <View style={{ gap: Outline.Gap }}>
+                            {
+                              slot.stats.map((stat, index) => {
+                                return <Text
+                                  key={stat.name + index}
+                                  // @ts-ignore
+                                  style={{ color: getStatNameColorCompareWithBuild(stat.name, currentSlot.current) }}>
+                                  {stat.value}{stat.isPercent ? '%' : ''} {stat.name} [{stat.min}-{stat.max}]{stat.isPercent ? '%' : ''}
+                                </Text>
+                              })
+                            }
+                          </View>
+                      }
                     </View>
                   })
                 }
@@ -1573,7 +1621,7 @@ function App(): JSX.Element {
                     return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, backgroundColor: bgColor }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
-                        <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
+                        <Text style={{ color: 'black', fontWeight: FontWeight.B500, fontSize: FontSize.Big }}>{remainText}</Text>
                       </View>
                       <Text style={{ color: 'black', fontSize: FontSize.Big }}>{targetText}</Text>
                     </View>

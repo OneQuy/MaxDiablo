@@ -28,7 +28,7 @@ import { GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionT
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, Event, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier } from './scr/Types';
+import { Build, Event, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber, prependZero } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
@@ -74,9 +74,11 @@ const appleStoreOpenLink = "https://apps.apple.com/us/app/d4-tool/id6469034531"
 const appName = Platform.OS === 'android' ? "Diablo 4 Tool" : 'D4 Tool'
 
 const version = require('./package.json')['version']
+
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
 const ignoredStats: IgnoredStatsOfSlot[] = require('./assets/IgnoredStats.json') // for ignoring stats
+const uniqueBuilds: UniqueBuild[] = require('./assets/UniqueBuilds.json')
 
 const allStatsData: string[] = require('./assets/AllStats.json') // for valid stat name
 const allStatsData_IgnoredCase: string[] = allStatsData.map(name => name.toLowerCase())

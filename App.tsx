@@ -1121,7 +1121,7 @@ function App(): JSX.Element {
     else if (extractRes === 'unique') {
       return [
         'Ooops!',
-        'Không thể rate item UNIQUE. Vui lòng chọn hình khác!']
+        lang.current.err_unique]
     }
     else { // other errors
       return [

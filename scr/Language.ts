@@ -19,6 +19,7 @@ const viet = {
     ios_updating: 'App đang bảo trì & cập nhật phiên bản mới.',
     vie: 'Tiếng Việt',
     en: 'English',
+    err_unique: 'Không thể rate item UNIQUE này. Vui lòng chọn hình khác!',
 
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
@@ -64,7 +65,8 @@ const eng: Lang = {
     ios_updating: 'The app is under maintaining and updating the new version!',
     vie: 'Tiếng Việt',
     en: 'English',
-    
+    err_unique: 'Cant rate this UNIQUE item. Pls select another pic!',
+
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',
     good: 'GOOD',

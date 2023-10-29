@@ -533,7 +533,7 @@ function App(): JSX.Element {
       item.fileID = id
       sessionFileIDs.current += ('[' + id + ']')
 
-      const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + id
+      const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + todayString + '/' + id
       const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, item.uri)
 
       if (uplodaErr) { // upload fail
@@ -709,7 +709,7 @@ function App(): JSX.Element {
     status.current = lang.current.uploading
     forceUpdate()
 
-    const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + currentFileID.current
+    const fbpath = (isDevDevice ? 'dev_file/' : 'user_file/') + todayString + '/' + currentFileID.current
     const uplodaErr = await FirebaseStorage_UploadAsync(fbpath, path)
 
     Track('uploaded_done', {

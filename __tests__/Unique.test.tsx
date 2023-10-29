@@ -28,10 +28,18 @@ test('TUSKHELM OF JORITZ THE MIGHTY', () => {
   expect(JSON.stringify(arr)).toBe(expected);
 });
 
-
 test('TUSKHELM OF JORITZ THE MIGHTY (multi lines)', () => {
   const text = "\r\n\r\nTUSKHELM OF\r\nJORITZ THE MIGHTY\r\nAncestral Unique Helm\r\n832+25 Item Power\r\n♦ Upgrades: 5/5\r\n1,071 Armor\r\nPACTS GRANTED (3/3):\r\nY 3\r\n• +12.0% Attack Speed\r\n⚫ +14.2% Damage while Berserking • +14 Maximum Fury\r\n⚫ +3 Ranks of the Aggressive Resistance Passive (Barbarian Only)\r\nWhen you gain Berserking while already Berserk, you have a 50% chance to become more enraged granting 15% increased damage, 2 Fury per second, and 10% Cooldown Reduction.\r\n4.0% Maximum Life\r\nAs he fought with side by side with Raekor to liberate the labor camp, Joritz claimed this dented helm from a fallen foe. As his legend grew, its unique shape became synonymous with his great deeds."
   const expected = "[\"Build Whirlwind Barb\"]"
+
+  const arr = GetSuitBuildsForUnique(text, uniqueBuilds)
+
+  expect(JSON.stringify(arr)).toBe(expected);
+});
+
+test("X'Fal's Corroded Signet", () => {
+  const text = "\r\n\r\n?\r\nReddit\r\nX'FAL'S CORRODED SIGNET Ancestral Unique Ring\r\n725 Item Power\r\n< >\r\n• +5.0% Resistance to All Elements\r\n♦ +5.0% Fire Resistance\r\n• [3.0 - 5.0]% Cooldown Reduction ♦ +[2.5 - 4.5]% Lucky Hit Chance ♦ +[10.0 - 20.0]% Damage Over Time • +[16 - 22] All Stats\r\n* Lucky Hit: Your damage over time effects have up to a 50% chance to erupt, dealing [13,111 - 15,733] damage of the same type to Nearby enemies.\r\nSkulking in the shadows of the Realm of Destruction, the\r\nScarred Baron plots the downfall of the mortal who banished him there.\r\n\"Fal's Corroded Signet : r/D4Barbarian\r\nmages may be subject to copyright. Learn More\r\nVisit >"
+  const expected = "[\"Build Blight CE Necro\",\"Build Firewall Sorc\"]"
 
   const arr = GetSuitBuildsForUnique(text, uniqueBuilds)
 

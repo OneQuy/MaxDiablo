@@ -1655,7 +1655,7 @@ function App(): JSX.Element {
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
                 <Text style={{ alignSelf: 'flex-start', color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}:</Text>
                 {
-                  events.map((event: Event, index: number) => {
+                  events.map((event: Event) => {
                     const [remainText, targetText, isPrepareFinish] = getRemainTimeTextOfEvent(event)
                     const bgColor = isPrepareFinish ? 'tomato' : 'whitesmoke'
                     const titleColor = isPrepareFinish ? 'black' : 'tomato'

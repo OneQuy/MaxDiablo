@@ -25,7 +25,7 @@ const viet = {
     very_good: 'RẤT TỐT',
     good: 'TỐT',
     normal: 'BÌNH THƯỜNG',
-    trash: 'RÁC RƯỞI',
+    trash: 'RÁC',
 
     cant_rate: 'Lỗi không thể phân tích hình',
     pls_pick_other: 'Vui lòng chụp lại hay chọn ảnh khác!',

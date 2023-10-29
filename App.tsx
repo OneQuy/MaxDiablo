@@ -329,6 +329,11 @@ function App(): JSX.Element {
   const onPressLang = useCallback((isViet: boolean) => {
     setIsLangViet(isViet ? 0 : 1)
     lang.current = GetLang(isViet)
+
+    if (isViet)
+      FirebaseIncrease('lang/viet')
+    else
+      FirebaseIncrease('lang/eng')
   }, [])
 
   const onPressTakeCamera = useCallback(async () => {
@@ -1514,14 +1519,14 @@ function App(): JSX.Element {
                 <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                   {
                     userImgUri.current === '' || ocrResultTextOnly.current ?
-                    // special item or blank
+                      // special item or blank
                       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
                         {
-                          !isUnique ? 
-                          // blank
-                          undefined : 
-                          // special item
-                          <Text style={{ color: 'white', fontSize: FontSize.Big }}>Unique</Text>
+                          !isUnique ?
+                            // blank
+                            undefined :
+                            // special item
+                            <Text style={{ color: 'white', fontSize: FontSize.Big }}>Unique</Text>
                         }
                       </View> :
                       // indicator (loading)

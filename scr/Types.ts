@@ -115,7 +115,7 @@ export type Event = {
 export type ImgItemData = {
     uri: string,
     slot?: SlotCard | undefined,
-    errorAlert?: [string, string] | undefined,
+    errorAlert?: [string, string],
     suitBuilds?: SuitBuildType[],
     rateResult?: RateResult,
     fileID: string,

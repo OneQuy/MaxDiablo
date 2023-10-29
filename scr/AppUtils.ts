@@ -1,11 +1,34 @@
+import { Lang } from "./Language"
 import { UniqueBuild } from "./Types"
+import { RoundNumber } from "./common/Utils"
+
+export const defineRateType_Unique = (lang: Lang) => GetRateTypeByScore(0.8, lang)
+export const defineRateType_UberUnique = (lang: Lang) => GetRateTypeByScore(1, lang)
+
+/**
+ * @returns [color, text]
+ */
+export const GetRateTypeByScore = (rawFloatScore: number, lang: Lang) => {
+    rawFloatScore = RoundNumber(rawFloatScore, 2)
+
+    if (rawFloatScore >= 1) // perfect
+        return ['tomato', lang.perfect]
+    else if (rawFloatScore >= 0.75) // very good
+        return ['gold', lang.very_good]
+    else if (rawFloatScore >= 0.5) // good
+        return ['moccasin', lang.good]
+    else if (rawFloatScore >= 0.25) // normal
+        return ['paleturquoise', lang.normal]
+    else // trash
+        return ['dodgerblue', lang.trash]
+}
 
 export const GetSuitBuildsForUnique = (resultTxt: string, uniqueBuilds: UniqueBuild[]): string[] => {
     resultTxt = resultTxt.toLowerCase()
 
     if (!resultTxt.includes('unique'))
         return []
-    
+
     const arr: string[] = []
 
     for (let ibuild = 0; ibuild < uniqueBuilds.length; ibuild++) {
@@ -33,7 +56,7 @@ export const GetSuitBuildsForUnique = (resultTxt: string, uniqueBuilds: UniqueBu
                 }
             }
 
-            if (includeAll) {                
+            if (includeAll) {
                 arr.push(build.name)
                 break
             }

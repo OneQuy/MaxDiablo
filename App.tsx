@@ -47,7 +47,7 @@ import MultiImagePage from './scr/MultiImagePage';
 import { GetItemState, numColumnGrid } from './scr/GridItem';
 import { GetLang, LangContext } from './scr/Language';
 import { useForceUpdate } from './scr/common/useForceUpdate';
-import { GetSuitBuildsForUnique } from './scr/AppUtils';
+import { GetRateTypeByScore, GetSuitBuildsForUnique, defineRateType_Unique } from './scr/AppUtils';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -973,7 +973,7 @@ function App(): JSX.Element {
     // rate final
 
     const finalScore = Math.max(rateScore_Class, rateScore_Class_Above3, valuableStatsScore)
-    const resultRate = getRateTypeByScore(finalScore)
+    const resultRate = GetRateTypeByScore(finalScore, lang.current)
 
     Track('rated', {
       finalScore,
@@ -997,21 +997,6 @@ function App(): JSX.Element {
     const idx = slot.stats.findIndex(i => i.name.toLowerCase() === stat.toLowerCase())
 
     return idx >= 0 ? 'white' : 'gray'
-  }, [])
-
-  const getRateTypeByScore = useCallback((rawFloatScore: number) => {
-    rawFloatScore = RoundNumber(rawFloatScore, 2)
-
-    if (rawFloatScore >= 1) // perfect
-      return ['tomato', lang.current.perfect]
-    else if (rawFloatScore >= 0.75) // very good
-      return ['gold', lang.current.very_good]
-    else if (rawFloatScore >= 0.5) // good
-      return ['moccasin', lang.current.good]
-    else if (rawFloatScore >= 0.25) // normal
-      return ['paleturquoise', lang.current.normal]
-    else // trash
-      return ['dodgerblue', lang.current.trash]
   }, [])
 
   const getScoreOfStat = useCallback((statName: string, x10: boolean, statsForRating: StatForRatingType[]) => {
@@ -1040,7 +1025,7 @@ function App(): JSX.Element {
     const stat = statsForRating.find(i => i[0].name.toLowerCase() === statName.toLowerCase())
 
     if (stat !== undefined) {
-      return getRateTypeByScore(stat[3])[0]
+      return GetRateTypeByScore(stat[3], lang.current)[0]
     }
     else
       return 'gray'
@@ -1442,7 +1427,7 @@ function App(): JSX.Element {
     suitBuilds.current.length > 0
 
   if (isUnique) { // unique
-    const define = getRateTypeByScore(0.8)
+    const define = defineRateType_Unique(lang.current)
 
     rateResultBoxTxt = define[1]
     rateResultBoxColor = define[0]

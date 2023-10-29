@@ -29,7 +29,7 @@ test('TUSKHELM OF JORITZ THE MIGHTY', () => {
 });
 
 
-test('TUSKHELM OF JORITZ THE MIGHTY 2', () => {
+test('TUSKHELM OF JORITZ THE MIGHTY (multi lines)', () => {
   const text = "\r\n\r\nTUSKHELM OF\r\nJORITZ THE MIGHTY\r\nAncestral Unique Helm\r\n832+25 Item Power\r\n♦ Upgrades: 5/5\r\n1,071 Armor\r\nPACTS GRANTED (3/3):\r\nY 3\r\n• +12.0% Attack Speed\r\n⚫ +14.2% Damage while Berserking • +14 Maximum Fury\r\n⚫ +3 Ranks of the Aggressive Resistance Passive (Barbarian Only)\r\nWhen you gain Berserking while already Berserk, you have a 50% chance to become more enraged granting 15% increased damage, 2 Fury per second, and 10% Cooldown Reduction.\r\n4.0% Maximum Life\r\nAs he fought with side by side with Raekor to liberate the labor camp, Joritz claimed this dented helm from a fallen foe. As his legend grew, its unique shape became synonymous with his great deeds."
   const expected = "[\"Build Whirlwind Barb\"]"
 

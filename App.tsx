@@ -24,7 +24,7 @@ import {
 
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
-import { RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
+import { GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
 import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
@@ -1162,16 +1162,7 @@ function App(): JSX.Element {
     }
 
     const remainMS = target - Date.now()
-
-    let sec = remainMS / 1000
-
-    const hour = Math.floor(sec / 3600)
-
-    sec = sec - hour * 3600
-
-    const min = Math.floor(sec / 60)
-
-    sec = Math.floor(sec - min * 60)
+    const [hour, min, sec] = GetHourMinSecFromMs(remainMS)
 
     let remainText = prependZero(hour) + ' : ' + prependZero(min) + ' : ' + prependZero(sec)
 

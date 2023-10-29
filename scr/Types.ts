@@ -86,6 +86,13 @@ export type IgnoredStatsOfSlot = {
     statNames: string[]
 }
 
+// unique ============
+
+export type UniqueBuild = {
+    name: string,
+    upperSlotNames: string[],
+}
+
 // others ============
 
 export type StatForRatingType = [Stat, Classs | undefined, Stat | undefined, number] // user stat, class, class data stat, rate score

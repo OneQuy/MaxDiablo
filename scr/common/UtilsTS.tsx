@@ -7,10 +7,11 @@ file / dir
 convert
 check type
 string utils
+time
 other utils
 */
 
-import { Alert, Platform, AlertButton, PermissionsAndroid, LayoutRectangle } from "react-native";
+import { Alert, Platform, AlertButton, PermissionsAndroid } from "react-native";
 
 // const -------------------------
 
@@ -335,6 +336,17 @@ export function VersionToNumber(version: string): number {
     }
 }
 
+/**
+ * @param wholeTxt 
+ * @aa
+ * @bb
+ * @
+ * @cc
+ * @dd
+ * 
+ * @returns 
+ * [[aa, bb], [cc, dd]]
+ */
 export function SplitSectionsFromText(wholeTxt: string): string[][] {
     const lines = wholeTxt.split('\n')
 
@@ -414,6 +426,20 @@ export const ExtractAllNumbersInText = (text: string): number[] => {
 
     floats = floats.filter(i => IsNumType(i))
     return floats
+}
+
+export const GetHourMinSecFromMs = (ms: number): [number, number, number] => {
+    let sec = ms / 1000
+
+    const hour = Math.floor(sec / 3600)
+
+    sec = sec - hour * 3600
+
+    const min = Math.floor(sec / 60)
+
+    sec = Math.floor(sec - min * 60)
+   
+    return [hour, min, sec]
 }
 
 // other utils ---------------------------

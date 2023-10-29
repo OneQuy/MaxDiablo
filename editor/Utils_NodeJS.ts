@@ -68,3 +68,28 @@ export const ExtractAllNumbersInText = (text: string): number[] => {
     
     return floats
 }
+
+export function SplitSectionsFromText(wholeTxt: string): string[][] {
+    const lines = wholeTxt.split('\n')
+
+    const arrRes: string[][] = []
+    let curElement: string[] | undefined = undefined
+
+    for (let iline = 0; iline < lines.length; iline++) {
+        const lineTrim = lines[iline].trim()
+
+        if (!lineTrim) {
+            curElement = undefined
+            continue
+        }
+
+        if (!curElement) {
+            curElement = []
+            arrRes.push(curElement)
+        }
+
+        curElement.push(lineTrim)
+    }
+
+    return arrRes
+}

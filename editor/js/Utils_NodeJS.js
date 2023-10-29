@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.ExtractAllNumbersInText = exports.GetParamExcludesDefaults = exports.GetParam = exports.IsParamExist = exports.LogYellow = exports.LogGreen = exports.LogRed = void 0;
+exports.SplitSectionsFromText = exports.ExtractAllNumbersInText = exports.GetParamExcludesDefaults = exports.GetParam = exports.IsParamExist = exports.LogYellow = exports.LogGreen = exports.LogRed = void 0;
 // https://en.m.wikipedia.org/wiki/ANSI_escape_code#Colors:~:text=Eclipse%20Terminal-,30,-40
 function LogRed() {
     var msg = [];
@@ -77,3 +77,22 @@ var ExtractAllNumbersInText = function (text) {
     return floats;
 };
 exports.ExtractAllNumbersInText = ExtractAllNumbersInText;
+function SplitSectionsFromText(wholeTxt) {
+    var lines = wholeTxt.split('\n');
+    var arrRes = [];
+    var curElement = undefined;
+    for (var iline = 0; iline < lines.length; iline++) {
+        var lineTrim = lines[iline].trim();
+        if (!lineTrim) {
+            curElement = undefined;
+            continue;
+        }
+        if (!curElement) {
+            curElement = [];
+            arrRes.push(curElement);
+        }
+        curElement.push(lineTrim);
+    }
+    return arrRes;
+}
+exports.SplitSectionsFromText = SplitSectionsFromText;

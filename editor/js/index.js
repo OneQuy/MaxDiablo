@@ -5,6 +5,7 @@ var GenerateAllStatName_1 = require("./GenerateAllStatName");
 var GenerateBuildData_1 = require("./GenerateBuildData");
 var GenerateClassData_1 = require("./GenerateClassData");
 var GenerateIgnoredStats_1 = require("./GenerateIgnoredStats");
+var GenerateUniqueBuild_1 = require("./GenerateUniqueBuild");
 var Utils_NodeJS_1 = require("./Utils_NodeJS");
 var main = function () {
     if ((0, Utils_NodeJS_1.IsParamExist)('build')) {
@@ -30,6 +31,9 @@ var main = function () {
     }
     else if ((0, Utils_NodeJS_1.IsParamExist)('ignorestat')) {
         (0, GenerateIgnoredStats_1.GenerateIgnoredStats)();
+    }
+    else if ((0, Utils_NodeJS_1.IsParamExist)('unique')) {
+        (0, GenerateUniqueBuild_1.GenerateUniqueBuild)();
     }
 };
 main();

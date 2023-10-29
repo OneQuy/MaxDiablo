@@ -3,6 +3,7 @@ import { GenerateAllStatName } from "./GenerateAllStatName";
 import { GenerateBuildData } from "./GenerateBuildData";
 import { GenerateClassData } from "./GenerateClassData";
 import { GenerateIgnoredStats } from "./GenerateIgnoredStats";
+import { GenerateUniqueBuild } from "./GenerateUniqueBuild";
 import { IsParamExist, LogGreen, LogRed } from "./Utils_NodeJS";
 
 const main = () => {
@@ -31,6 +32,9 @@ const main = () => {
     }
     else if (IsParamExist('ignorestat')) {
         GenerateIgnoredStats()
+    }
+    else if (IsParamExist('unique')) {
+        GenerateUniqueBuild()
     }
 }
 

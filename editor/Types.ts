@@ -85,3 +85,10 @@ export type IgnoredStatsOfSlot = {
     name: SlotName,
     statNames: string[]
 }
+
+// unique ============
+
+export type UniqueBuild = {
+    name: string,
+    upperSlotNames: string[],
+}

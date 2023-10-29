@@ -47,6 +47,7 @@ import MultiImagePage from './scr/MultiImagePage';
 import { GetItemState, numColumnGrid } from './scr/GridItem';
 import { GetLang, LangContext } from './scr/Language';
 import { useForceUpdate } from './scr/common/useForceUpdate';
+import { GetSuitBuildsForUnique } from './scr/AppUtils';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -595,13 +596,22 @@ function App(): JSX.Element {
         item.ocrResultTxt = resultText
       }
 
+      // check unique
+
+      const arrUniqueSuitBuilds = GetSuitBuildsForUnique(resultText, uniqueBuilds)
+
+      if (arrUniqueSuitBuilds.length > 0) {
+
+        return
+      }
+
       // extract 
 
       let slot = ExtractSlotCard(resultText, false)
       const isSuccess = typeof slot === 'object'
 
       if (!isDevDevice && remoteConfig.current.save_ocr_result) {
-        const setpath = (isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + id
+        const setpath = (isSuccess ? 'ocr_result_2/success/' : 'ocr_result_2/fail/') + todayString + '/' + id
         FirebaseDatabase_SetValueAsync(setpath, { result: resultText, version })
       }
 
@@ -640,6 +650,8 @@ function App(): JSX.Element {
         return
       }
     }
+
+    // tracking
 
     multiSelectedItem.current = undefined
     sessionSelectedImgCount.current += multiImageItems.current.length
@@ -1028,10 +1040,8 @@ function App(): JSX.Element {
       FirebaseIncrease('extracted_count/' + todayString + '/fail')
 
     if (!isDevDevice && remoteConfig.current.save_ocr_result && currentFileID.current !== '') {
-      FirebaseDatabase_SetValueAsync((isSuccess ? 'ocr_result/success/' : 'ocr_result/fail/') + currentFileID.current, {
-        result: ocrResultTextOnly.current,
-        version
-      })
+      const setpath = (isSuccess ? 'ocr_result_2/success/' : 'ocr_result_2/fail/') + todayString + '/' + currentFileID.current
+      FirebaseDatabase_SetValueAsync(setpath, { result: ocrResultTextOnly.current, version })
     }
 
     if (typeof extractRes === 'object') { // success

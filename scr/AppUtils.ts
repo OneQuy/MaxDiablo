@@ -3,6 +3,9 @@ import { UniqueBuild } from "./Types"
 export const GetSuitBuildsForUnique = (resultTxt: string, uniqueBuilds: UniqueBuild[]): string[] => {
     resultTxt = resultTxt.toLowerCase()
 
+    if (!resultTxt.includes('unique'))
+        return []
+    
     const arr: string[] = []
 
     for (let ibuild = 0; ibuild < uniqueBuilds.length; ibuild++) {

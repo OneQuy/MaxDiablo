@@ -1423,10 +1423,36 @@ function App(): JSX.Element {
     }
   }, [])
 
+  // should show suid build list?
+
   const notShowSuitBuilds =
     !suitBuilds.current ||
     suitBuilds.current.length === 0 ||
     (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build)
+
+  // rate result box text
+
+  let rateResultBoxTxt = rateResult.current.text
+  let rateResultBoxTxtColor = rateResult.current.text === '...' ? 'white' : 'black'
+  let rateResultBoxColor = rateResult.current.color
+
+  const isUnique =
+    rateResult.current === DefaultRateResult &&
+    suitBuilds.current &&
+    suitBuilds.current.length > 0
+
+  if (isUnique) { // unique
+    const define = getRateTypeByScore(0.8)
+
+    rateResultBoxTxt = define[1]
+    rateResultBoxColor = define[0]
+
+    rateResultBoxTxtColor = 'black'
+  }
+
+  const isShowScoreTxt = !isUnique
+
+  // render lange selection
 
   if (isLangViet === -1) {
     return (
@@ -1440,6 +1466,8 @@ function App(): JSX.Element {
       </SafeAreaView>
     )
   }
+
+  // main render
 
   return (
     <LangContext.Provider value={lang.current}>
@@ -1496,11 +1524,22 @@ function App(): JSX.Element {
             </View>
             {/* loading & info */}
             {
-              // loading
+              // loading or special item (unique,...) or blank
               !currentSlot.current ?
                 <View style={{ opacity: isTouchingImg ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                   {
-                    userImgUri.current === '' || ocrResultTextOnly.current ? undefined :
+                    userImgUri.current === '' || ocrResultTextOnly.current ?
+                    // special item or blank
+                      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
+                        {
+                          !isUnique ? 
+                          // blank
+                          undefined : 
+                          // special item
+                          <Text style={{ color: 'white', fontSize: FontSize.Big }}>Unique</Text>
+                        }
+                      </View> :
+                      // indicator (loading)
                       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
                         <ActivityIndicator color={'tomato'} />
                         <Text style={{ color: 'white' }}>{status.current}</Text>
@@ -1548,10 +1587,13 @@ function App(): JSX.Element {
           {/* rating result box */}
           {
             <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
-              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateResult.current.text === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateResult.current.color, padding: 10, borderRadius: 10 }} >
-                <Text style={{ color: rateResult.current.text === '...' ? 'white' : 'black', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.text}</Text>
+              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateResult.current.text === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateResultBoxColor, padding: 10, borderRadius: 10 }} >
+                <Text style={{ color: rateResultBoxTxtColor, fontSize: 30, fontWeight: 'bold' }}>{rateResultBoxTxt}</Text>
               </View>
-              <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.score >= 0 ? RoundNumber(rateResult.current.score * 10, 1) : 0}/10</Text>
+              {
+                !isShowScoreTxt ? undefined :
+                  <Text onPress={onPressTotalScore} style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>{rateResult.current.score >= 0 ? RoundNumber(rateResult.current.score * 10, 1) : 0}/10</Text>
+              }
             </View>
           }
           {/* ios updating note */}
@@ -1621,9 +1663,9 @@ function App(): JSX.Element {
                     return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: 5, borderWidth: 1, backgroundColor: bgColor }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
-                        <Text style={{ color: 'black', fontWeight: FontWeight.B500, fontSize: FontSize.Big }}>{remainText}</Text>
+                        <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
                       </View>
-                      <Text style={{ color: 'black', fontSize: FontSize.Big }}>{targetText}</Text>
+                      <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{targetText}</Text>
                     </View>
                   })
                 }

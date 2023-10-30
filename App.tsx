@@ -1430,9 +1430,9 @@ function App(): JSX.Element {
     suitBuilds.current.length === 0
 
 
-  const ios_diable_info =
-    (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) ||
-    version === remoteConfig.current.apple_review_version
+  const ios_diable_info = Platform.OS === 'ios' &&
+    (remoteConfig.current.ios_disable_suit_build ||
+      version === remoteConfig.current.apple_review_version)
 
   // rate result box text
 

@@ -65,3 +65,54 @@ export const GetSuitBuildsForUnique = (resultTxt: string, uniqueBuilds: UniqueBu
 
     return arr
 }
+
+const uberUniqueUpperNames = [
+    'Doombringer',
+
+    'The Grandfather',
+
+    'Melted Heart of Selig',
+
+    "Andariel's Visage",
+
+    'Harlequin Crest',
+
+    'Ring of Starless Skies',
+
+    'Ahavarion, Spear of Lycander',
+]
+
+export const IsUberUnique = (resultTxt: string): boolean => {
+    resultTxt = resultTxt.toLowerCase()
+
+    if (!resultTxt.includes('unique'))
+        return false
+
+    for (let iUpperName = 0; iUpperName < uberUniqueUpperNames.length; iUpperName++) {
+        const upperNameLower = uberUniqueUpperNames[iUpperName].toLowerCase()
+
+        // include whole name
+
+        if (resultTxt.includes(upperNameLower)) {
+           return true
+        }
+
+        // break in lines
+
+        const words = upperNameLower.split(' ')
+        let includeAll = true
+
+        for (let iword = 0; iword < words.length; iword++) {
+            if (!resultTxt.includes(words[iword])) {
+                includeAll = false
+                break
+            }
+        }
+
+        if (includeAll) {
+            return true
+        }
+    }
+
+    return false
+}

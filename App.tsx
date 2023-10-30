@@ -47,7 +47,7 @@ import MultiImagePage from './scr/MultiImagePage';
 import { GetItemState, numColumnGrid } from './scr/GridItem';
 import { GetLang, LangContext } from './scr/Language';
 import { useForceUpdate } from './scr/common/useForceUpdate';
-import { GetRateTypeByScore, GetSuitBuildsForUnique, defineRateType_Unique } from './scr/AppUtils';
+import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -127,6 +127,7 @@ function App(): JSX.Element {
   const ocrResultTextOnly = useRef('')
   const suitBuilds = useRef<SuitBuildType[]>()
   const rateResult = useRef<RateResult>(DefaultRateResult)
+  const isUberUnique = useRef(false)
 
   // other
 
@@ -458,6 +459,7 @@ function App(): JSX.Element {
     suitBuilds.current = item.suitBuilds
     rateResult.current = item.rateResult ? item.rateResult : DefaultRateResult
     currentFileID.current = item.fileID
+    isUberUnique.current = IsUberUnique(ocrResultTextOnly.current)
 
     if (state === 'success') {
       status.current = ''
@@ -717,6 +719,7 @@ function App(): JSX.Element {
     rateResult.current = DefaultRateResult
     userImgUri.current = ''
     multiImageItems.current = []
+    isUberUnique.current = false
 
     sessionSelectedImgCount.current++
 
@@ -1042,11 +1045,12 @@ function App(): JSX.Element {
 
     // check unique
 
-    const arrUniqueSuitBuilds = GetSuitBuildsForUnique(result, uniqueBuilds)
+    isUberUnique.current = IsUberUnique(result)
+    const arrUniqueSuitBuilds = isUberUnique.current ? [] : GetSuitBuildsForUnique(result, uniqueBuilds)
     const isUniqueAndHasSuitBuilds = arrUniqueSuitBuilds.length > 0
 
-    let extractRes = isUniqueAndHasSuitBuilds ? 'unique' : ExtractSlotCard(result, stringifyResult)
-    const isSuccess = isUniqueAndHasSuitBuilds || typeof extractRes === 'object'
+    let extractRes = (isUniqueAndHasSuitBuilds || isUberUnique.current) ? 'unique' : ExtractSlotCard(result, stringifyResult)
+    const isSuccess = isUberUnique.current || isUniqueAndHasSuitBuilds || typeof extractRes === 'object'
 
     // track
 
@@ -1072,7 +1076,10 @@ function App(): JSX.Element {
 
       // rate
 
-      if (isUniqueAndHasSuitBuilds) { // unique
+      if (isUniqueAndHasSuitBuilds) { // uber unique
+        sessionRatedResult.current += '[UBER UNIQUE]'
+      }
+      else if (isUniqueAndHasSuitBuilds) { // unique
         suitBuilds.current = arrUniqueSuitBuilds.map((buildName: string) => [
           undefined,
           {
@@ -1431,7 +1438,15 @@ function App(): JSX.Element {
     suitBuilds.current &&
     suitBuilds.current.length > 0
 
-  if (isUnique) { // unique
+  if (isUberUnique.current) { // uber unique
+    const define = defineRateType_UberUnique(lang.current)
+
+    rateResultBoxTxt = define[1]
+    rateResultBoxColor = define[0]
+
+    rateResultBoxTxtColor = 'black'
+  }
+  else if (isUnique) { // unique
     const define = defineRateType_Unique(lang.current)
 
     rateResultBoxTxt = define[1]
@@ -1440,7 +1455,7 @@ function App(): JSX.Element {
     rateResultBoxTxtColor = 'black'
   }
 
-  const isShowScoreTxt = !isUnique
+  const isShowScoreTxt = !isUnique && !isUberUnique.current
 
   // render lange selection
 

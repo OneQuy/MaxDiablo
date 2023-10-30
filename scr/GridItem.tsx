@@ -4,7 +4,7 @@ import { ImgItemData } from './Types'
 import { FontWeight, Outline, windowSize } from './AppConstant'
 import { RoundNumber } from './common/Utils'
 import { LangContext } from './Language'
-import { defineRateType_Unique } from './AppUtils'
+import { IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './AppUtils'
 
 type Props = {
   itemData: ImgItemData,
@@ -21,12 +21,16 @@ const GridItem = (props: Props) => {
   const lang = useContext(LangContext)
   const isWaitingAPI = props.itemData.ocrResultTxt === undefined
   const isUnique = props.itemData.rateResult === undefined && props.itemData.suitBuilds && props.itemData.suitBuilds.length > 0
-  const ratedSuccess = isUnique || props.itemData.rateResult !== undefined
+  const isUberUnique = props.itemData.ocrResultTxt && IsUberUnique(props.itemData.ocrResultTxt)
+
+  const ratedSuccess = isUnique || isUberUnique || props.itemData.rateResult !== undefined
 
   let displayLine_1: string // indicator | result rate text
 
   if (ratedSuccess) {
-    if (isUnique)
+    if (isUberUnique)
+      displayLine_1 = defineRateType_UberUnique(lang)[1]
+    else if (isUnique)
       displayLine_1 = defineRateType_Unique(lang)[1]
     else
       // @ts-ignore
@@ -40,7 +44,9 @@ const GridItem = (props: Props) => {
   let displayLine_2: string // score | 'rating..'
 
   if (ratedSuccess) {
-    if (isUnique)
+    if (isUberUnique)
+      displayLine_2 = '(Uber Unique)'
+    else if (isUnique)
       displayLine_2 = '(Unique)'
     else
       // @ts-ignore
@@ -51,7 +57,10 @@ const GridItem = (props: Props) => {
   else
     displayLine_2 = lang.fail
 
-  const bgColor = ratedSuccess ? (isUnique ?  defineRateType_Unique(lang)[0] : props.itemData.rateResult?.color) : 'gray'
+  let bgColor = ratedSuccess ? (isUnique ? defineRateType_Unique(lang)[0] : props.itemData.rateResult?.color) : 'gray'
+
+  if (isUberUnique)
+    bgColor = defineRateType_UberUnique(lang)[0]
 
   const onPress = useCallback(() => {
     props.onPress(props.itemData)

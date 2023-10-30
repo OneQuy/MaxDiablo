@@ -181,7 +181,9 @@ function App(): JSX.Element {
     ios_disable_suit_build: true,
     dev_devices: '',
     version_note_vn: '',
-    version_note_en: ''
+    version_note_en: '',
+    notify_vn: '',
+    notify_en: ''
   })
 
   // moving pic
@@ -1456,6 +1458,7 @@ function App(): JSX.Element {
   }
 
   const isShowScoreTxt = !isUnique && !isUberUnique.current
+  const showNotify = !(!remoteConfig.current.notify_vn)
 
   // render lange selection
 
@@ -1484,6 +1487,13 @@ function App(): JSX.Element {
           <Text onPress={() => showAdsInterstitial('test')} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
           <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>{lang.current.rate_app}</Text>
         </View>
+        {/* red alert */}
+        {
+          !showNotify ? undefined :
+          <View style={{ marginHorizontal: Outline.Margin, gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: FontSize.Big, color: 'white', fontWeight: 'bold' }}>{isLangViet === 0 ? remoteConfig.current.notify_vn : remoteConfig.current.notify_en}</Text>
+          </View>
+        }
         {/* the rest */}
         <ScrollView
           scrollEnabled={!isTouchingImg}

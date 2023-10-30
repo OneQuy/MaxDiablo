@@ -1079,7 +1079,7 @@ function App(): JSX.Element {
 
       // rate
 
-      if (isUniqueAndHasSuitBuilds) { // uber unique
+      if (isUberUnique.current) { // uber unique
         sessionRatedResult.current += '[UBER UNIQUE]'
       }
       else if (isUniqueAndHasSuitBuilds) { // unique

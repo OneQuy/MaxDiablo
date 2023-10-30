@@ -183,7 +183,8 @@ function App(): JSX.Element {
     version_note_vn: '',
     version_note_en: '',
     notify_vn: '',
-    notify_en: ''
+    notify_en: '',
+    apple_review_version: '',
   })
 
   // moving pic
@@ -1426,8 +1427,12 @@ function App(): JSX.Element {
 
   const notShowSuitBuilds =
     !suitBuilds.current ||
-    suitBuilds.current.length === 0 ||
-    (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build)
+    suitBuilds.current.length === 0
+
+
+  const ios_diable_info =
+    (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) ||
+    version === remoteConfig.current.apple_review_version
 
   // rate result box text
 
@@ -1490,9 +1495,9 @@ function App(): JSX.Element {
         {/* red alert */}
         {
           !showNotify ? undefined :
-          <View style={{ marginHorizontal: Outline.Margin, gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: FontSize.Big, color: 'white', fontWeight: 'bold' }}>{isLangViet === 0 ? remoteConfig.current.notify_vn : remoteConfig.current.notify_en}</Text>
-          </View>
+            <View style={{ marginHorizontal: Outline.Margin, gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: FontSize.Big, color: 'white', fontWeight: 'bold' }}>{isLangViet === 0 ? remoteConfig.current.notify_vn : remoteConfig.current.notify_en}</Text>
+            </View>
         }
         {/* the rest */}
         <ScrollView
@@ -1562,7 +1567,7 @@ function App(): JSX.Element {
                   }
                 </View> :
                 // user stats info
-                <View style={{ opacity: ((Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) || isTouchingImg) ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
+                <View style={{ opacity: (ios_diable_info || isTouchingImg) ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                   {/* slot name  */}
                   <View style={{ flexDirection: 'row' }}>
                     <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: 5, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
@@ -1613,14 +1618,14 @@ function App(): JSX.Element {
           }
           {/* ios updating note */}
           {
-            (remoteConfig.current.android_version === '' || Platform.OS !== 'ios' || !remoteConfig.current.ios_disable_suit_build) ? undefined :
+            !ios_diable_info ? undefined :
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
                 <Text style={{ color: 'white', fontSize: FontSize.Big, }}>{lang.current.ios_updating}</Text>
               </View>
           }
           {/* builds suit */}
           {
-            notShowSuitBuilds ? undefined :
+            notShowSuitBuilds || ios_diable_info ? undefined :
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
                 <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.list_suit_builds} ({suitBuilds.current?.length} build):</Text>
                 {
@@ -1666,7 +1671,7 @@ function App(): JSX.Element {
           }
           {/* events */}
           {
-            (Platform.OS === 'ios' && remoteConfig.current.ios_disable_suit_build) ? undefined :
+            (ios_diable_info) ? undefined :
               <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap * 2, alignItems: 'center', gap: Outline.Gap }}>
                 <Text style={{ alignSelf: 'flex-start', color: 'white', fontSize: FontSize.Normal }}>{lang.current.events}:</Text>
                 {

@@ -43,7 +43,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
-import { GetItemState, numColumnGrid } from './scr/GridItem';
+import { GetItemState } from './scr/GridItem';
 import { GetLang, LangContext } from './scr/Language';
 import { useForceUpdate } from './scr/common/useForceUpdate';
 import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
@@ -1567,11 +1567,11 @@ function App(): JSX.Element {
                       // special item or blank
                       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: Outline.Gap }}>
                         {
-                          !isUnique ?
+                          !isUnique && !isUberUnique.current ?
                             // blank
                             undefined :
                             // special item
-                            <Text style={{ color: 'white', fontSize: FontSize.Big }}>Unique</Text>
+                            <Text style={{ color: 'white', fontSize: FontSize.Big }}>{isUnique ? 'Unique' : 'Uber Unique'}</Text>
                         }
                       </View> :
                       // indicator (loading)

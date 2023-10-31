@@ -440,7 +440,7 @@ function App(): JSX.Element {
   const onPressItemInMulti = useCallback((item: ImgItemData) => {
     multiSelectedItem.current = item
     updateSelectedItemStateToMainScreen()
-    toggleShowMulti()
+    toggleShowMulti(false)
   }, [])
 
   const updateSelectedItemStateToMainScreen = useCallback(() => {
@@ -522,9 +522,12 @@ function App(): JSX.Element {
     interstitial.load()
   }, [])
 
-  const toggleShowMulti = useCallback(() => {
+  const toggleShowMulti = useCallback((isUserPress: boolean) => {
     isShowMulti.current = !isShowMulti.current
     forceUpdate()
+
+    if (isUserPress && isShowMulti.current)
+      showAdsInterstitial('press_show_multi')
   }, [])
 
   const updateMultiStateAsync = useCallback(async () => {
@@ -711,7 +714,7 @@ function App(): JSX.Element {
 
     FirebaseIncrease('selected_img_count/' + todayString, multiImageItems.current.length)
 
-    toggleShowMulti()
+    toggleShowMulti(false)
     startHandleMulti()
   }, [])
 
@@ -1713,7 +1716,7 @@ function App(): JSX.Element {
               <View onTouchEnd={() => onPressNextItemInMulti(false)} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: canPressPreviousItemInMulti.current ? 'white' : 'gray', alignItems: 'center', justifyContent: 'center' }}>
                 <Image source={leftIcon} style={{ width: 20, height: 20 }} />
               </View>
-              <View onTouchEnd={toggleShowMulti} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
+              <View onTouchEnd={() => toggleShowMulti(true)} style={{ borderRadius: 5, padding: 10, flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
                 <Text style={{ color: 'black', fontSize: FontSize.Normal, }}>{lang.current.show_multi_btn}</Text>
               </View>
               <View onTouchEnd={() => onPressNextItemInMulti(true)} style={{ minWidth: windowSize.width / 7, borderRadius: 5, padding: 10, backgroundColor: canPressNextItemInMulti.current ? 'white' : 'gray', alignItems: 'center', justifyContent: 'center' }}>
@@ -1725,7 +1728,7 @@ function App(): JSX.Element {
         {
           !isShowMulti.current ? undefined :
             <MultiImagePage
-              toggleShow={toggleShowMulti}
+              toggleShow={() => toggleShowMulti(false)}
               onPressItem={onPressItemInMulti}
               items={multiImageItems.current} />
         }

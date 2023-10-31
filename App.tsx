@@ -505,13 +505,16 @@ function App(): JSX.Element {
   const showAdsInterstitial = useCallback((location: string) => {
     reallyNeedToShowInterstitial.current = true
     Track('fire_show_ads', loadedInterstitial.current)
-    FirebaseIncrease('ads/check_sum' + location)
+    FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/check_to_call_sum')
+    FirebaseIncrease('ads_v2/check_to_call_total')
 
     if (loadedInterstitial.current) {
       loadedInterstitial.current = false
       sessionRequestAds.current++
-      FirebaseIncrease('ads/' + location)
-      FirebaseIncrease('ads/really_call_sum' + location)
+
+      FirebaseIncrease('ads_v2/really_call_total')
+      FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/really_call')
+      
       interstitial.show()
     }
     else {
@@ -1405,6 +1408,8 @@ function App(): JSX.Element {
         cachedAlert.current = undefined
       }
 
+      FirebaseIncrease('ads_v2/day/' + todayString + '/closed')
+      FirebaseIncrease('ads_v2/closed_total')
       Track('ads_closed')
     });
 

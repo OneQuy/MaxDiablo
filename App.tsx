@@ -17,6 +17,7 @@ import {
   ScrollView,
   StatusBar,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
   ViewProps
@@ -185,8 +186,8 @@ function App(): JSX.Element {
     version_note_en: '',
     notify_vn: '',
     notify_en: '',
-    notify_limit_ver: '',
-    notify_style: '',
+    notify_max_ver: '',
+    notify_style: 0,
     apple_review_version: '',
     api_index: 1,
   })
@@ -1213,7 +1214,7 @@ function App(): JSX.Element {
       rateLimitText.current = 'N/A'
     }
   }, [])
-  
+
   const getReleaseNote = useCallback(() => {
     let releaseNote = isLangViet !== 1 ?
       remoteConfig.current.version_note_vn :
@@ -1491,7 +1492,19 @@ function App(): JSX.Element {
   }
 
   const isShowScoreTxt = !isUnique && !isUberUnique.current
-  const showNotify = !(!remoteConfig.current.notify_vn)
+
+  const showNotifyText =
+    remoteConfig.current.notify_vn &&
+    remoteConfig.current.notify_en &&
+    (!remoteConfig.current.notify_max_ver || VersionToNumber(version) <= VersionToNumber(remoteConfig.current.notify_max_ver))
+
+  const notifyText = showNotifyText ?
+    (isLangViet !== 1 ? remoteConfig.current.notify_vn : remoteConfig.current.notify_en) :
+    undefined
+
+  const notifyTextColor = remoteConfig.current.notify_style === 2 ? 'tomato' : 'white'
+  const notifyTextSize = remoteConfig.current.notify_style ===  0 ? FontSize.Normal : FontSize.Big
+  const notifyTextWeight: TextStyle['fontWeight'] = remoteConfig.current.notify_style ===  0 ? 'normal' : FontWeight.B500
 
   // render lange selection
 
@@ -1520,11 +1533,11 @@ function App(): JSX.Element {
           <Text onPress={() => showAdsInterstitial('test')} style={{ fontSize: FontSize.Big, color: 'tomato', fontWeight: 'bold' }}>{appName}</Text>
           <Text onPress={remoteConfig.current.show_rate_app ? OnPressed_StoreRate : undefined} style={{ fontStyle: 'italic', fontSize: FontSize.Normal, color: remoteConfig.current.show_rate_app ? 'white' : 'black' }}>{lang.current.rate_app}</Text>
         </View>
-        {/* red alert */}
+        {/* red alert (notify) */}
         {
-          !showNotify ? undefined :
+          !showNotifyText ? undefined :
             <View style={{ marginHorizontal: Outline.Margin, gap: Outline.Gap, alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: FontSize.Big, color: 'white', fontWeight: 'bold' }}>{isLangViet === 0 ? remoteConfig.current.notify_vn : remoteConfig.current.notify_en}</Text>
+              <Text style={{ fontSize: notifyTextSize, color: notifyTextColor, fontWeight: notifyTextWeight }}>{notifyText}</Text>
             </View>
         }
         {/* the rest */}

@@ -2,6 +2,8 @@ import { Dimensions } from "react-native";
 
 export const windowSize = Dimensions.get('window')
 
+export const limitMultiImage = 6
+
 export enum FontSize {
     Small = 12,
     Normal = 15,

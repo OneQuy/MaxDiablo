@@ -26,7 +26,7 @@ import {
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
-import { FontSize, FontWeight, Outline, windowSize } from './scr/AppConstant';
+import { FontSize, FontWeight, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Event, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
@@ -294,7 +294,7 @@ function App(): JSX.Element {
       mediaType: 'photo',
       maxHeight: 1000,
       maxWidth: 1000,
-      selectionLimit: 9,
+      selectionLimit: limitMultiImage,
     })
 
     isOpeningCameraOrPhotoPicker.current = false
@@ -717,6 +717,10 @@ function App(): JSX.Element {
   }, [])
 
   const onSelectedMultiImgAsync = useCallback(async (response: Asset[]) => {
+    if (response.length > limitMultiImage) {
+      response = response.slice(0, limitMultiImage)
+    }
+
     multiImageItems.current = response.map((img) => {
       return { uri: img.uri } as ImgItemData
     })

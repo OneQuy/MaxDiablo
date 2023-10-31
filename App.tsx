@@ -40,7 +40,6 @@ import { Track } from './scr/common/ForageAnalytic';
 import { StorageLog_ClearAsync, StorageLog_GetAsync, StorageLog_LogAsync } from './scr/common/StorageLog';
 import { Image as ImageCompressor } from 'react-native-compressor';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { getUniqueId, getBrand } from 'react-native-device-info';
 import MultiImagePage from './scr/MultiImagePage';
@@ -48,6 +47,8 @@ import { GetItemState, numColumnGrid } from './scr/GridItem';
 import { GetLang, LangContext } from './scr/Language';
 import { useForceUpdate } from './scr/common/useForceUpdate';
 import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
+import { API } from './scr/API';
+import { AxiosResponse } from 'axios';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -185,6 +186,7 @@ function App(): JSX.Element {
     notify_vn: '',
     notify_en: '',
     apple_review_version: '',
+    api_index: 1,
   })
 
   // moving pic
@@ -587,20 +589,18 @@ function App(): JSX.Element {
 
       Track('call_api', { fileID: id })
 
-      const response = await axios.request(GetAPIOption(getURLRes.url))
+      const [resultText, response] = await API(getURLRes.url, remoteConfig.current.api_index)
 
       sessionExtractedCount.current++
 
       updateTextLimitRate(response)
 
-      const resultText = response.data?.text
-
-      if (!resultText) {
+      if (!resultText) { // failed
         item.ocrResultTxt = ''
 
         item.errorAlert = [
           lang.current.cant_rate,
-          lang.current.pls_pick_other + '\n\nNo result text.'
+          lang.current.pls_pick_other + '\n\n' + ToCanPrint(response)
         ]
 
         updateMultiStateAsync()
@@ -609,7 +609,7 @@ function App(): JSX.Element {
 
         return
       }
-      else {
+      else { // success
         item.ocrResultTxt = resultText
       }
 
@@ -1164,7 +1164,7 @@ function App(): JSX.Element {
 
       // call api
 
-      const response = await axios.request(GetAPIOption(imgUrl));
+      const [resultTxt, response] = await API(imgUrl, remoteConfig.current.api_index)
 
       // api limit text
 
@@ -1172,12 +1172,10 @@ function App(): JSX.Element {
 
       // handle 
 
-      const result = response.data?.text
+      if (!resultTxt)
+        throw ToCanPrint(response)
 
-      if (!result)
-        throw 'ImageToText API has no result.'
-
-      onGotOcrResultTextAsync(result, false, fbPathToDelete)
+      onGotOcrResultTextAsync(resultTxt, false, fbPathToDelete)
     } catch (error) {
       cacheOrShowAlert(
         lang.current.cant_rate,
@@ -1193,11 +1191,16 @@ function App(): JSX.Element {
     }
   }, [])
 
-  const updateTextLimitRate = useCallback((response: AxiosResponse) => {
-    if (response.headers['x-ratelimit-requests-remaining'] > 0)
-      rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
-    else
-      rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
+  const updateTextLimitRate = useCallback((response: AxiosResponse | undefined) => {
+    if (response && response.headers) {
+      if (response.headers['x-ratelimit-requests-remaining'] > 0)
+        rateLimitText.current = `${response.headers['x-ratelimit-requests-remaining']}/${response.headers['x-ratelimit-requests-limit']}`
+      else
+        rateLimitText.current = `(${Math.abs(response.headers['x-ratelimit-requests-remaining'])})`
+    }
+    else {
+      rateLimitText.current = 'N/A'
+    }
   }, [])
 
   const getRemainTimeTextOfEvent = useCallback((event: Event) => {
@@ -1430,9 +1433,10 @@ function App(): JSX.Element {
     suitBuilds.current.length === 0
 
 
-  const ios_diable_info = Platform.OS === 'ios' &&
-    (remoteConfig.current.ios_disable_suit_build ||
-      version === remoteConfig.current.apple_review_version)
+  const ios_diable_info = false
+  // Platform.OS === 'ios' &&
+  //   (remoteConfig.current.ios_disable_suit_build ||
+  //     version === remoteConfig.current.apple_review_version)
 
   // rate result box text
 
@@ -1885,20 +1889,6 @@ const OnPressed_StoreRate = () => {
   const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
   Linking.openURL(storeLink)
   Track('pressed_ratestore')
-}
-
-const GetAPIOption = (url: string) => {
-  return {
-    method: 'GET',
-    url: 'https://image-to-text9.p.rapidapi.com/ocr',
-    params: {
-      url
-    },
-    headers: {
-      'X-RapidAPI-Key': '693dd75456msh921c376e306158cp12c5dbjsn32ff82c9294a',
-      'X-RapidAPI-Host': 'image-to-text9.p.rapidapi.com'
-    }
-  };
 }
 
 const TrackOnOpenApp = async () => {

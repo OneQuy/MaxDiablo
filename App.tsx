@@ -505,10 +505,13 @@ function App(): JSX.Element {
   const showAdsInterstitial = useCallback((location: string) => {
     reallyNeedToShowInterstitial.current = true
     Track('fire_show_ads', loadedInterstitial.current)
+    FirebaseIncrease('ads/check_sum' + location)
 
     if (loadedInterstitial.current) {
       loadedInterstitial.current = false
       sessionRequestAds.current++
+      FirebaseIncrease('ads/' + location)
+      FirebaseIncrease('ads/really_call_sum' + location)
       interstitial.show()
     }
     else {

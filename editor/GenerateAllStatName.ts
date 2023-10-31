@@ -88,7 +88,7 @@ export const GenerateAllStatName = () => {
 
     for (let islot = 0; islot < exports.length; islot++) {
         if (arr.includes(exports[islot])) {
-            LogRed(exports[islot])
+            // LogRed(exports[islot])
             continue
         }
 

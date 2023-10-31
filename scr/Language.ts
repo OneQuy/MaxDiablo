@@ -34,7 +34,7 @@ const viet = {
     update_detail: 'Chi tiết cập nhật',
 
     new_update: 'Có bản cập nhật mới!',
-    let_update: 'Vui lòng lên app store cập nhật phiên bản mới nhất.',
+    let_update: 'Vui lòng lên app store cập nhật phiên bản mới nhất gồm:',
 
     cam_permission: 'Thiếu quyền truy cập Camera!',
     pls_permit: 'Vui lòng cấp quyền truy cập.',
@@ -80,7 +80,7 @@ const eng: Lang = {
     update_detail: 'Release note',
 
     new_update: 'New update!',
-    let_update: 'Please update the app for the latest version and enjoy new features.',
+    let_update: 'Please update the app for the latest version and enjoy new features:',
 
     cam_permission: 'No permission to access your camera!',
     pls_permit: 'Please accept the permission.',

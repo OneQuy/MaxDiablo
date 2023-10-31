@@ -150,7 +150,7 @@ function App(): JSX.Element {
   const cheatPasteOCRResultCount = useRef(0)
   const showCheatTapCount = useRef(0)
   const isOpeningCameraOrPhotoPicker = useRef(false)
-  const lang = useRef(GetLang(true))
+  const lang = useRef(GetLang(isLangViet !== 1))
   const forceUpdate = useForceUpdate()
 
   // session
@@ -185,6 +185,8 @@ function App(): JSX.Element {
     version_note_en: '',
     notify_vn: '',
     notify_en: '',
+    notify_limit_ver: '',
+    notify_style: '',
     apple_review_version: '',
     api_index: 1,
   })
@@ -514,7 +516,7 @@ function App(): JSX.Element {
 
       FirebaseIncrease('ads_v2/really_call_total')
       FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/really_call')
-      
+
       interstitial.show()
     }
     else {
@@ -1211,6 +1213,18 @@ function App(): JSX.Element {
       rateLimitText.current = 'N/A'
     }
   }, [])
+  
+  const getReleaseNote = useCallback(() => {
+    let releaseNote = isLangViet !== 1 ?
+      remoteConfig.current.version_note_vn :
+      remoteConfig.current.version_note_en
+
+    if (!releaseNote)
+      return undefined
+
+    const arr = releaseNote.split('@')
+    return arr.join('\n')
+  }, [isLangViet])
 
   const getRemainTimeTextOfEvent = useCallback((event: Event) => {
     const origin = event.originTime
@@ -1254,12 +1268,14 @@ function App(): JSX.Element {
 
     const configVersion = Platform.OS === 'android' ? res.value.android_version : res.value.ios_version
 
-    if (VersionToNumber(version) < VersionToNumber(configVersion)) {
+    if (VersionToNumber(version) < VersionToNumber(configVersion)) { // need to update
       const storeLink = Platform.OS === 'android' ? googleStoreOpenLink : appleStoreOpenLink
+
+      let releaseNote = getReleaseNote()
 
       Alert.alert(
         lang.current.new_update,
-        lang.current.let_update,
+        lang.current.let_update + (releaseNote ? ('\n\n' + releaseNote) : ''),
         [
           {
             text: lang.current.update,
@@ -1278,13 +1294,10 @@ function App(): JSX.Element {
 
         // alert release note
 
-        let releaseNote = isLangViet !== 1 ? remoteConfig.current.version_note_vn : remoteConfig.current.version_note_en
+        let releaseNote = getReleaseNote()
 
         if (!releaseNote)
           return
-
-        const arr = releaseNote.split('@')
-        releaseNote = arr.join('\n')
 
         Alert.alert(
           lang.current.thank_for_update,

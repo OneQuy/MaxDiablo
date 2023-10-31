@@ -3,16 +3,17 @@ import { SlotOfClasses, Tier } from "./Types";
 const fs = require('fs')
 
 const KnownWeirdStats = [
-    'Damage for X Seconds After Dodging an Attack',
-    'Max Evade Charges',
-    'Damage to Healthy Enemies',
-    'Rank of Hammer of the Ancients',
     'Blocked Damage Reduction',
+    'Damage for X Seconds After Dodging an Attack',
+    'Damage Reduction from Poisoned Enemies',
+    'Damage to Healthy Enemies',
     'Main Hand Weapon Damage',
-    'Maximum Life Socket',
-    'Rank of Concealment',
+    'Max Evade Charges',
     'Max Evade Charge',
     'Mastery Skill Damage',
+    'Maximum Life Socket',
+    'Rank of Hammer of the Ancients',
+    'Rank of Concealment',
     'Rank of the Endless Pyre Passive',
 ]
 

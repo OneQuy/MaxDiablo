@@ -1,6 +1,9 @@
 import { SlotOfClasses, Tier } from "./Types";
+import { LogGreen, LogRed } from "./Utils_NodeJS";
 
 const fs = require('fs')
+
+const weirdstatdir = './editor/weirdstat/'
 
 const KnownWeirdStats = [
     'Blocked Damage Reduction',
@@ -16,6 +19,40 @@ const KnownWeirdStats = [
     'Rank of Concealment',
     'Rank of the Endless Pyre Passive',
 ]
+
+const SplitLine = (line: string): string[] => {
+    const arr = line.split('][')
+
+    const res: string[] = []
+
+    arr.forEach(element => {
+        element = element.replace('[', '')
+        element = element.replace(']', '')
+        res.push(element)
+    });
+
+    return res
+}
+const ReadWeirdStat = (): string[] => {
+    const fileUris = fs.readdirSync(weirdstatdir)
+    let arr: string[] = []
+
+    for (let iFile = 0; iFile < fileUris.length; iFile++) {
+        const filrUri = fileUris[iFile]
+
+        const text = fs.readFileSync(weirdstatdir + filrUri)
+
+        const obj = JSON.parse(text)
+
+        var values: string[] = Object.values(obj)
+
+        values.forEach(value => {
+            arr = arr.concat(SplitLine(value))
+        });
+    }
+
+    return arr
+}
 
 export const GenerateAllStatName = () => {
     const text = fs.readFileSync('./assets/ClassesData.json');
@@ -46,7 +83,18 @@ export const GenerateAllStatName = () => {
     // append KnownWeirdStats
 
     arr = arr.concat(KnownWeirdStats)
-    
+
+    const exports = ReadWeirdStat()
+
+    for (let islot = 0; islot < exports.length; islot++) {
+        if (arr.includes(exports[islot])) {
+            LogRed(exports[islot])
+            continue
+        }
+
+        arr.push(exports[islot])
+    }
+
     // done
 
     fs.writeFileSync('./assets/AllStats.json', JSON.stringify(arr, null, 1));

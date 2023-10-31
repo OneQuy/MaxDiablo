@@ -1,3 +1,5 @@
 xử lý weird stat trên fb:
+
 1. nếu là full stat name thì thêm vào KnownWeirdStats (editor/GenerateAllStatName.ts), build lại all stat
+    (Có thể export ra r thêm file vào editor/WeirdStat/) r chạy tool, ko cần xóa file export cũ)
 2. nếu stat name này là 1 phần của stat đúng thì thêm vào ForceFixStatNameList (scr/OCRUtils.tsx), rồi update app lên store lol

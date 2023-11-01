@@ -1462,10 +1462,10 @@ function App(): JSX.Element {
     suitBuilds.current.length === 0
 
 
-  const ios_diable_info = false
-  // Platform.OS === 'ios' &&
-  //   (remoteConfig.current.ios_disable_suit_build ||
-  //     version === remoteConfig.current.apple_review_version)
+  const ios_diable_info =
+    Platform.OS === 'ios' &&
+    (remoteConfig.current.ios_disable_suit_build ||
+      version === remoteConfig.current.apple_review_version)
 
   // rate result box text
 
@@ -1507,8 +1507,8 @@ function App(): JSX.Element {
     undefined
 
   const notifyTextColor = remoteConfig.current.notify_style === 2 ? 'tomato' : 'white'
-  const notifyTextSize = remoteConfig.current.notify_style ===  0 ? FontSize.Normal : FontSize.Big
-  const notifyTextWeight: TextStyle['fontWeight'] = remoteConfig.current.notify_style ===  0 ? 'normal' : FontWeight.B500
+  const notifyTextSize = remoteConfig.current.notify_style === 0 ? FontSize.Normal : FontSize.Big
+  const notifyTextWeight: TextStyle['fontWeight'] = remoteConfig.current.notify_style === 0 ? 'normal' : FontWeight.B500
 
   // render lange selection
 

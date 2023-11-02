@@ -26,7 +26,7 @@ import {
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { ColorNameToRgb, GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
-import { BorderRadius, BorderWidth, FontSize, FontWeight, NotifyInMinArr, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
+import { BorderRadius, BorderWidth, FontSize, FontWeight, NotifyInMinArr_Full, NotifyInMinArr_Max20, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Event, IgnoredStatsOfSlot, ImgItemData, NotificationData, NotificationState, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
@@ -536,8 +536,7 @@ function App(): JSX.Element {
         let start = CalcTargetTimeAndSaveEvent(event)
 
         for (let i = 0; i < 10; i++) {
-          let targetMS = start
-          targetMS -= notiData.comingNotiTimeInMinutes * 60 * 1000
+          let targetMS = start - notiData.comingNotiTimeInMinutes * 60 * 1000
 
           if (targetMS <= Date.now())
             targetMS = Date.now() + 1000
@@ -1920,7 +1919,7 @@ function App(): JSX.Element {
                 <Text style={{ color: 'black' }}>{lang.current.noti_in}:</Text>
                 <View style={{ flexDirection: 'row', gap: Outline.Gap / 2, }}>
                   {
-                    NotifyInMinArr.map((minute: number) => {
+                    (currentNotiSettingEventData.current.nameEvent === 'Legion' ? NotifyInMinArr_Max20 : NotifyInMinArr_Full).map((minute: number) => {
                       return <TouchableOpacity
                         key={minute}
                         onPress={() => onPressNotiBtn_NotifyIn(minute)}

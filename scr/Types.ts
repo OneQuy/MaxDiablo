@@ -127,3 +127,15 @@ export type ImgItemData = {
      */
     ocrResultTxt?: string | undefined,
 }
+
+export enum NotificationState {
+    Off,
+    Once,
+    All,
+}
+
+export type NotificationData = {
+    nameEvent: string
+    state: NotificationState,
+    comingNotiTimeInMinutes: number,
+}

@@ -29,7 +29,7 @@ import { GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionT
 import { FontSize, FontWeight, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, Event, IgnoredStatsOfSlot, ImgItemData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
+import { Build, Event, IgnoredStatsOfSlot, ImgItemData, NotificationData, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber, prependZero } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
@@ -140,6 +140,7 @@ function App(): JSX.Element {
   const [rateSuccessCount, setRateSuccessCount] = useMMKVStorage('rateSuccessCount', storage, 0)
   const [firstOpenApp, setFirstOpenApp] = useMMKVStorage('firstOpenApp', storage, true)
   const [isLangViet, setIsLangViet] = useMMKVStorage('isLangViet', storage, -1)
+  const [notificationData, setNotificationData] = useMMKVStorage('isLangViet', storage, [] as NotificationData[])
   const rateSuccessCountRef = useRef(0)
   const rateSuccessCountPerInterstitialConfig = useRef(2)
   const rateLimitText = useRef('') // api remain limit text
@@ -1394,7 +1395,7 @@ function App(): JSX.Element {
         Track('first_open_app', { os: Platform.OS })
       }
 
-      // notificaton
+      // notification
 
       cancelAllLocalNotifications()
     }

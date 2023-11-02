@@ -455,9 +455,27 @@ function App(): JSX.Element {
   }, [])
 
   const onPressNotiBtn_OnlyNextEvent = useCallback(() => {
+    if (!currentNotiSettingEventData.current)
+      return
+
+    currentNotiSettingEventData.current.state = NotificationState.Once
+    currentNotiSettingEventData.current = undefined
+
+    const arr = [...notificationDataArr]
+    setNotificationDataArr(arr)
+    resetNotification(arr)
   }, [])
 
   const onPressNotiBtn_AllNextEvents = useCallback(() => {
+    if (!currentNotiSettingEventData.current)
+      return
+
+    currentNotiSettingEventData.current.state = NotificationState.All
+    currentNotiSettingEventData.current = undefined
+
+    const arr = [...notificationDataArr]
+    setNotificationDataArr(arr)
+    resetNotification(arr)
   }, [])
 
   const onPressNotiBtn_TurnOff = useCallback(() => {
@@ -467,15 +485,47 @@ function App(): JSX.Element {
     currentNotiSettingEventData.current.state = NotificationState.Off
     currentNotiSettingEventData.current = undefined
 
-    forceUpdate()
+    const arr = [...notificationDataArr]
+    setNotificationDataArr(arr)
+    resetNotification(arr)
   }, [])
 
   const onPressNotiBtn_NotifyIn = useCallback((min: number) => {
+    if (!currentNotiSettingEventData.current)
+      return
+
+    currentNotiSettingEventData.current.comingNotiTimeInMinutes = min
+
+    setNotificationDataArr([...notificationDataArr])
   }, [])
 
-  const resetNotification = useCallback(() => {
+  const resetNotification = useCallback((dataArr: NotificationData[]) => {
+    cancelAllLocalNotifications()
+    console.log('cleared')
 
-  }, [notificationDataArr])
+    dataArr.forEach(notiData => {
+      // console.log(notiData.nameEvent, notiData.state, notiData.comingNotiTimeInMinutes);
+
+      if (notiData.state === NotificationState.Off)
+        return
+
+      const event = events.find(e => e.name === notiData.nameEvent)
+
+      if (!event)
+        return
+
+      // only next event
+
+      if (notiData.state === NotificationState.Once) {
+        const targetMS = CalcTargetTimeAndSaveEvent(event)
+        setNotification(targetMS, event.name)
+
+        console.log('did set noti', event.name, new Date(targetMS).toLocaleString());
+
+        // cacheOrShowAlert(event.name, new Date(targetMS).toLocaleString())
+      }
+    });
+  }, [])
 
   const onPressEventNotiIcon = useCallback((event: Event) => {
     let data = GetNotificationData(notificationDataArr, event)
@@ -1438,10 +1488,6 @@ function App(): JSX.Element {
         setFirstOpenApp(false)
         Track('first_open_app', { os: Platform.OS })
       }
-
-      // notification
-
-      cancelAllLocalNotifications()
     }
 
     initAsync()
@@ -1824,7 +1870,7 @@ function App(): JSX.Element {
                     NotifyInMinArr.map((minute: number) => {
                       return <TouchableOpacity
                         key={minute}
-                        onPress={() => onPressNotiBtn_NotifyIn(0)}
+                        onPress={() => onPressNotiBtn_NotifyIn(minute)}
                         style={{ borderWidth: 1.5, minWidth: 40, alignItems: 'center', justifyContent: 'center', borderColor: currentNotiSettingEventData.current && currentNotiSettingEventData.current.comingNotiTimeInMinutes === minute ? 'tomato' : 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
                         <Text style={{ color: 'black' }}>{minute}{isLangViet !== 1 ? 'p' : 'm'}</Text>
                       </TouchableOpacity>

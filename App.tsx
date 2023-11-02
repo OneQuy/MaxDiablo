@@ -50,6 +50,7 @@ import { useForceUpdate } from './scr/common/useForceUpdate';
 import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
+import { setNotification_RemainSeconds } from './scr/common/Nofitication';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -1337,7 +1338,7 @@ function App(): JSX.Element {
         sessionStartTime.current = Date.now()
 
         appStateRemove = AppState.addEventListener('change', (e) => {
-          console.log(ToCanPrint(e));
+          // console.log(ToCanPrint(e));
 
           if (e === 'active') { // start session
 

@@ -25,7 +25,7 @@ const viet = {
     only_next_event: 'Chỉ sự kiện tiếp theo',
     all_events: 'Tất cả sự kiện tiếp theo',
     noti_in: 'Thông báo trước',
-    turn_off_noti: 'Tắt thông báo',
+    turn_off_noti: 'Không thông báo',
 
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
@@ -77,7 +77,7 @@ const eng: Lang = {
     only_next_event: 'Only next event',
     all_events: 'All next events',
     noti_in: 'Notify in',
-    turn_off_noti: 'Turn off notification',
+    turn_off_noti: 'No notification',
 
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',

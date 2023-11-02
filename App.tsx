@@ -26,7 +26,7 @@ import {
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { ColorNameToRgb, GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
-import { BorderRadius, FontSize, FontWeight, NotifyInMinArr, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
+import { BorderRadius, BorderWidth, FontSize, FontWeight, NotifyInMinArr, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Event, IgnoredStatsOfSlot, ImgItemData, NotificationData, NotificationState, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
@@ -1735,7 +1735,7 @@ function App(): JSX.Element {
                 <View style={{ opacity: (ios_diable_info || isTouchingImg) ? 0 : 1, marginLeft: Outline.Margin, flex: 1 }}>
                   {/* slot name  */}
                   <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: BorderRadius.Small, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>
+                    <Text style={{ fontWeight: FontWeight.B500, color: 'white', borderColor: 'white', borderRadius: BorderRadius.Small, padding: 2, borderWidth: BorderWidth.Small, fontSize: FontSize.Normal }}>
                       {currentSlot.current.slotName}
                     </Text>
                     <View style={{ flex: 1 }} />
@@ -1772,7 +1772,7 @@ function App(): JSX.Element {
           {/* rating result box */}
           {
             <View style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, alignItems: 'center', gap: Outline.Gap }}>
-              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateResult.current.text === '...' ? 1 : 0, borderColor: 'white', backgroundColor: rateResultBoxColor, padding: 10, borderRadius: BorderRadius.Normal }} >
+              <View style={{ minWidth: windowSize.width * 0.4, alignItems: 'center', borderWidth: rateResult.current.text === '...' ? BorderWidth.Small : 0, borderColor: 'white', backgroundColor: rateResultBoxColor, padding: 10, borderRadius: BorderRadius.Normal }} >
                 <Text style={{ color: rateResultBoxTxtColor, fontSize: 30, fontWeight: 'bold' }}>{rateResultBoxTxt}</Text>
               </View>
               {
@@ -1795,15 +1795,15 @@ function App(): JSX.Element {
                 <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.list_suit_builds} ({suitBuilds.current?.length} build):</Text>
                 {
                   suitBuilds.current?.map(([tier, build, slot, statsMatchedCount], index) => {
-                    return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: BorderRadius.Small, borderWidth: 1, borderColor: 'white' }}>
+                    return <View key={build.name + index} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: BorderRadius.Small, borderWidth: BorderWidth.Small, borderColor: 'white' }}>
                       {/* build name  */}
                       <Text style={{ color: 'tomato', fontSize: FontSize.Big }}>{(index + 1) + '. ' + build.name}</Text>
                       {/* tier & slot name */}
                       {
                         slot === undefined || tier === undefined || statsMatchedCount === undefined ? undefined :
                           <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
-                            <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: BorderRadius.Small, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
-                            <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: BorderRadius.Small, padding: 2, borderWidth: 1, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
+                            <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: BorderRadius.Small, padding: 2, borderWidth: BorderWidth.Small, fontSize: FontSize.Normal }}>{slot.slotName}</Text>
+                            <Text style={{ color: 'gray', borderColor: 'gray', borderRadius: BorderRadius.Small, padding: 2, borderWidth: BorderWidth.Small, fontSize: FontSize.Normal }}>{'Tier ' + tier.name}</Text>
                             {
                               statsMatchedCount < 3 ? undefined :
                                 <View style={{ gap: 3, flexDirection: 'row', backgroundColor: 'gold', borderRadius: BorderRadius.Small, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Outline.Margin }} >
@@ -1846,7 +1846,7 @@ function App(): JSX.Element {
                     const titleColor = isPrepareFinish ? 'black' : 'tomato'
                     const data = GetNotificationData(notificationDataArr, event)
 
-                    return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: BorderRadius.Small, borderWidth: 1, backgroundColor: bgColor }}>
+                    return <View key={event.name} style={{ gap: Outline.Gap, width: '100%', padding: 10, borderRadius: BorderRadius.Small, borderWidth: BorderWidth.Small, backgroundColor: bgColor }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
                         <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
@@ -1880,13 +1880,16 @@ function App(): JSX.Element {
               <View style={{ borderRadius: BorderRadius.Normal, padding: Outline.Margin, gap: Outline.Gap, backgroundColor: 'white', minWidth: '70%', justifyContent: 'center', alignItems: 'flex-start' }}>
                 <Text style={{ color: 'black' }}>{lang.current.noti_pp_title}</Text>
                 <Text style={{ color: 'tomato', fontWeight: FontWeight.Bold, fontSize: FontSize.Big, marginBottom: Outline.Margin, }}>{currentNotiSettingEventData.current.nameEvent}</Text>
-                <TouchableOpacity onPress={onPressNotiBtn_OnlyNextEvent} style={{ borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                {/* only next btn */}
+                <TouchableOpacity onPress={onPressNotiBtn_OnlyNextEvent} style={{  borderColor: currentNotiSettingEventData.current.state === NotificationState.Once ? 'tomato' : 'black', borderWidth: BorderWidth.Normal, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
                   <Text style={{ color: 'white' }}>{lang.current.only_next_event}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onPressNotiBtn_AllNextEvents} style={{ borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                {/* all btn */}
+                <TouchableOpacity onPress={onPressNotiBtn_AllNextEvents} style={{  borderColor: currentNotiSettingEventData.current.state === NotificationState.All ? 'tomato' : 'black', borderWidth: BorderWidth.Normal, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
                   <Text style={{ color: 'white' }}>{lang.current.all_events}</Text>
                 </TouchableOpacity>
 
+                {/* time before noti */}
                 <Text style={{ color: 'black' }}>{lang.current.noti_in}:</Text>
                 <View style={{ flexDirection: 'row', gap: Outline.Gap / 2, }}>
                   {
@@ -1894,14 +1897,15 @@ function App(): JSX.Element {
                       return <TouchableOpacity
                         key={minute}
                         onPress={() => onPressNotiBtn_NotifyIn(minute)}
-                        style={{ borderWidth: 1.5, minWidth: 40, alignItems: 'center', justifyContent: 'center', borderColor: currentNotiSettingEventData.current && currentNotiSettingEventData.current.comingNotiTimeInMinutes === minute ? 'tomato' : 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
+                        style={{ borderWidth: BorderWidth.Normal, minWidth: 40, alignItems: 'center', justifyContent: 'center', borderColor: currentNotiSettingEventData.current && currentNotiSettingEventData.current.comingNotiTimeInMinutes === minute ? 'tomato' : 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
                         <Text style={{ color: 'black' }}>{minute}{isLangViet !== 1 ? 'p' : 'm'}</Text>
                       </TouchableOpacity>
                     })
                   }
                 </View>
 
-                <TouchableOpacity onPress={onPressNotiBtn_TurnOff} style={{ marginTop: Outline.Margin * 2, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                {/* off btn */}
+                <TouchableOpacity onPress={onPressNotiBtn_TurnOff} style={{ borderColor: currentNotiSettingEventData.current.state === NotificationState.Off ? 'tomato' : 'black', borderWidth: BorderWidth.Normal, marginTop: Outline.Margin * 2, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
                   <Text style={{ color: 'white' }}>{lang.current.turn_off_noti}</Text>
                 </TouchableOpacity>
 

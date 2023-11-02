@@ -23,7 +23,13 @@
 */
 
 // import PushNotificationIOS from "@react-native-community/push-notification-ios";
+
+// @ts-ignore
 import PushNotification from "react-native-push-notification";
+
+export type NotificationOption = {
+  msg: string,
+}
 
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 PushNotification.configure({
@@ -82,10 +88,17 @@ export const cancelAllLocalNotifications = () => {
 
 /**
  * https://github.com/zo0r/react-native-push-notification#scheduled-notifications
- * @param {*} msgOrOptions { msg: 'Hihi' }
  */
-export const setNotification = (targetTimeMS, msgOrOptions) => { // main
+export const setNotification = ( // main
+  targetTimeMS: number, 
+  msgOrOptions: string | NotificationOption) => {
   const msg = typeof msgOrOptions === 'string' ? msgOrOptions : msgOrOptions.msg
+
+  if (!msg)
+    throw 'Notification msg is undefined!'
+
+  if (targetTimeMS < Date.now())
+    return
 
   PushNotification.localNotificationSchedule({
     message: msg,
@@ -97,6 +110,8 @@ export const setNotification = (targetTimeMS, msgOrOptions) => { // main
  * 
  * @param {*} options { msg: 'Hihi' }
  */
-export const setNotification_RemainSeconds = (seconds, msgOrOptions) => { // sub
+export const setNotification_RemainSeconds = (  // sub
+  seconds: number,
+  msgOrOptions: string | NotificationOption) => {
   setNotification(Date.now() + seconds * 1000, msgOrOptions)
 }

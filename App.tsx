@@ -514,14 +514,41 @@ function App(): JSX.Element {
       // only next event
 
       if (notiData.state === NotificationState.Once) {
-        const targetMS = CalcTargetTimeAndSaveEvent(event)
-        // const targetMS = Date.now() + 5 * 1000
-        
+        let targetMS = CalcTargetTimeAndSaveEvent(event)
+
+        targetMS -= notiData.comingNotiTimeInMinutes * 60 * 1000
+
+        if (targetMS <= Date.now())
+          targetMS = Date.now() + 1000
+
+        // targetMS = Date.now() + 5 * 1000
+
         setNotification(targetMS, event.name)
-        
+
         notiData.lastSetTimeForOnceMode = targetMS
 
-        console.log('did set noti', event.name, new Date(targetMS).toLocaleString());
+        console.log('did set noti [once]:', event.name, new Date(targetMS).toLocaleString());
+      }
+
+      // all
+
+      else if (notiData.state === NotificationState.All) {
+        let start = CalcTargetTimeAndSaveEvent(event)
+
+        for (let i = 0; i < 10; i++) {
+          let targetMS = start
+          targetMS -= notiData.comingNotiTimeInMinutes * 60 * 1000
+
+          if (targetMS <= Date.now())
+            targetMS = Date.now() + 1000
+
+          // targetMS = Date.now() + 5 * 1000
+
+          setNotification(targetMS, event.name)
+          console.log('did set noti [all]:', event.name, new Date(targetMS).toLocaleString());
+          
+          start += event.intervalInMinute * 60 * 1000
+        }
       }
     })
 
@@ -1881,11 +1908,11 @@ function App(): JSX.Element {
                 <Text style={{ color: 'black' }}>{lang.current.noti_pp_title}</Text>
                 <Text style={{ color: 'tomato', fontWeight: FontWeight.Bold, fontSize: FontSize.Big, marginBottom: Outline.Margin, }}>{currentNotiSettingEventData.current.nameEvent}</Text>
                 {/* only next btn */}
-                <TouchableOpacity onPress={onPressNotiBtn_OnlyNextEvent} style={{  borderColor: currentNotiSettingEventData.current.state === NotificationState.Once ? 'tomato' : 'black', borderWidth: BorderWidth.Normal, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                <TouchableOpacity onPress={onPressNotiBtn_OnlyNextEvent} style={{ borderColor: currentNotiSettingEventData.current.state === NotificationState.Once ? 'tomato' : 'black', borderWidth: BorderWidth.Normal, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
                   <Text style={{ color: 'white' }}>{lang.current.only_next_event}</Text>
                 </TouchableOpacity>
                 {/* all btn */}
-                <TouchableOpacity onPress={onPressNotiBtn_AllNextEvents} style={{  borderColor: currentNotiSettingEventData.current.state === NotificationState.All ? 'tomato' : 'black', borderWidth: BorderWidth.Normal, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                <TouchableOpacity onPress={onPressNotiBtn_AllNextEvents} style={{ borderColor: currentNotiSettingEventData.current.state === NotificationState.All ? 'tomato' : 'black', borderWidth: BorderWidth.Normal, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
                   <Text style={{ color: 'white' }}>{lang.current.all_events}</Text>
                 </TouchableOpacity>
 

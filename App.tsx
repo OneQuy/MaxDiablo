@@ -50,7 +50,7 @@ import { useForceUpdate } from './scr/common/useForceUpdate';
 import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
-import { setNotification_RemainSeconds } from './scr/common/Nofitication';
+import { cancelAllLocalNotifications, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -447,6 +447,16 @@ function App(): JSX.Element {
     multiSelectedItem.current = item
     updateSelectedItemStateToMainScreen()
     toggleShowMulti(false)
+  }, [])
+
+  const onPressEventNoti = useCallback((event: Event) => {
+    const targetMS = CalcTargetTimeAndSaveEvent(event)
+
+    console.log(new Date(targetMS).toLocaleString());
+
+    setNotification(targetMS, event.name)
+
+    cacheOrShowAlert(event.name, new Date(targetMS).toLocaleString())
   }, [])
 
   const updateSelectedItemStateToMainScreen = useCallback(() => {
@@ -1235,18 +1245,7 @@ function App(): JSX.Element {
   }, [isLangViet])
 
   const getRemainTimeTextOfEvent = useCallback((event: Event) => {
-    const origin = event.originTime
-    const intervalMS = event.intervalInMinute * 60 * 1000
-
-    let target = origin
-
-    while (true) {
-      if (target > Date.now())
-        break
-
-      target += intervalMS
-      event.originTime = target
-    }
+    let target = CalcTargetTimeAndSaveEvent(event)
 
     const remainMS = target - Date.now()
     const [hour, min, sec] = GetHourMinSecFromMs(remainMS)
@@ -1394,6 +1393,10 @@ function App(): JSX.Element {
         setFirstOpenApp(false)
         Track('first_open_app', { os: Platform.OS })
       }
+
+      // notificaton
+
+      cancelAllLocalNotifications()
     }
 
     initAsync()
@@ -1735,7 +1738,9 @@ function App(): JSX.Element {
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{targetText}</Text>
-                        <Image source={notiMuteIcon} resizeMode='contain' style={{ width: 18, height: 18 }} />
+                        <TouchableOpacity onPress={() => onPressEventNoti(event)}>
+                          <Image source={notiMuteIcon} resizeMode='contain' style={{ width: 18, height: 18 }} />
+                        </TouchableOpacity>
                       </View>
                     </View>
                   })
@@ -1961,6 +1966,19 @@ const FirebaseIncrease = (fbpath: string, incNum: number = 1) => {
   // console.log(fbpath);
 
   FirebaseDatabase_IncreaseNumberAsync(fbpath, 0, incNum)
+}
+
+const CalcTargetTimeAndSaveEvent = (event: Event) => {
+  const intervalMS = event.intervalInMinute * 60 * 1000
+
+  let now = Date.now()
+
+  while (true) {
+    if (event.originTime > now)
+      return event.originTime
+
+    event.originTime += intervalMS
+  }
 }
 
 const CompressImageAsync = async (fileURI: string): Promise<string> => {

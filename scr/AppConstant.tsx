@@ -4,6 +4,8 @@ export const windowSize = Dimensions.get('window')
 
 export const limitMultiImage = 6
 
+export const NotifyInMinArr = [0, 5, 10, 20, 30]
+
 export enum FontSize {
     Small = 12,
     Normal = 15,

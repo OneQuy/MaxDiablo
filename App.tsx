@@ -26,7 +26,7 @@ import {
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { ColorNameToRgb, GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
-import { BorderRadius, FontSize, FontWeight, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
+import { BorderRadius, FontSize, FontWeight, NotifyInMinArr, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Event, IgnoredStatsOfSlot, ImgItemData, NotificationData, NotificationState, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
@@ -137,7 +137,7 @@ function App(): JSX.Element {
   // notification
 
   const [notificationDataArr, setNotificationDataArr] = useMMKVStorage('notificationDataArr', storage, [] as NotificationData[])
-  const [isShowNotificationSetting, setIsShowNotificationSetting] = useState(false)
+  const currentNotiSettingEventData = useRef<NotificationData>()
 
   // other
 
@@ -454,9 +454,30 @@ function App(): JSX.Element {
     toggleShowMulti(false)
   }, [])
 
-  const onPressEventNoti = useCallback((event: Event) => {
-    setIsShowNotificationSetting(val => !val)
+  const onPressNotiBtn_OnlyNextEvent = useCallback(() => {
+  }, [])
 
+  const onPressNotiBtn_AllNextEvents = useCallback(() => {
+  }, [])
+
+  const onPressNotiBtn_TurnOff = useCallback(() => {
+    if (!currentNotiSettingEventData.current)
+      return
+
+    currentNotiSettingEventData.current.state = NotificationState.Off
+    currentNotiSettingEventData.current = undefined
+
+    forceUpdate()
+  }, [])
+
+  const onPressNotiBtn_NotifyIn = useCallback((min: number) => {
+  }, [])
+
+  const resetNotification = useCallback(() => {
+
+  }, [notificationDataArr])
+
+  const onPressEventNotiIcon = useCallback((event: Event) => {
     let data = GetNotificationData(notificationDataArr, event)
     const isExist = data !== undefined
 
@@ -468,28 +489,19 @@ function App(): JSX.Element {
       } as NotificationData
     }
 
-    if (data.state === NotificationState.Off)
-      data.state = NotificationState.Once
-    else
-      data.state = NotificationState.Off
+    currentNotiSettingEventData.current = data
 
     let arr = notificationDataArr
 
     if (!arr)
       arr = [] as NotificationData[]
 
-    if (!isExist)
+    if (!isExist) {
       arr.push(data)
-
-    setNotificationDataArr([...arr])
-
-    // const targetMS = CalcTargetTimeAndSaveEvent(event)
-
-    // console.log(new Date(targetMS).toLocaleString());
-
-    // setNotification(targetMS, event.name)
-
-    // cacheOrShowAlert(event.name, new Date(targetMS).toLocaleString())
+      setNotificationDataArr([...arr])
+    }
+    else
+      forceUpdate()
   }, [notificationDataArr])
 
   const updateSelectedItemStateToMainScreen = useCallback(() => {
@@ -1772,7 +1784,7 @@ function App(): JSX.Element {
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{targetText}</Text>
-                        <TouchableOpacity onPress={() => onPressEventNoti(event)}>
+                        <TouchableOpacity onPress={() => onPressEventNotiIcon(event)}>
                           <Image source={!data || data.state === NotificationState.Off ? notiMuteIcon : notiIcon} resizeMode='contain' style={{ width: 18, height: 18 }} />
                         </TouchableOpacity>
                       </View>
@@ -1794,39 +1806,34 @@ function App(): JSX.Element {
         </View>
         {/* notification popup setting */}
         {
-          isShowNotificationSetting ? undefined :
+          !currentNotiSettingEventData.current ? undefined :
             <View style={{ position: 'absolute', backgroundColor: ColorNameToRgb('black', 0.5), width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <View style={{ borderRadius: BorderRadius.Normal, padding: Outline.Margin, gap: Outline.Gap, backgroundColor: 'white', width: '70%', justifyContent: 'center', alignItems: 'flex-start' }}>
-                <Text style={{ color: 'black' }}>Thông báo cho event:</Text>
-                <Text style={{ color: 'tomato', fontWeight: FontWeight.Bold, fontSize: FontSize.Big, marginBottom: Outline.Margin * 3, }}>Helltide</Text>
-                <TouchableOpacity style={{ borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
-                  <Text style={{ color: 'white' }}>Chỉ sự kiện tiếp theo</Text>
+              <View style={{ borderRadius: BorderRadius.Normal, padding: Outline.Margin, gap: Outline.Gap, backgroundColor: 'white', minWidth: '70%', justifyContent: 'center', alignItems: 'flex-start' }}>
+                <Text style={{ color: 'black' }}>{lang.current.noti_pp_title}</Text>
+                <Text style={{ color: 'tomato', fontWeight: FontWeight.Bold, fontSize: FontSize.Big, marginBottom: Outline.Margin, }}>{currentNotiSettingEventData.current.nameEvent}</Text>
+                <TouchableOpacity onPress={onPressNotiBtn_OnlyNextEvent} style={{ borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                  <Text style={{ color: 'white' }}>{lang.current.only_next_event}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
-                  <Text style={{ color: 'white' }}>Tất cả sự kiện tiếp theo</Text>
+                <TouchableOpacity onPress={onPressNotiBtn_AllNextEvents} style={{ borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                  <Text style={{ color: 'white' }}>{lang.current.all_events}</Text>
                 </TouchableOpacity>
 
-                <Text style={{ color: 'black' }}>Thông báo trước:</Text>
+                <Text style={{ color: 'black' }}>{lang.current.noti_in}:</Text>
                 <View style={{ flexDirection: 'row', gap: Outline.Gap / 2, }}>
-                  <TouchableOpacity style={{ backgroundColor: 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
-                    <Text style={{ color: 'white' }}>0p</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
-                    <Text style={{ color: 'white' }}>5p</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
-                    <Text style={{ color: 'white' }}>10p</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
-                    <Text style={{ color: 'white' }}>20p</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
-                    <Text style={{ color: 'white' }}>30p</Text>
-                  </TouchableOpacity>
+                  {
+                    NotifyInMinArr.map((minute: number) => {
+                      return <TouchableOpacity
+                        key={minute}
+                        onPress={() => onPressNotiBtn_NotifyIn(0)}
+                        style={{ borderWidth: 1.5, minWidth: 40, alignItems: 'center', justifyContent: 'center', borderColor: currentNotiSettingEventData.current && currentNotiSettingEventData.current.comingNotiTimeInMinutes === minute ? 'tomato' : 'black', borderRadius: BorderRadius.Small, padding: Outline.Margin / 2 }}>
+                        <Text style={{ color: 'black' }}>{minute}{isLangViet !== 1 ? 'p' : 'm'}</Text>
+                      </TouchableOpacity>
+                    })
+                  }
                 </View>
 
-                <TouchableOpacity style={{ marginTop: Outline.Margin * 3, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
-                  <Text style={{ color: 'white' }}>Tắt thông báo</Text>
+                <TouchableOpacity onPress={onPressNotiBtn_TurnOff} style={{ marginTop: Outline.Margin * 2, borderRadius: BorderRadius.Small, backgroundColor: 'black', padding: Outline.Margin / 2 }}>
+                  <Text style={{ color: 'white' }}>{lang.current.turn_off_noti}</Text>
                 </TouchableOpacity>
 
               </View>

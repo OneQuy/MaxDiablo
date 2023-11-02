@@ -20,12 +20,18 @@ const viet = {
     vie: 'Tiếng Việt',
     en: 'English',
     err_unique: 'Không thể rate item UNIQUE này. Vui lòng chọn hình khác!',
+    
+    noti_pp_title: 'Thông báo cho event:',
+    only_next_event: 'Chỉ sự kiện tiếp theo',
+    all_events: 'Tất cả sự kiện tiếp theo',
+    noti_in: 'Thông báo trước',
+    turn_off_noti: 'Tắt thông báo',
 
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
     good: 'TỐT',
     normal: 'BÌNH THƯỜNG',
-    trash: 'RÁC',
+    trash: 'PHẾ PHẨM',
 
     cant_rate: 'Lỗi không thể phân tích hình',
     pls_pick_other: 'Vui lòng chụp lại hay chọn ảnh khác!',
@@ -67,11 +73,17 @@ const eng: Lang = {
     en: 'English',
     err_unique: 'Cant rate this UNIQUE item. Pls select another pic!',
 
+    noti_pp_title: 'Notification for event:',
+    only_next_event: 'Only next event',
+    all_events: 'All next events',
+    noti_in: 'Notify in',
+    turn_off_noti: 'Turn off notification',
+
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',
     good: 'GOOD',
     normal: 'NORMAL',
-    trash: 'TRASH',
+    trash: 'TRASH ITEM',
 
     cant_rate: 'Can not rate!',
     pls_pick_other: 'Please pick another pic!',

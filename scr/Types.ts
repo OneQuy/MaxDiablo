@@ -137,5 +137,6 @@ export enum NotificationState {
 export type NotificationData = {
     nameEvent: string
     state: NotificationState,
+    lastSetTimeForOnceMode: number,
     comingNotiTimeInMinutes: number,
 }

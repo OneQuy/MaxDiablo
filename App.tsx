@@ -462,8 +462,7 @@ function App(): JSX.Element {
     currentNotiSettingEventData.current = undefined
 
     const arr = [...notificationDataArr]
-    setNotificationDataArr(arr)
-    resetNotification(arr)
+    resetNotificationAndSaveData(arr)
   }, [])
 
   const onPressNotiBtn_AllNextEvents = useCallback(() => {
@@ -474,9 +473,8 @@ function App(): JSX.Element {
     currentNotiSettingEventData.current = undefined
 
     const arr = [...notificationDataArr]
-    setNotificationDataArr(arr)
-    resetNotification(arr)
-  }, [])
+    resetNotificationAndSaveData(arr)
+  }, [notificationDataArr])
 
   const onPressNotiBtn_TurnOff = useCallback(() => {
     if (!currentNotiSettingEventData.current)
@@ -486,9 +484,8 @@ function App(): JSX.Element {
     currentNotiSettingEventData.current = undefined
 
     const arr = [...notificationDataArr]
-    setNotificationDataArr(arr)
-    resetNotification(arr)
-  }, [])
+    resetNotificationAndSaveData(arr)
+  }, [notificationDataArr])
 
   const onPressNotiBtn_NotifyIn = useCallback((min: number) => {
     if (!currentNotiSettingEventData.current)
@@ -497,11 +494,11 @@ function App(): JSX.Element {
     currentNotiSettingEventData.current.comingNotiTimeInMinutes = min
 
     setNotificationDataArr([...notificationDataArr])
-  }, [])
+  }, [notificationDataArr])
 
-  const resetNotification = useCallback((dataArr: NotificationData[]) => {
+  const resetNotificationAndSaveData = useCallback((dataArr: NotificationData[]) => {
     cancelAllLocalNotifications()
-    console.log('cleared')
+    console.log('cleared all noti --------------')
 
     dataArr.forEach(notiData => {
       // console.log(notiData.nameEvent, notiData.state, notiData.comingNotiTimeInMinutes);
@@ -518,13 +515,19 @@ function App(): JSX.Element {
 
       if (notiData.state === NotificationState.Once) {
         const targetMS = CalcTargetTimeAndSaveEvent(event)
+        // const targetMS = Date.now() + 5 * 1000
+        
         setNotification(targetMS, event.name)
+        
+        notiData.lastSetTimeForOnceMode = targetMS
 
         console.log('did set noti', event.name, new Date(targetMS).toLocaleString());
-
-        // cacheOrShowAlert(event.name, new Date(targetMS).toLocaleString())
       }
-    });
+    })
+
+    // update data
+
+    setNotificationDataArr([...dataArr])
   }, [])
 
   const onPressEventNotiIcon = useCallback((event: Event) => {
@@ -1354,6 +1357,24 @@ function App(): JSX.Element {
     return [remainText, targetText, isPrepareFinish]
   }, [])
 
+  const onUpdateInterval = useCallback(() => {
+    // update noti data
+
+    for (let iNoti = 0; iNoti < notificationDataArr.length; iNoti++) {
+      const data = notificationDataArr[iNoti]
+
+      if (data.state === NotificationState.Once) {
+        if (data.lastSetTimeForOnceMode <= Date.now()) {
+          data.state = NotificationState.Off
+          setNotificationDataArr([...notificationDataArr])
+        }
+      }
+    }
+
+    // force update (for render events)
+    forceUpdate()
+  }, [notificationDataArr])
+
   const getFirebaseConfigAsync = useCallback(async () => {
     const res = await FirebaseDatabase_GetValueAsync('app_config')
 
@@ -1537,7 +1558,9 @@ function App(): JSX.Element {
       Track('ads_error', ToCanPrint(e))
     })
 
-    const updateEventInterval = setInterval(() => { forceUpdate() }, 1000)
+    // update interval
+
+    const updateInterval = setInterval(onUpdateInterval, 1000)
 
     return () => {
       unsubscribe_ads_interstitial_loaded()
@@ -1545,7 +1568,7 @@ function App(): JSX.Element {
       unsubscribe_ads_interstitial_closed()
       unsubscribe_ads_interstitial_error()
 
-      clearTimeout(updateEventInterval)
+      clearTimeout(updateInterval)
 
       if (appStateRemove && appStateRemove.remove)
         appStateRemove.remove()

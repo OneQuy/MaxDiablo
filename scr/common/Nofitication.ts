@@ -106,10 +106,6 @@ export const setNotification = ( // main
   });
 }
 
-/**
- * 
- * @param {*} options { msg: 'Hihi' }
- */
 export const setNotification_RemainSeconds = (  // sub
   seconds: number,
   msgOrOptions: string | NotificationOption) => {

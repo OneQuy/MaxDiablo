@@ -71,6 +71,8 @@ const todayString = 'd' + today.getDate() + '_m' + (today.getMonth() + 1) + '_' 
 const upArrowIcon = require('./assets/images/up-arrow.png')
 const starIcon = require('./assets/images/star-icon.png')
 const leftIcon = require('./assets/images/left-icon.png')
+const notiIcon = require('./assets/images/noti-icon.png')
+const notiMuteIcon = require('./assets/images/mute-noti-icon.png')
 
 const googleStoreOpenLink = "market://details?id=com.maxdiablo"
 const appleStoreOpenLink = "https://apps.apple.com/us/app/d4-tool/id6469034531"
@@ -1464,7 +1466,7 @@ function App(): JSX.Element {
 
 
   const ios_diable_info =
-    Platform.OS === 'ios' &&
+    Platform.OS === 'ios' && !__DEV__ &&
     (remoteConfig.current.ios_disable_suit_build ||
       version === remoteConfig.current.apple_review_version)
 
@@ -1731,7 +1733,10 @@ function App(): JSX.Element {
                         <Text style={{ color: titleColor, fontSize: FontSize.Big, fontWeight: FontWeight.Bold, flex: 1 }}>{event.name}</Text>
                         <Text style={{ color: 'black', fontSize: FontSize.Big }}>{remainText}</Text>
                       </View>
-                      <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{targetText}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{targetText}</Text>
+                        <Image source={notiMuteIcon} resizeMode='contain' style={{ width: 18, height: 18 }} />
+                      </View>
                     </View>
                   })
                 }

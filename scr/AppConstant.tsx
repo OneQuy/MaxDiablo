@@ -19,3 +19,8 @@ export enum Outline {
     Gap = 10,
     Margin = 10
 }
+
+export enum BorderRadius {
+    Small = 5,
+    Normal = 10
+}

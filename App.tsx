@@ -26,7 +26,7 @@ import {
 import { FirebaseStorage_DeleteAsync, FirebaseStorage_GetDownloadURLAsync, FirebaseStorage_UploadAsync } from './scr/common/Firebase/FirebaseStorage';
 import { FirebaseInit } from './scr/common/Firebase/Firebase';
 import { ColorNameToRgb, GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCanPrint, VersionToNumber } from './scr/common/UtilsTS';
-import { BorderRadius, BorderWidth, FontSize, FontWeight, NotifyInMinArr_Full, NotifyInMinArr_Max20, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
+import { BorderRadius, BorderWidth, FontSize, FontWeight, NotiLoopDayCountForModeAll, NotifyInMinArr_Full, NotifyInMinArr_Max20, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
 import { Build, Event, IgnoredStatsOfSlot, ImgItemData, NotificationData, NotificationState, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
@@ -534,8 +534,10 @@ function App(): JSX.Element {
 
       else if (notiData.state === NotificationState.All) {
         let start = CalcTargetTimeAndSaveEvent(event)
-
-        for (let i = 0; i < 10; i++) {
+        const day = event.intervalInMinute <= 60 ? 1 : NotiLoopDayCountForModeAll
+        const count = Math.ceil(24 / event.intervalInMinute * 60 * day)
+        
+        for (let i = 0; i < count; i++) {
           let targetMS = start - notiData.comingNotiTimeInMinutes * 60 * 1000
 
           if (targetMS <= Date.now())
@@ -544,7 +546,7 @@ function App(): JSX.Element {
           // targetMS = Date.now() + 5 * 1000
 
           setNotification(targetMS, event.name)
-          console.log('did set noti [all]:', event.name, new Date(targetMS).toLocaleString());
+          // console.log(i + ', did set noti [all]:', event.name, new Date(targetMS).toLocaleString());
           
           start += event.intervalInMinute * 60 * 1000
         }
@@ -1903,7 +1905,7 @@ function App(): JSX.Element {
         {
           !currentNotiSettingEventData.current ? undefined :
             <View style={{ position: 'absolute', backgroundColor: ColorNameToRgb('black', 0.5), width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <View style={{ borderRadius: BorderRadius.Normal, padding: Outline.Margin, gap: Outline.Gap, backgroundColor: 'white', minWidth: '70%', justifyContent: 'center', alignItems: 'flex-start' }}>
+              <View style={{ borderRadius: BorderRadius.Normal, padding: Outline.Margin, gap: Outline.Gap, backgroundColor: 'white', minWidth: 250, justifyContent: 'center', alignItems: 'flex-start' }}>
                 <Text style={{ color: 'black' }}>{lang.current.noti_pp_title}</Text>
                 <Text style={{ color: 'tomato', fontWeight: FontWeight.Bold, fontSize: FontSize.Big, marginBottom: Outline.Margin, }}>{currentNotiSettingEventData.current.nameEvent}</Text>
                 {/* only next btn */}

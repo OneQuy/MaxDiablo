@@ -4,6 +4,7 @@ export const windowSize = Dimensions.get('window')
 
 export const limitMultiImage = 6
 
+export const NotiLoopDayCountForModeAll = 3
 export const NotifyInMinArr_Full = [0, 5, 10, 20, 30]
 export const NotifyInMinArr_Max20 = [0, 5, 10, 20]
 

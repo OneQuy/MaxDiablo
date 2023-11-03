@@ -50,7 +50,7 @@ import { useForceUpdate } from './scr/common/useForceUpdate';
 import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
-import { cancelAllLocalNotifications, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
+import { NotificationOption, cancelAllLocalNotifications, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -532,9 +532,12 @@ function App(): JSX.Element {
 
         // targetMS = Date.now() + 5 * 1000
 
-        const msg = lang.current.event_content + event.name
+        const message = lang.current.event_content + event.name
 
-        setNotification(targetMS, msg)
+        setNotification(targetMS, {
+          message,
+          title: event.name,
+        } as NotificationOption)
 
         notiData.lastSetTimeForOnceMode = targetMS
 
@@ -547,7 +550,7 @@ function App(): JSX.Element {
         let start = CalcTargetTimeAndSaveEvent(event)
         const day = event.intervalInMinute <= 60 ? 1 : NotiLoopDayCountForModeAll
         const count = Math.ceil(24 / event.intervalInMinute * 60 * day)
-        const msg = lang.current.event_content + event.name
+        const message = lang.current.event_content + event.name
 
         for (let i = 0; i < count; i++) {
           let targetMS = start - notiData.comingNotiTimeInMinutes * 60 * 1000
@@ -557,7 +560,11 @@ function App(): JSX.Element {
 
           // targetMS = Date.now() + 5 * 1000
 
-          setNotification(targetMS, msg)
+          setNotification(targetMS, {
+            message,
+            title: event.name,
+          } as NotificationOption)
+
           // console.log(i + ', did set noti [all]:', event.name, new Date(targetMS).toLocaleString());
 
           start += event.intervalInMinute * 60 * 1000

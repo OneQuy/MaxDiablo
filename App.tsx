@@ -532,7 +532,9 @@ function App(): JSX.Element {
 
         // targetMS = Date.now() + 5 * 1000
 
-        setNotification(targetMS, event.name)
+        const msg = lang.current.event_content + event.name
+
+        setNotification(targetMS, msg)
 
         notiData.lastSetTimeForOnceMode = targetMS
 

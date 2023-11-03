@@ -507,7 +507,7 @@ function App(): JSX.Element {
 
   const resetNotificationAndSaveData = useCallback((dataArr: NotificationData[]) => {
     cancelAllLocalNotifications()
-    console.log('cleared all noti --------------')
+    // console.log('cleared all noti --------------')
 
     dataArr.forEach(notiData => {
       // console.log(notiData.nameEvent, notiData.state, notiData.comingNotiTimeInMinutes);

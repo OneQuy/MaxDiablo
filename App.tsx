@@ -1623,7 +1623,7 @@ function App(): JSX.Element {
   const ios_diable_info =
     Platform.OS === 'ios' && !__DEV__ &&
     (remoteConfig.current.ios_disable_suit_build ||
-      version === remoteConfig.current.apple_review_version)
+      (remoteConfig.current.apple_review_version && VersionToNumber(version) <= VersionToNumber(remoteConfig.current.apple_review_version)))
 
   // rate result box text
 

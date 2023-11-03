@@ -508,6 +508,7 @@ function App(): JSX.Element {
   const resetNotificationAndSaveData = useCallback((dataArr: NotificationData[]) => {
     cancelAllLocalNotifications()
     // console.log('cleared all noti --------------')
+    StorageLog_LogAsync('cleareddddddd')
 
     dataArr.forEach(notiData => {
       // console.log(notiData.nameEvent, notiData.state, notiData.comingNotiTimeInMinutes);
@@ -542,6 +543,7 @@ function App(): JSX.Element {
         notiData.lastSetTimeForOnceMode = targetMS
 
         console.log('did set noti [once]:', event.name, new Date(targetMS).toLocaleString());
+        StorageLog_LogAsync('did set noti [once]:', event.name, new Date(targetMS).toLocaleString());
       }
 
       // all
@@ -1414,6 +1416,8 @@ function App(): JSX.Element {
         if (data.lastSetTimeForOnceMode <= Date.now()) {
           data.state = NotificationState.Off
           setNotificationDataArr([...notificationDataArr])
+
+          StorageLog_LogAsync('rem [once]:', data.nameEvent)
         }
       }
     }
@@ -1910,7 +1914,7 @@ function App(): JSX.Element {
               </View>
           }
           {/* debug text, version, remain ocr count */}
-          <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}</Text>
+          <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}{'-api' + remoteConfig.current.api_index}</Text>
         </ScrollView>
         {/* scrollToTop btn */}
         <View pointerEvents='box-none' style={{ position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>

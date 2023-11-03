@@ -487,6 +487,15 @@ function App(): JSX.Element {
     resetNotificationAndSaveData(arr)
   }, [notificationDataArr])
 
+  const onPressNotiBtn_ClosePopup = useCallback((e: GestureResponderEvent) => {
+    // console.log(e.nativeEvent.identifier)
+    // console.log(e.target)
+    // console.log(e.currentTarget)
+
+    // currentNotiSettingEventData.current = undefined
+    // forceUpdate()
+  }, [])
+
   const onPressNotiBtn_NotifyIn = useCallback((min: number) => {
     if (!currentNotiSettingEventData.current)
       return
@@ -536,7 +545,8 @@ function App(): JSX.Element {
         let start = CalcTargetTimeAndSaveEvent(event)
         const day = event.intervalInMinute <= 60 ? 1 : NotiLoopDayCountForModeAll
         const count = Math.ceil(24 / event.intervalInMinute * 60 * day)
-        
+        const msg = lang.current.event_content + event.name
+
         for (let i = 0; i < count; i++) {
           let targetMS = start - notiData.comingNotiTimeInMinutes * 60 * 1000
 
@@ -545,9 +555,9 @@ function App(): JSX.Element {
 
           // targetMS = Date.now() + 5 * 1000
 
-          setNotification(targetMS, event.name)
+          setNotification(targetMS, msg)
           // console.log(i + ', did set noti [all]:', event.name, new Date(targetMS).toLocaleString());
-          
+
           start += event.intervalInMinute * 60 * 1000
         }
       }
@@ -1904,8 +1914,8 @@ function App(): JSX.Element {
         {/* notification popup setting */}
         {
           !currentNotiSettingEventData.current ? undefined :
-            <View style={{ position: 'absolute', backgroundColor: ColorNameToRgb('black', 0.5), width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <View style={{ borderRadius: BorderRadius.Normal, padding: Outline.Margin, gap: Outline.Gap, backgroundColor: 'white', minWidth: 250, justifyContent: 'center', alignItems: 'flex-start' }}>
+            <View key={'bbbb'} onTouchEnd={onPressNotiBtn_ClosePopup} style={{ position: 'absolute', backgroundColor: ColorNameToRgb('black', 0.5), width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+              <View key={'wwww'} style={{ borderRadius: BorderRadius.Normal, padding: Outline.Margin, gap: Outline.Gap, backgroundColor: 'white', minWidth: 250, justifyContent: 'center', alignItems: 'flex-start' }}>
                 <Text style={{ color: 'black' }}>{lang.current.noti_pp_title}</Text>
                 <Text style={{ color: 'tomato', fontWeight: FontWeight.Bold, fontSize: FontSize.Big, marginBottom: Outline.Margin, }}>{currentNotiSettingEventData.current.nameEvent}</Text>
                 {/* only next btn */}

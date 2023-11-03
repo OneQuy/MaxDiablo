@@ -22,10 +22,11 @@ const viet = {
     err_unique: 'Không thể rate item UNIQUE này. Vui lòng chọn hình khác!',
     
     noti_pp_title: 'Thông báo cho event:',
-    only_next_event: 'Chỉ sự kiện tiếp theo',
-    all_events: 'Tất cả sự kiện tiếp theo',
+    only_next_event: 'Chỉ lần kế tiếp',
+    all_events: 'Tất cả các lần tiếp theo',
     noti_in: 'Thông báo trước',
-    turn_off_noti: 'Không thông báo',
+    turn_off_noti: 'Tắt thông báo',
+    event_content: "Sự kiện: ",
 
     perfect: 'TUYỆT PHẨM!',
     very_good: 'RẤT TỐT',
@@ -74,10 +75,11 @@ const eng: Lang = {
     err_unique: 'Cant rate this UNIQUE item. Pls select another pic!',
 
     noti_pp_title: 'Notification for event:',
-    only_next_event: 'Only next event',
+    only_next_event: 'Only the next time',
     all_events: 'All next events',
     noti_in: 'Notify in',
     turn_off_noti: 'No notification',
+    event_content: "It's time for event: ",
 
     perfect: 'PERFECT!',
     very_good: 'VERY GOOD',

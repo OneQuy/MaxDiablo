@@ -1,3 +1,5 @@
+// https://notifee.app/react-native/docs
+
 import notifee, { Notification, TimestampTrigger, TriggerType } from '@notifee/react-native';
 
 export type NotificationOption = {

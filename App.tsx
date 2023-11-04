@@ -454,7 +454,7 @@ function App(): JSX.Element {
     toggleShowMulti(false)
   }, [])
 
-  const onPressNotiBtn_OnlyNextEvent = useCallback(() => {
+  const onPressNotiBtn_OnlyNextEvent = useCallback(() => { // once
     if (!currentNotiSettingEventData.current)
       return
 
@@ -463,7 +463,7 @@ function App(): JSX.Element {
 
     const arr = [...notificationDataArr]
     resetNotificationAndSaveData(arr)
-  }, [])
+  }, [notificationDataArr])
 
   const onPressNotiBtn_AllNextEvents = useCallback(() => {
     if (!currentNotiSettingEventData.current)

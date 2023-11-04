@@ -1,114 +1,64 @@
-// https://github.com/zo0r/react-native-push-notification (main)
-// https://github.com/react-native-push-notification
-
-/* GUIDE:
-
-1. install:
-   import PushNotificationIOS from "@react-native-community/push-notification-ios";
-   import PushNotification from "react-native-push-notification";
-
-2. npx pod-install
-
-3. AppDelegate.h:
-    add to top: #import <UserNotifications/UNUserNotificationCenter.h>
-    edit: @interface AppDelegate : RCTAppDelegate <UNUserNotificationCenterDelegate>
-
-4. AppDelegate.mm:
-    https://github.com/react-native-push-notification/ios#update-appdelegatem-or-appdelegatemm
-
-5. add Push Notification on XCode
-
-6. (options?) add to plist: NSUserNotificationsUsageDescription
-
-*/
-
-// import PushNotificationIOS from "@react-native-community/push-notification-ios";
-
-// @ts-ignore
-import PushNotification from "react-native-push-notification";
+import notifee, { Notification, TimestampTrigger, TriggerType } from '@notifee/react-native';
 
 export type NotificationOption = {
   message: string,
-  title?: string
+  title: string,
+  timestamp?: number,
 }
 
-// Must be outside of any component LifeCycle (such as `componentDidMount`).
-PushNotification.configure({
-  // // (optional) Called when Token is generated (iOS and Android)
-  // onRegister: function (token) {
-  //   console.log("TOKEN:", token);
-  // },
+var channelId: string
+var inited: boolean = false
 
-  // // (required) Called when a remote is received or opened, or local notification is opened
-  // onNotification: function (notification) {
-  //   console.log("NOTIFICATION:", notification);
-
-  //   // process the notification
-
-  //   // (required) Called when a remote is received or opened, or local notification is opened
-  //   notification.finish(PushNotificationIOS.FetchResult.NoData);
-  // },
-
-  // // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
-  // onAction: function (notification) {
-  //   console.log("ACTION:", notification.action);
-  //   console.log("NOTIFICATION:", notification);
-
-  //   // process the action
-  // },
-
-  // // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-  // onRegistrationError: function (err) {
-  //   console.error(err.message, err);
-  // },
-
-  // IOS ONLY (optional): default: all - Permissions to register.
-  permissions: {
-    alert: true,
-    badge: true,
-    sound: true,
-  },
-
-  // Should the initial notification be popped automatically
-  // default: true
-  popInitialNotification: true,
-
-  /**
-   * (optional) default: true
-   * - Specified if permissions (ios) and token (android and ios) will requested or not,
-   * - if not, you must call PushNotificationsHandler.requestPermissions() later
-   * - if you are not using remote notification or do not have Firebase installed, use this:
-   *     requestPermissions: Platform.OS === 'ios'
-   */
-  requestPermissions: true,
-});
-
-export const cancelAllLocalNotifications = () => {
-  PushNotification.cancelAllLocalNotifications()
-}
-
-/**
- * https://github.com/zo0r/react-native-push-notification#scheduled-notifications
- */
-export const setNotification = ( // main
-  targetTimeMS: number, 
-  msgOrOptions: string | NotificationOption) => {
-  const option = typeof msgOrOptions === 'string' ? { message: msgOrOptions } : msgOrOptions
-
-  if (!msgOrOptions)
-    throw 'Notification msgOrOptions is undefined!'
-
-  if (targetTimeMS < Date.now())
+export const initNotificationAsync = async () => {
+  if (inited)
     return
 
-  PushNotification.localNotificationSchedule({
-    ...option,
-    date: new Date(targetTimeMS),
+  inited = true
+
+  // Create a channel (required for Android)
+  channelId = await notifee.createChannel({
+    id: 'default',
+    name: 'Default Channel',
   });
+
+  // Request permissions (required for iOS)
+  await notifee.requestPermission()
+}
+
+export const cancelAllLocalNotifications = () => {
+  notifee.cancelAllNotifications()
+}
+
+export const setNotification = (option: NotificationOption) => { // main
+  if (typeof option.timestamp !== 'number' ||
+    !option.message ||
+    !option.title)
+    throw 'Notification option is invalid'
+
+  if (option.timestamp < Date.now())
+    return
+
+  const trigger: TimestampTrigger = {
+    type: TriggerType.TIMESTAMP,
+    timestamp: option.timestamp,
+  }
+
+  notifee.createTriggerNotification(
+    {
+      title: option.title,
+      body: option.message,
+      android: { channelId },
+    } as Notification,
+
+    trigger,
+  );
 }
 
 export const setNotification_RemainSeconds = (  // sub
   seconds: number,
-  msgOrOptions: string | NotificationOption) => {
-  setNotification(Date.now() + seconds * 1000, msgOrOptions)
+  option: NotificationOption) => {
+  setNotification({
+    ...option,
+    timestamp: Date.now() + seconds * 1000
+  })
 }

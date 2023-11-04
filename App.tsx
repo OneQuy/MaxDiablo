@@ -50,7 +50,7 @@ import { useForceUpdate } from './scr/common/useForceUpdate';
 import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
-import { NotificationOption, cancelAllLocalNotifications, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
+import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -524,26 +524,27 @@ function App(): JSX.Element {
       // only next event
 
       if (notiData.state === NotificationState.Once) {
-        let targetMS = CalcTargetTimeAndSaveEvent(event)
+        let timestamp = CalcTargetTimeAndSaveEvent(event)
 
-        targetMS -= notiData.comingNotiTimeInMinutes * 60 * 1000
+        timestamp -= notiData.comingNotiTimeInMinutes * 60 * 1000
 
-        if (targetMS <= Date.now())
-          targetMS = Date.now() + 1000
+        if (timestamp <= Date.now())
+          timestamp = Date.now() + 1000
 
         // targetMS = Date.now() + 5 * 1000
 
         const message = lang.current.event_content + event.name
 
-        setNotification(targetMS, {
+        setNotification({
           message,
-          title: event.name,
+          title: appName,
+          timestamp,
         } as NotificationOption)
 
-        notiData.lastSetTimeForOnceMode = targetMS
+        notiData.lastSetTimeForOnceMode = timestamp
 
-        console.log('did set noti [once]:', event.name, new Date(targetMS).toLocaleString());
-        StorageLog_LogAsync('did set noti [once]:', event.name, new Date(targetMS).toLocaleString());
+        console.log('did set noti [once]:', event.name, new Date(timestamp).toLocaleString());
+        StorageLog_LogAsync('did set noti [once]:', event.name, new Date(timestamp).toLocaleString());
       }
 
       // all
@@ -555,16 +556,17 @@ function App(): JSX.Element {
         const message = lang.current.event_content + event.name
 
         for (let i = 0; i < count; i++) {
-          let targetMS = start - notiData.comingNotiTimeInMinutes * 60 * 1000
+          let timestamp = start - notiData.comingNotiTimeInMinutes * 60 * 1000
 
-          if (targetMS <= Date.now())
-            targetMS = Date.now() + 1000
+          if (timestamp <= Date.now())
+            timestamp = Date.now() + 1000
 
           // targetMS = Date.now() + 5 * 1000
 
-          setNotification(targetMS, {
+          setNotification({
             message,
-            title: event.name,
+            title: appName,
+            timestamp,
           } as NotificationOption)
 
           // console.log(i + ', did set noti [all]:', event.name, new Date(targetMS).toLocaleString());
@@ -580,6 +582,8 @@ function App(): JSX.Element {
   }, [])
 
   const onPressEventNotiIcon = useCallback((event: Event) => {
+    initNotificationAsync()
+    
     let data = GetNotificationData(notificationDataArr, event)
     const isExist = data !== undefined
 

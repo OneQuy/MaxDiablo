@@ -524,16 +524,16 @@ function App(): JSX.Element {
       // only next event
 
       if (notiData.state === NotificationState.Once) {
-        let timestamp = CalcTargetTimeAndSaveEvent(event)
+        const target = CalcTargetTimeAndSaveEvent(event)
 
-        timestamp -= notiData.comingNotiTimeInMinutes * 60 * 1000
+        let timestamp = target - notiData.comingNotiTimeInMinutes * 60 * 1000
 
         if (timestamp <= Date.now())
           timestamp = Date.now() + 1000
 
         // targetMS = Date.now() + 5 * 1000
 
-        const message = lang.current.event_content + event.name
+        const message = lang.current.event_content + event.name + ' (' + new Date(target).toLocaleTimeString() + ')'
 
         setNotification({
           message,
@@ -553,10 +553,10 @@ function App(): JSX.Element {
         let start = CalcTargetTimeAndSaveEvent(event)
         const day = event.intervalInMinute <= 60 ? 1 : NotiLoopDayCountForModeAll
         const count = Math.ceil(24 / event.intervalInMinute * 60 * day)
-        const message = lang.current.event_content + event.name
-
+        
         for (let i = 0; i < count; i++) {
           let timestamp = start - notiData.comingNotiTimeInMinutes * 60 * 1000
+          const message = lang.current.event_content + event.name  + ' (' + new Date(start).toLocaleTimeString() + ')'
 
           if (timestamp <= Date.now())
             timestamp = Date.now() + 1000

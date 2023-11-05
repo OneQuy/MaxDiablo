@@ -508,7 +508,7 @@ function App(): JSX.Element {
   const resetNotificationAndSaveData = useCallback((dataArr: NotificationData[]) => {
     cancelAllLocalNotifications()
     // console.log('cleared all noti --------------')
-    StorageLog_LogAsync('cleareddddddd')
+    // StorageLog_LogAsync('cleareddddddd')
 
     dataArr.forEach(notiData => {
       // console.log(notiData.nameEvent, notiData.state, notiData.comingNotiTimeInMinutes);
@@ -543,8 +543,8 @@ function App(): JSX.Element {
 
         notiData.lastSetTimeForOnceMode = timestamp
 
-        console.log('did set noti [once]:', event.name, new Date(timestamp).toLocaleString());
-        StorageLog_LogAsync('did set noti [once]:', event.name, new Date(timestamp).toLocaleString());
+        // console.log('did set noti [once]:', event.name, new Date(timestamp).toLocaleString());
+        // StorageLog_LogAsync('did set noti [once]:', event.name, new Date(timestamp).toLocaleString());
       }
 
       // all

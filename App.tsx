@@ -1580,7 +1580,11 @@ function App(): JSX.Element {
 
     const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
       // console.log('open interstitial')
+      
       showingInterstitial.current = true
+
+      setRateSuccessCount(0)
+      rateSuccessCountRef.current = 0
 
       // tracking
 

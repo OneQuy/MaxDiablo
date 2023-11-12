@@ -882,8 +882,9 @@ function App(): JSX.Element {
       if (typeof count !== 'number')
         count = 0
 
-      if (count >= 2)
-        showAdsInterstitial('multi_pic')
+      if (count >= 2) {
+        setTimeout(() => { showAdsInterstitial('multi_pic') }, 500);
+      }
 
       storage.setInt('used_multi_count', count + 1)
     })

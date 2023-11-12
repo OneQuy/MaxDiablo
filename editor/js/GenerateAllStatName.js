@@ -1,7 +1,6 @@
 "use strict";
 exports.__esModule = true;
 exports.GenerateAllStatName = void 0;
-var Utils_NodeJS_1 = require("./Utils_NodeJS");
 var fs = require('fs');
 var weirdstatdir = './editor/weirdstat/';
 var KnownWeirdStats = [
@@ -65,7 +64,7 @@ var GenerateAllStatName = function () {
     var exports = ReadWeirdStat();
     for (var islot = 0; islot < exports.length; islot++) {
         if (arr.includes(exports[islot])) {
-            (0, Utils_NodeJS_1.LogRed)(exports[islot]);
+            // LogRed(exports[islot])
             continue;
         }
         arr.push(exports[islot]);

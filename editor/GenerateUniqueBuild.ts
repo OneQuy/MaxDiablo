@@ -5,7 +5,7 @@ const fs = require('fs')
 
 export const GenerateUniqueBuild = () => {
     const text = fs.readFileSync('./editor/Unique/Unique.txt', 'utf-8');
-    
+
     const arrSessions = SplitSectionsFromText(text)
 
     const builds: UniqueBuild[] = []
@@ -16,15 +16,38 @@ export const GenerateUniqueBuild = () => {
         if (section[1].toLowerCase().includes('none'))
             continue
 
-        const build: UniqueBuild = {
-            name: section[0].substring(1),
-            upperSlotNames: section.slice(1)
+        const buildName = section[0].substring(1)
+        let build: UniqueBuild | undefined
+        const upperSlotNames = section.slice(1)
+
+        for (let j = 0; j < upperSlotNames.length; j++) {
+            upperSlotNames[j] = upperSlotNames[j].trim()
         }
 
-        builds.push(build)
+        build = builds.find(i => i.name === buildName)
+
+        if (build) {
+            upperSlotNames.forEach(element => {
+                // @ts-ignore
+                const idx = build.upperSlotNames.findIndex(e => e.toLowerCase() === element.toLowerCase())
+                
+                if (idx < 0)
+                    build?.upperSlotNames.push(element)
+            });
+
+            // console.log('(no worry) duplicateddd');
+        }
+        else {
+            build = {
+                name: buildName,
+                upperSlotNames,
+            } as UniqueBuild
+
+            builds.push(build)
+        }
     }
 
     fs.writeFileSync('./assets/UniqueBuilds.json', JSON.stringify(builds, null, 1));
-    
+
     LogGreen('success')
 }

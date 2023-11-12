@@ -1,5 +1,33 @@
 [
  {
+  "name": " Build Imbuement Rogue",
+  "upperSlotNames": [
+   "Doombringer",
+   "Andariel's Visage"
+  ]
+ },
+ {
+  "name": " Build Poison Imbuement",
+  "upperSlotNames": [
+   "Doombringer",
+   "Andariel's Visage"
+  ]
+ },
+ {
+  "name": " Build Shadow Imbuement",
+  "upperSlotNames": [
+   "Doombringer"
+  ]
+ },
+ {
+  "name": "Build Upheaval Barbarian",
+  "upperSlotNames": [
+   "Hellhammer",
+   "Tibault's Will",
+   "Banished Lord's Talisman"
+  ]
+ },
+ {
   "name": "Build Infinimist Necro",
   "upperSlotNames": [
    "Howl from Below",
@@ -22,7 +50,8 @@
   "name": "Build Pulverize Druid",
   "upperSlotNames": [
    "Vasily's Prayer",
-   "Insatiable Fury"
+   "Insatiable Fury",
+   "Banished Lord's Talisman"
   ]
  },
  {

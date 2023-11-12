@@ -1,3 +1,19 @@
+- Build Imbuement Rogue
+Doombringer
+Andariel's Visage
+
+- Build Poison Imbuement
+Doombringer
+Andariel's Visage
+
+- Build Shadow Imbuement
+Doombringer
+
+-Build Upheaval Barbarian
+Hellhammer
+Tibault's Will
+Banished Lord's Talisman
+
 -Build Infinimist Necro
 Howl from Below
 Greaves of the Empty Tomb
@@ -11,6 +27,7 @@ Tibault's Will
 -Build Pulverize Druid
 Vasily's Prayer
 Insatiable Fury
+Banished Lord's Talisman
 
 -Build Stormclaw Druid
 Greatstaff of the Crone
@@ -148,7 +165,6 @@ Esadora's Overflowing Cameo
 Godslayer Crown
 Raiment of the Infinite
 Flickerstep
-
 
 -Build Chain Lightning Sorc
 Raiment of the Infinite

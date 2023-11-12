@@ -684,8 +684,8 @@ function App(): JSX.Element {
       // tracking
 
       sessionRequestAds.current++
-      FirebaseIncrease('ads_v2/really_call_total')
-      FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/really_call')
+      FirebaseIncrease('ads_v3/really_call_total')
+      FirebaseIncrease('ads_v3/day/' + todayString + '/' + location + '/really_call')
     }
     else { // not available
       interstitial.load()
@@ -694,8 +694,8 @@ function App(): JSX.Element {
     // tracking
 
     Track('fire_show_ads')
-    FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/check_to_call_sum')
-    FirebaseIncrease('ads_v2/check_to_call_total')
+    FirebaseIncrease('ads_v3/day/' + todayString + '/' + location + '/check_to_call_sum')
+    FirebaseIncrease('ads_v3/check_to_call_total')
   }, [])
 
   //  multi
@@ -1585,8 +1585,8 @@ function App(): JSX.Element {
       // tracking
 
       Track('ads_opened')
-      FirebaseIncrease('ads_v2/day/' + todayString + '/opened')
-      FirebaseIncrease('ads_v2/opened_total')
+      FirebaseIncrease('ads_v3/day/' + todayString + '/opened')
+      FirebaseIncrease('ads_v3/opened_total')
     });
 
     const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
@@ -1605,8 +1605,8 @@ function App(): JSX.Element {
       // tracking
 
       sessionClosedAds.current++
-      FirebaseIncrease('ads_v2/day/' + todayString + '/closed')
-      FirebaseIncrease('ads_v2/closed_total')
+      FirebaseIncrease('ads_v3/day/' + todayString + '/closed')
+      FirebaseIncrease('ads_v3/closed_total')
       Track('ads_closed')
     });
 

@@ -635,7 +635,10 @@ function App(): JSX.Element {
     suitBuilds.current = item.suitBuilds
     rateResult.current = item.rateResult ? item.rateResult : DefaultRateResult
     currentFileID.current = item.fileID
-    isUberUnique.current = IsUberUnique(ocrResultTextOnly.current)
+    
+    const isUnique = item.slot === undefined && item.suitBuilds && item.suitBuilds.length > 0
+
+    isUberUnique.current = !isUnique && IsUberUnique(ocrResultTextOnly.current)
 
     if (state === 'success') {
       status.current = ''
@@ -823,7 +826,7 @@ function App(): JSX.Element {
         if (remoteConfig.current.auto_delete_file_if_extract_success === true)
           FirebaseStorage_DeleteAsync(fbpath)
 
-        if (isUniqueAndHasSuitBuilds) {
+        if (isUniqueAndHasSuitBuilds) { // is unique
           item.suitBuilds = arrUniqueSuitBuilds.map((buildName: string) => [
             undefined,
             {

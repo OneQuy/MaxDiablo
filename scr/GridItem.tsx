@@ -20,8 +20,9 @@ const itemHeight = windowSize.height * 0.25
 const GridItem = (props: Props) => {
   const lang = useContext(LangContext)
   const isWaitingAPI = props.itemData.ocrResultTxt === undefined
+  
   const isUnique = props.itemData.rateResult === undefined && props.itemData.suitBuilds && props.itemData.suitBuilds.length > 0
-  const isUberUnique = props.itemData.ocrResultTxt && IsUberUnique(props.itemData.ocrResultTxt)
+  const isUberUnique = !isUnique && props.itemData.ocrResultTxt && IsUberUnique(props.itemData.ocrResultTxt)
 
   const ratedSuccess = isUnique || isUberUnique || props.itemData.rateResult !== undefined
 

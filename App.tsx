@@ -3,7 +3,6 @@ import {
   Alert,
   Animated,
   AppState,
-  AppStateEvent,
   AppStateStatus,
   Button,
   GestureResponderEvent,
@@ -53,6 +52,7 @@ import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateTyp
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
 import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
+import { FileVersionConfig, useDownloadConfigFile } from './scr/useDownloadConfigFile';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -160,7 +160,8 @@ function App(): JSX.Element {
   const isOpeningCameraOrPhotoPicker = useRef(false)
   const lang = useRef(GetLang(isLangViet !== 1))
   const forceUpdate = useForceUpdate()
-
+  // const [isFinishedDownloadFileConfig, checkAndDownloadFileConfigAsync] = useDownloadConfigFile()
+  
   // ads
 
   const reallyNeedToShowInterstitialWithLocation = useRef<string | undefined>(undefined)
@@ -202,6 +203,9 @@ function App(): JSX.Element {
     notify_style: 0,
     apple_review_version: '',
     api_index: 1,
+    fileConfig: {
+      uniqueBuild: 0,
+    } as FileVersionConfig
   })
 
   // moving pic
@@ -1500,6 +1504,8 @@ function App(): JSX.Element {
     }
 
     remoteConfig.current = res.value
+    
+    // checkAndDownloadFileConfigAsync(remoteConfig.current.fileConfig, storage)
 
     isDevDevice = remoteConfig.current.dev_devices.includes(getUniqueId())
 
@@ -1723,6 +1729,16 @@ function App(): JSX.Element {
       </SafeAreaView>
     )
   }
+
+  // render lange selection
+
+  // if (!isFinishedDownloadFileConfig) {
+  //   return (
+  //     <SafeAreaView style={{ gap: Outline.Gap, flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+  //         <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{'Đang update file...'}</Text>        
+  //     </SafeAreaView>
+  //   )
+  // }
 
   // main render
 

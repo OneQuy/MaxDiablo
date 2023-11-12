@@ -702,10 +702,19 @@ function App(): JSX.Element {
 
   const toggleShowMulti = useCallback((isUserPress: boolean) => {
     isShowMulti.current = !isShowMulti.current
-    forceUpdate()
 
-    if (isUserPress && isShowMulti.current)
-      showAdsInterstitial('press_show_multi')
+    if (isShowMulti.current) { // to show
+      if (isUserPress)
+        showAdsInterstitial('press_show_multi')
+    }
+    else { // to hide      
+      if (!multiSelectedItem.current) {
+        multiSelectedItem.current = multiImageItems.current[0]
+        updateSelectedItemStateToMainScreen()
+      }
+    }
+
+    forceUpdate()
   }, [])
 
   const updateMultiStateAsync = useCallback(async () => {
@@ -1580,7 +1589,7 @@ function App(): JSX.Element {
 
     const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
       // console.log('open interstitial')
-      
+
       showingInterstitial.current = true
 
       setRateSuccessCount(0)

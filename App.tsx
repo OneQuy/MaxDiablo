@@ -3,6 +3,8 @@ import {
   Alert,
   Animated,
   AppState,
+  AppStateEvent,
+  AppStateStatus,
   Button,
   GestureResponderEvent,
   Image,
@@ -151,9 +153,6 @@ function App(): JSX.Element {
   const scrollViewRef = useRef<ScrollView>(null)
   const scrollViewCurrentOffsetY = useRef(0)
   const scrollTopBtnAnimatedY = useRef(new Animated.Value(Platform.OS === 'android' ? 50 : 300)).current
-  const loadedInterstitial = useRef(false)
-  const reallyNeedToShowInterstitial = useRef(false)
-  const showingInterstitial = useRef(false)
   const cachedAlert = useRef<[string, string] | undefined>(undefined)
   const currentFileID = useRef('')
   const cheatPasteOCRResultCount = useRef(0)
@@ -161,6 +160,11 @@ function App(): JSX.Element {
   const isOpeningCameraOrPhotoPicker = useRef(false)
   const lang = useRef(GetLang(isLangViet !== 1))
   const forceUpdate = useForceUpdate()
+
+  // ads
+
+  const reallyNeedToShowInterstitialWithLocation = useRef<string | undefined>(undefined)
+  const showingInterstitial = useRef(false)
 
   // session
 
@@ -553,10 +557,10 @@ function App(): JSX.Element {
         let start = CalcTargetTimeAndSaveEvent(event)
         const day = event.intervalInMinute <= 60 ? 1 : NotiLoopDayCountForModeAll
         const count = Math.ceil(24 / event.intervalInMinute * 60 * day)
-        
+
         for (let i = 0; i < count; i++) {
           let timestamp = start - notiData.comingNotiTimeInMinutes * 60 * 1000
-          const message = lang.current.event_content + event.name  + ' (' + new Date(start).toLocaleTimeString() + ')'
+          const message = lang.current.event_content + event.name + ' (' + new Date(start).toLocaleTimeString() + ')'
 
           if (timestamp <= Date.now())
             timestamp = Date.now() + 1000
@@ -583,7 +587,7 @@ function App(): JSX.Element {
 
   const onPressEventNotiIcon = useCallback((event: Event) => {
     initNotificationAsync()
-    
+
     let data = GetNotificationData(notificationDataArr, event)
     const isExist = data !== undefined
 
@@ -660,7 +664,9 @@ function App(): JSX.Element {
     forceUpdate()
   }, [])
 
-  const checkAndShowAdsInterstitial = useCallback(() => {
+  // ads
+
+  const checkAndShowAdsInterstitialPerRatedCount = useCallback(() => {
     // console.log('cur rate success count', rateSuccessCountRef.current, '/ ' + rateSuccessCountPerInterstitialConfig.current);
 
     if (rateSuccessCountRef.current < rateSuccessCountPerInterstitialConfig.current)
@@ -670,30 +676,29 @@ function App(): JSX.Element {
   }, [])
 
   const showAdsInterstitial = useCallback((location: string) => {
-    reallyNeedToShowInterstitial.current = true
-    Track('fire_show_ads', loadedInterstitial.current)
-    FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/check_to_call_sum')
-    FirebaseIncrease('ads_v2/check_to_call_total')
+    reallyNeedToShowInterstitialWithLocation.current = location
 
-    if (loadedInterstitial.current) {
-      loadedInterstitial.current = false
+    if (interstitial.loaded) { // ads available
+      interstitial.show()
+
+      // tracking
+
       sessionRequestAds.current++
-
       FirebaseIncrease('ads_v2/really_call_total')
       FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/really_call')
+    }
+    else { // not available
+      interstitial.load()
+    }
 
-      interstitial.show()
-    }
-    else {
-      loadAdsInterstitial()
-    }
+    // tracking
+
+    Track('fire_show_ads')
+    FirebaseIncrease('ads_v2/day/' + todayString + '/' + location + '/check_to_call_sum')
+    FirebaseIncrease('ads_v2/check_to_call_total')
   }, [])
 
-  const loadAdsInterstitial = useCallback(() => {
-    // console.log('loading interstitial')
-    loadedInterstitial.current = false
-    interstitial.load()
-  }, [])
+  //  multi
 
   const toggleShowMulti = useCallback((isUserPress: boolean) => {
     isShowMulti.current = !isShowMulti.current
@@ -1337,7 +1342,7 @@ function App(): JSX.Element {
     status.current = lang.current.wait_api
     forceUpdate()
 
-    checkAndShowAdsInterstitial() // show ads
+    checkAndShowAdsInterstitialPerRatedCount() // show ads
 
     try {
       Track('call_api', { fileID: currentFileID.current })
@@ -1430,6 +1435,49 @@ function App(): JSX.Element {
     forceUpdate()
   }, [notificationDataArr])
 
+  const onAppStateChanged = useCallback((e: AppStateStatus) => {
+    if (e === 'active') { // start session
+
+      if (isOpeningCameraOrPhotoPicker.current) {
+        isOpeningCameraOrPhotoPicker.current = false
+        return
+      }
+
+      sessionExtractedCount.current = 0
+      sessionSelectedImgCount.current = 0
+      sessionClosedAds.current = 0
+      sessionRequestAds.current = 0
+      sessionFileIDs.current = ''
+      sessionRatedResult.current = ''
+      sessionStartTime.current = Date.now()
+    }
+    else if (e === 'background') { // end session
+      if (isOpeningCameraOrPhotoPicker.current) {
+        return
+      }
+
+      const fbpath =
+        'sessions_v3/' +
+        (sessionSelectedImgCount.current <= 0 ? 'Zero/' : 'NoZero/') +
+        todayString + '/' +
+        (new Date()).getHours() + 'h/' +
+        getUniqueId() + '/' +
+        Date.now()
+
+      FirebaseDatabase_SetValueAsync(fbpath, {
+        extracted_count: sessionExtractedCount.current,
+        selected_img: sessionSelectedImgCount.current,
+        duration: (Date.now() - sessionStartTime.current) / 1000 + 's',
+        version,
+        files: sessionFileIDs.current,
+        start_time: new Date(sessionStartTime.current).toString(),
+        calledShowAds: sessionRequestAds.current,
+        closedAds: sessionClosedAds.current,
+        rated: sessionRatedResult.current,
+      })
+    }
+  }, [])
+
   const getFirebaseConfigAsync = useCallback(async () => {
     const res = await FirebaseDatabase_GetValueAsync('app_config')
 
@@ -1502,58 +1550,13 @@ function App(): JSX.Element {
 
       await CheckAndInitAdmobAsync();
 
-      loadAdsInterstitial()
+      interstitial.load()
 
       // app state
 
       if (!isDevDevice) {
         sessionStartTime.current = Date.now()
-
-        appStateRemove = AppState.addEventListener('change', (e) => {
-          // console.log(ToCanPrint(e));
-
-          if (e === 'active') { // start session
-
-            if (isOpeningCameraOrPhotoPicker.current) {
-              isOpeningCameraOrPhotoPicker.current = false
-              return
-            }
-
-            sessionExtractedCount.current = 0
-            sessionSelectedImgCount.current = 0
-            sessionClosedAds.current = 0
-            sessionRequestAds.current = 0
-            sessionFileIDs.current = ''
-            sessionRatedResult.current = ''
-            sessionStartTime.current = Date.now()
-          }
-          else if (e === 'background') { // end session
-            if (isOpeningCameraOrPhotoPicker.current) {
-              return
-            }
-
-            // const fbpath = 'sessions_v2/' + todayString + '/' + Date.now() + '/' + getUniqueId()
-            const fbpath =
-              'sessions_v3/' +
-              (sessionSelectedImgCount.current <= 0 ? 'Zero/' : 'NoZero/') +
-              todayString + '/' +
-              (new Date()).getHours() + 'h/' +
-              getUniqueId() + '/' +
-              Date.now()
-
-            FirebaseDatabase_SetValueAsync(fbpath, {
-              extracted_count: sessionExtractedCount.current,
-              selected_img: sessionSelectedImgCount.current,
-              duration: (Date.now() - sessionStartTime.current) / 1000 + 's',
-              version,
-              files: sessionFileIDs.current,
-              start_time: new Date(sessionStartTime.current).toString(),
-              calledShowAds: sessionRequestAds.current,
-              closedAds: sessionClosedAds.current,
-              rated: sessionRatedResult.current,
-            })
-          }
-        })
+        appStateRemove = AppState.addEventListener('change', onAppStateChanged)
       }
 
       // tracking
@@ -1570,27 +1573,27 @@ function App(): JSX.Element {
 
     const unsubscribe_ads_interstitial_loaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
       // console.log('loaded interstitial')
-      loadedInterstitial.current = true
 
-      if (reallyNeedToShowInterstitial.current)
-        showAdsInterstitial('single')
+      if (typeof reallyNeedToShowInterstitialWithLocation.current === 'string')
+        showAdsInterstitial(reallyNeedToShowInterstitialWithLocation.current)
     });
 
     const unsubscribe_ads_interstitial_opened = interstitial.addAdEventListener(AdEventType.OPENED, () => {
       // console.log('open interstitial')
       showingInterstitial.current = true
+
+      // tracking
+
       Track('ads_opened')
+      FirebaseIncrease('ads_v2/day/' + todayString + '/opened')
+      FirebaseIncrease('ads_v2/opened_total')
     });
 
     const unsubscribe_ads_interstitial_closed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
       // console.log('closed interstitial')
-      reallyNeedToShowInterstitial.current = false
+      reallyNeedToShowInterstitialWithLocation.current = undefined
       showingInterstitial.current = false
-      sessionClosedAds.current++
-      loadAdsInterstitial()
-
-      setRateSuccessCount(0)
-      rateSuccessCountRef.current = 0
+      interstitial.load()
 
       // show cached alert
 
@@ -1599,18 +1602,22 @@ function App(): JSX.Element {
         cachedAlert.current = undefined
       }
 
+      // tracking
+
+      sessionClosedAds.current++
       FirebaseIncrease('ads_v2/day/' + todayString + '/closed')
       FirebaseIncrease('ads_v2/closed_total')
       Track('ads_closed')
     });
 
     const unsubscribe_ads_interstitial_error = interstitial.addAdEventListener(AdEventType.ERROR, (e) => {
-      console.log('error interstitial', e)
+      console.error('error interstitial', e)
 
-      if (reallyNeedToShowInterstitial.current)
-        loadAdsInterstitial()
+      // tracking
 
-      Track('ads_error', ToCanPrint(e))
+      const err = ToCanPrint(e)
+      FirebaseDatabase_SetValueAsync('error_report/ads/' + todayString + '/' + Date.now(), err)
+      Track('ads_error', err)
     })
 
     // update interval

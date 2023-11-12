@@ -1,67 +1,16 @@
 [
  {
-  "name": " Build Imbuement Rogue",
+  "name": "Arc Lash Sorc",
   "upperSlotNames": [
-   "Doombringer",
-   "Andariel's Visage"
-  ]
- },
- {
-  "name": " Build Poison Imbuement",
-  "upperSlotNames": [
-   "Doombringer",
-   "Andariel's Visage"
-  ]
- },
- {
-  "name": " Build Shadow Imbuement",
-  "upperSlotNames": [
-   "Doombringer"
-  ]
- },
- {
-  "name": "Build Upheaval Barbarian",
-  "upperSlotNames": [
-   "Hellhammer",
+   "Godslayer Crown",
+   "Raiment of the Infinite",
    "Tibault's Will",
-   "Banished Lord's Talisman"
+   "Flickerstep",
+   "Esadora's Overflowing Cameo"
   ]
  },
  {
-  "name": "Build Infinimist Necro",
-  "upperSlotNames": [
-   "Howl from Below",
-   "Greaves of the Empty Tomb"
-  ]
- },
- {
-  "name": "Build Death Trap Rogue",
-  "upperSlotNames": [
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Twisting Blades Rogue",
-  "upperSlotNames": [
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Pulverize Druid",
-  "upperSlotNames": [
-   "Vasily's Prayer",
-   "Insatiable Fury",
-   "Banished Lord's Talisman"
-  ]
- },
- {
-  "name": "Build Stormclaw Druid",
-  "upperSlotNames": [
-   "Greatstaff of the Crone"
-  ]
- },
- {
-  "name": "Build Ball Lightning Sorc",
+  "name": "Ball Lightning Sorc",
   "upperSlotNames": [
    "Godslayer Crown",
    "Raiment of the Infinite",
@@ -70,89 +19,23 @@
   ]
  },
  {
-  "name": "Build Werewolf Tornado Druid",
+  "name": "Barrage Rogue",
   "upperSlotNames": [
-   "Tempest Roar",
-   "Mad Wolf's Glee"
-  ]
- },
- {
-  "name": "Build Double Swing Barb",
-  "upperSlotNames": [
-   "Ramaladni's Magnum Opus",
-   "Godslayer Crown",
+   "Condemnation",
+   "Harlequin Crest",
+   "Grasp of Shadow",
    "Tibault's Will"
   ]
  },
  {
-  "name": "Build Lightning Storm Druid",
-  "upperSlotNames": [
-   "Tempest Roar"
-  ]
- },
- {
-  "name": "Build Bone Spear Necro",
-  "upperSlotNames": [
-   "Deathless Visage"
-  ]
- },
- {
-  "name": "Build Blight CE Necro",
+  "name": "Blight CE Necro",
   "upperSlotNames": [
    "Howl from Below",
    "X'Fal's Corroded Signet"
   ]
  },
  {
-  "name": "Build Blood Lance Necro",
-  "upperSlotNames": [
-   "Temerity"
-  ]
- },
- {
-  "name": "Build Rain of Arrows Rogue",
-  "upperSlotNames": [
-   "Temerity",
-   "Flickerstep",
-   "Word of Hakan"
-  ]
- },
- {
-  "name": "Build Rapid Fire Rogue",
-  "upperSlotNames": [
-   "Condemnation",
-   "Harlequin Crest",
-   "Grasp of Shadow",
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Barrage Rogue",
-  "upperSlotNames": [
-   "Condemnation",
-   "Harlequin Crest",
-   "Grasp of Shadow",
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Penetrating Shot Rogue",
-  "upperSlotNames": [
-   "Condemnation",
-   "Harlequin Crest",
-   "Grasp of Shadow",
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Flurry Rapid Fire Rogue",
-  "upperSlotNames": [
-   "Condemnation",
-   "Penitent Greaves"
-  ]
- },
- {
-  "name": "Build Blizzard Sorc",
+  "name": "Blizzard Sorc",
   "upperSlotNames": [
    "Raiment of the Infinite",
    "Tibault's Will",
@@ -161,84 +44,46 @@
   ]
  },
  {
-  "name": "Build Ice Shards Sorc",
-  "upperSlotNames": [
-   "Godslayer Crown",
-   "Raiment of the Infinite",
-   "Tibault's Will",
-   "Esu's Heirloom"
-  ]
- },
- {
-  "name": "Build Firewall Sorc",
-  "upperSlotNames": [
-   "Godslayer Crown",
-   "Raiment of the Infinite",
-   "Flickerstep",
-   "X'Fal's Corroded Signet"
-  ]
- },
- {
-  "name": "Build HotA Barb",
-  "upperSlotNames": [
-   "Godslayer Crown",
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Thorns Barb",
-  "upperSlotNames": [
-   "Battle Trance",
-   "Ancients' Oath",
-   "Ramaladni's Magnum Opus",
-   "Razorplate"
-  ]
- },
- {
-  "name": "Build Walking Arsenal Barb",
-  "upperSlotNames": [
-   "Overkill",
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Whirlwind Barb",
-  "upperSlotNames": [
-   "Ramaladni's Magnum Opus",
-   "Tuskhelm of Joritz the Mighty",
-   "Tibault's Will"
-  ]
- },
- {
-  "name": "Build Lightning Shred Druid",
-  "upperSlotNames": [
-   "Waxing Gibbous",
-   "Tempest Roar"
-  ]
- },
- {
-  "name": "Build Shadow Summoner Necro",
-  "upperSlotNames": [
-   "Ring of Mendeln"
-  ]
- },
- {
-  "name": "Build Blood Surge Necro",
+  "name": "Blood Lance Necro",
   "upperSlotNames": [
    "Temerity"
   ]
  },
  {
-  "name": "Build Flurry Rogue",
+  "name": "Blood Surge Necro",
   "upperSlotNames": [
-   "Condemnation",
-   "Godslayer Crown",
-   "Tibault's Will",
-   "Flickerstep"
+   "Temerity"
   ]
  },
  {
-  "name": "Build Fireball Sorc",
+  "name": "Bone Spear Necro",
+  "upperSlotNames": [
+   "Deathless Visage"
+  ]
+ },
+ {
+  "name": "Chain Lightning Sorc",
+  "upperSlotNames": [
+   "Raiment of the Infinite",
+   "Esu's Heirloom"
+  ]
+ },
+ {
+  "name": "Death Trap Rogue",
+  "upperSlotNames": [
+   "Tibault's Will"
+  ]
+ },
+ {
+  "name": "Double Swing Barb",
+  "upperSlotNames": [
+   "Ramaladni's Magnum Opus",
+   "Godslayer Crown",
+   "Tibault's Will"
+  ]
+ },
+ {
+  "name": "Fireball Sorc",
   "upperSlotNames": [
    "Staff of Endless Rage",
    "Godslayer Crown",
@@ -249,17 +94,81 @@
   ]
  },
  {
-  "name": "Build Arc Lash Sorc",
+  "name": "Firewall Sorc",
+  "upperSlotNames": [
+   "Godslayer Crown",
+   "Raiment of the Infinite",
+   "Flickerstep",
+   "X'Fal's Corroded Signet"
+  ]
+ },
+ {
+  "name": "Flurry Rapid Fire Rogue",
+  "upperSlotNames": [
+   "Condemnation",
+   "Penitent Greaves"
+  ]
+ },
+ {
+  "name": "Flurry Rogue",
+  "upperSlotNames": [
+   "Condemnation",
+   "Godslayer Crown",
+   "Tibault's Will",
+   "Flickerstep"
+  ]
+ },
+ {
+  "name": "Frozen Orb Sorc",
+  "upperSlotNames": [
+   "Esu's Heirloom"
+  ]
+ },
+ {
+  "name": "HotA Barb",
+  "upperSlotNames": [
+   "Godslayer Crown",
+   "Tibault's Will"
+  ]
+ },
+ {
+  "name": "Ice Shards Sorc",
   "upperSlotNames": [
    "Godslayer Crown",
    "Raiment of the Infinite",
    "Tibault's Will",
-   "Flickerstep",
-   "Esadora's Overflowing Cameo"
+   "Esu's Heirloom"
   ]
  },
  {
-  "name": "Build Meteor Sorc",
+  "name": "Imbuement Rogue",
+  "upperSlotNames": [
+   "Doombringer",
+   "Andariel's Visage"
+  ]
+ },
+ {
+  "name": "Infinimist Necro",
+  "upperSlotNames": [
+   "Howl from Below",
+   "Greaves of the Empty Tomb"
+  ]
+ },
+ {
+  "name": "Lightning Shred Druid",
+  "upperSlotNames": [
+   "Waxing Gibbous",
+   "Tempest Roar"
+  ]
+ },
+ {
+  "name": "Lightning Storm Druid",
+  "upperSlotNames": [
+   "Tempest Roar"
+  ]
+ },
+ {
+  "name": "Meteor Sorc",
   "upperSlotNames": [
    "Godslayer Crown",
    "Raiment of the Infinite",
@@ -267,29 +176,120 @@
   ]
  },
  {
-  "name": "Build Chain Lightning Sorc",
+  "name": "Penetrating Shot Rogue",
   "upperSlotNames": [
-   "Raiment of the Infinite",
-   "Esu's Heirloom"
+   "Condemnation",
+   "Harlequin Crest",
+   "Grasp of Shadow",
+   "Tibault's Will"
   ]
  },
  {
-  "name": "Build Sever Necro",
+  "name": "Poison Imbuement",
+  "upperSlotNames": [
+   "Doombringer",
+   "Andariel's Visage"
+  ]
+ },
+ {
+  "name": "Pulverize Druid",
+  "upperSlotNames": [
+   "Vasily's Prayer",
+   "Insatiable Fury",
+   "Banished Lord's Talisman"
+  ]
+ },
+ {
+  "name": "Pure Summoner Necro",
+  "upperSlotNames": [
+   "Ring of Mendeln"
+  ]
+ },
+ {
+  "name": "Rain of Arrows Rogue",
+  "upperSlotNames": [
+   "Temerity",
+   "Flickerstep",
+   "Word of Hakan"
+  ]
+ },
+ {
+  "name": "Rapid Fire Rogue",
+  "upperSlotNames": [
+   "Condemnation",
+   "Harlequin Crest",
+   "Grasp of Shadow",
+   "Tibault's Will"
+  ]
+ },
+ {
+  "name": "Sever Necro",
   "upperSlotNames": [
    "Howl from Below",
    "Greaves of the Empty Tomb"
   ]
  },
  {
-  "name": "Build Pure Summoner Necro",
+  "name": "Shadow Imbuement",
+  "upperSlotNames": [
+   "Doombringer"
+  ]
+ },
+ {
+  "name": "Shadow Summoner Necro",
   "upperSlotNames": [
    "Ring of Mendeln"
   ]
  },
  {
-  "name": "Build Frozen Orb Sorc",
+  "name": "Stormclaw Druid",
   "upperSlotNames": [
-   "Esu's Heirloom"
+   "Greatstaff of the Crone"
+  ]
+ },
+ {
+  "name": "Thorns Barb",
+  "upperSlotNames": [
+   "Battle Trance",
+   "Ancients' Oath",
+   "Ramaladni's Magnum Opus",
+   "Razorplate"
+  ]
+ },
+ {
+  "name": "Twisting Blades Rogue",
+  "upperSlotNames": [
+   "Tibault's Will"
+  ]
+ },
+ {
+  "name": "Upheaval Barbarian",
+  "upperSlotNames": [
+   "Hellhammer",
+   "Tibault's Will",
+   "Banished Lord's Talisman"
+  ]
+ },
+ {
+  "name": "Walking Arsenal Barb",
+  "upperSlotNames": [
+   "Overkill",
+   "Tibault's Will"
+  ]
+ },
+ {
+  "name": "Werewolf Tornado Druid",
+  "upperSlotNames": [
+   "Tempest Roar",
+   "Mad Wolf's Glee"
+  ]
+ },
+ {
+  "name": "Whirlwind Barb",
+  "upperSlotNames": [
+   "Ramaladni's Magnum Opus",
+   "Tuskhelm of Joritz the Mighty",
+   "Tibault's Will"
   ]
  }
 ]

@@ -11,7 +11,10 @@ var GenerateUniqueBuild = function () {
         var section = arrSessions[i];
         if (section[1].toLowerCase().includes('none'))
             return "continue";
-        var buildName = section[0].substring(1);
+        var buildName = section[0].substring(1)
+            .replace('Build', '')
+            .replace('build', '')
+            .trim();
         var build;
         var upperSlotNames = section.slice(1);
         for (var j = 0; j < upperSlotNames.length; j++) {
@@ -25,7 +28,7 @@ var GenerateUniqueBuild = function () {
                 if (idx < 0)
                     build === null || build === void 0 ? void 0 : build.upperSlotNames.push(element);
             });
-            console.log('(no worry) duplicateddd');
+            // console.log('(no worry) duplicateddd');
         }
         else {
             build = {
@@ -38,6 +41,7 @@ var GenerateUniqueBuild = function () {
     for (var i = 0; i < arrSessions.length; i++) {
         _loop_1(i);
     }
+    builds.sort(function (a, b) { return a.name.localeCompare(b.name); });
     fs.writeFileSync('./assets/UniqueBuilds.json', JSON.stringify(builds, null, 1));
     (0, Utils_NodeJS_1.LogGreen)('success');
 };

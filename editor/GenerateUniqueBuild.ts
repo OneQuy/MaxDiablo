@@ -17,6 +17,10 @@ export const GenerateUniqueBuild = () => {
             continue
 
         const buildName = section[0].substring(1)
+            .replace('Build', '')
+            .replace('build', '')
+            .trim()
+
         let build: UniqueBuild | undefined
         const upperSlotNames = section.slice(1)
 
@@ -30,7 +34,7 @@ export const GenerateUniqueBuild = () => {
             upperSlotNames.forEach(element => {
                 // @ts-ignore
                 const idx = build.upperSlotNames.findIndex(e => e.toLowerCase() === element.toLowerCase())
-                
+
                 if (idx < 0)
                     build?.upperSlotNames.push(element)
             });
@@ -46,6 +50,8 @@ export const GenerateUniqueBuild = () => {
             builds.push(build)
         }
     }
+
+    builds.sort((a, b) => a.name.localeCompare(b.name))
 
     fs.writeFileSync('./assets/UniqueBuilds.json', JSON.stringify(builds, null, 1));
 

@@ -1233,9 +1233,9 @@ function App(): JSX.Element {
 
     // check unique
 
-    isUberUnique.current = IsUberUnique(result)
-    const arrUniqueSuitBuilds = isUberUnique.current ? [] : GetSuitBuildsForUnique(result, uniqueBuilds)
+    const arrUniqueSuitBuilds = GetSuitBuildsForUnique(result, uniqueBuilds)
     const isUniqueAndHasSuitBuilds = arrUniqueSuitBuilds.length > 0
+    isUberUnique.current = !isUniqueAndHasSuitBuilds && IsUberUnique(result)
 
     let extractRes = (isUniqueAndHasSuitBuilds || isUberUnique.current) ? 'unique' : ExtractSlotCard(result, stringifyResult)
     const isSuccess = isUberUnique.current || isUniqueAndHasSuitBuilds || typeof extractRes === 'object'

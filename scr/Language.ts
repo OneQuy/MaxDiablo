@@ -20,6 +20,7 @@ const viet = {
     vie: 'Tiếng Việt',
     en: 'English',
     err_unique: 'Không thể rate item UNIQUE này. Vui lòng chọn hình khác!',
+    downloadingFiles: 'Đang cập nhật data...',
     
     noti_pp_title: 'Thông báo cho event:',
     only_next_event: 'Chỉ lần kế tiếp',
@@ -73,6 +74,7 @@ const eng: Lang = {
     vie: 'Tiếng Việt',
     en: 'English',
     err_unique: 'Cant rate this UNIQUE item. Pls select another pic!',
+    downloadingFiles: 'Updating data...',
 
     noti_pp_title: 'Notification for event:',
     only_next_event: 'Only the next time',

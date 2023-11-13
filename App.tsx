@@ -75,6 +75,7 @@ const starIcon = require('./assets/images/star-icon.png')
 const leftIcon = require('./assets/images/left-icon.png')
 const notiIcon = require('./assets/images/noti-icon.png')
 const notiMuteIcon = require('./assets/images/mute-noti-icon.png')
+const appIcon = require('./assets/images/app-icon.png')
 
 const googleStoreOpenLink = "market://details?id=com.maxdiablo"
 const appleStoreOpenLink = "https://apps.apple.com/us/app/d4-tool/id6469034531"
@@ -159,12 +160,12 @@ function App(): JSX.Element {
   const isOpeningCameraOrPhotoPicker = useRef(false)
   const lang = useRef(GetLang(isLangViet !== 1))
   const forceUpdate = useForceUpdate()
-  
+
   const [
-    isFinishedDownloadFileConfig, 
+    isFinishedDownloadFileConfig,
     checkAndDownloadFileConfigAsync
   ] = useDownloadConfigFile()
-  
+
   // ads
 
   const reallyNeedToShowInterstitialWithLocation = useRef<string | undefined>(undefined)
@@ -642,7 +643,7 @@ function App(): JSX.Element {
     suitBuilds.current = item.suitBuilds
     rateResult.current = item.rateResult ? item.rateResult : DefaultRateResult
     currentFileID.current = item.fileID
-    
+
     const isUnique = item.slot === undefined && item.suitBuilds && item.suitBuilds.length > 0
 
     isUberUnique.current = !isUnique && IsUberUnique(ocrResultTextOnly.current)
@@ -1507,7 +1508,7 @@ function App(): JSX.Element {
     }
 
     remoteConfig.current = res.value
-    
+
     if (typeof checkAndDownloadFileConfigAsync === 'function')
       checkAndDownloadFileConfigAsync(remoteConfig.current.fileConfig, storage)
 
@@ -1670,7 +1671,6 @@ function App(): JSX.Element {
     !suitBuilds.current ||
     suitBuilds.current.length === 0
 
-
   const ios_diable_info =
     Platform.OS === 'ios' && !__DEV__ &&
     (remoteConfig.current.ios_disable_suit_build ||
@@ -1721,9 +1721,11 @@ function App(): JSX.Element {
 
   // render lange selection
 
+  // if (true) {
   if (isLangViet === -1) {
     return (
       <SafeAreaView style={{ gap: Outline.Gap, flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+        <Image source={appIcon} style={{ width: 100, height: 100 }} />
         <TouchableOpacity onPress={() => onPressLang(true)} style={{ minWidth: windowSize.width / 2, borderRadius: BorderRadius.Small, padding: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: 'black', fontSize: FontSize.Normal }}>{lang.current.vie}</Text>
         </TouchableOpacity>
@@ -1736,10 +1738,15 @@ function App(): JSX.Element {
 
   // render lange selection
 
+  // if (true) {
   if (!isFinishedDownloadFileConfig) {
     return (
       <SafeAreaView style={{ gap: Outline.Gap, flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{'Đang update file...'}</Text>        
+        <Image source={appIcon} style={{ width: 100, height: 100 }} />
+        <View style={{ flexDirection: 'row', gap: Outline.Gap }}>
+          <ActivityIndicator color={'tomato'} />
+          <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{lang.current.downloadingFiles}</Text>
+        </View>
       </SafeAreaView>
     )
   }

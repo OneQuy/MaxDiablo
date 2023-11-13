@@ -1,12 +1,15 @@
 import { useState } from "react"
 import { FirebaseStorage_DownloadByGetBytesAsync } from "./common/Firebase/FirebaseStorage"
-import { IsExistedAsync } from "./common/FileUtils"
+import { IsExistedAsync, ReadTextAsync } from "./common/FileUtils"
 import { ToCanPrint } from "./common/UtilsTS"
 import { MMKVInstance } from "react-native-mmkv-storage"
+import { UniqueBuild } from "./Types"
 
 export type FileVersionConfig = {
     uniqueBuild: number | undefined
 }
+
+export var uniqueBuilds: UniqueBuild[]
 
 export const useDownloadConfigFile = () => {
     const [isFinished, setIsFinihed] = useState(false)
@@ -17,41 +20,55 @@ export const useDownloadConfigFile = () => {
         const savedVersion = savedVersionString ? JSON.parse(savedVersionString) as FileVersionConfig : undefined
 
         console.log('remote ver:', remoteVersion);
-
         console.log('saved ver:', savedVersion);
 
         // unique build
 
-        let localRLP = 'configs/UniqueBuilds.json'
-        let isExistFile = await IsExistedAsync(localRLP, true)
+        const localRLP = 'configs/UniqueBuilds.json'
+        const defaultPath = '../assets/UniqueBuilds.json'
+        const proper = 'uniqueBuild'
 
-        console.log('is existed', localRLP, isExistFile);
+        let isExistFile = await IsExistedAsync(localRLP, true)
 
         if (!savedVersion ||
             !isExistFile ||
-            !savedVersion.uniqueBuild ||
-            typeof remoteVersion.uniqueBuild !== 'number' ||
-            savedVersion.uniqueBuild < remoteVersion.uniqueBuild) { // need download
+            !savedVersion[proper] ||
+            typeof remoteVersion[proper] !== 'number' ||
+            savedVersion[proper] < remoteVersion[proper]) { // need download
             console.log('start download', localRLP);
 
             const res = await FirebaseStorage_DownloadByGetBytesAsync(
-                'configs/UniqueBuilds.json',
-                'configs/UniqueBuilds.json',
+                localRLP,
+                localRLP,
                 true)
 
-            if (res)
-                console.error('error when dl', localRLP, ToCanPrint(res));
+            if (res) { // error
+                remoteVersion[proper] = undefined
+                console.error('error when dl', localRLP, ToCanPrint(res))
+            }
+            else
+                console.log('dl success', localRLP);
         }
         else // dont need dl
             console.log('dont need to dl', localRLP);
 
-        isExistFile = await IsExistedAsync(localRLP, true)
+        const res = await ReadTextAsync(localRLP, true)
 
-        console.log('is existed after dl', localRLP, isExistFile);
-    
+        if (res.text) { // load local success
+            uniqueBuilds = JSON.parse(res.text)
+            console.log('load from local success', localRLP)
+        }
+        else { // failed => use default
+            uniqueBuilds = require(defaultPath)
+            console.error('load local file fail, use default in app', localRLP)
+        }
+
         storage.setString('file_version', JSON.stringify(remoteVersion))
         setIsFinihed(true)
     }
 
-    return [isFinished, checkAndDownloadAsync]
+    return [
+        isFinished,
+        checkAndDownloadAsync,
+    ]
 }

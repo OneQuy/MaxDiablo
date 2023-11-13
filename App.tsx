@@ -52,7 +52,7 @@ import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateTyp
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
 import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
-import { FileVersionConfig, useDownloadConfigFile } from './scr/useDownloadConfigFile';
+import { FileVersionConfig, uniqueBuilds, useDownloadConfigFile } from './scr/useDownloadConfigFile';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -86,7 +86,6 @@ const version = require('./package.json')['version']
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
 const ignoredStats: IgnoredStatsOfSlot[] = require('./assets/IgnoredStats.json') // for ignoring stats
-const uniqueBuilds: UniqueBuild[] = require('./assets/UniqueBuilds.json')
 
 const allStatsData: string[] = require('./assets/AllStats.json') // for valid stat name
 const allStatsData_IgnoredCase: string[] = allStatsData.map(name => name.toLowerCase())
@@ -160,7 +159,11 @@ function App(): JSX.Element {
   const isOpeningCameraOrPhotoPicker = useRef(false)
   const lang = useRef(GetLang(isLangViet !== 1))
   const forceUpdate = useForceUpdate()
-  // const [isFinishedDownloadFileConfig, checkAndDownloadFileConfigAsync] = useDownloadConfigFile()
+  
+  const [
+    isFinishedDownloadFileConfig, 
+    checkAndDownloadFileConfigAsync
+  ] = useDownloadConfigFile()
   
   // ads
 
@@ -1505,7 +1508,8 @@ function App(): JSX.Element {
 
     remoteConfig.current = res.value
     
-    // checkAndDownloadFileConfigAsync(remoteConfig.current.fileConfig, storage)
+    if (typeof checkAndDownloadFileConfigAsync === 'function')
+      checkAndDownloadFileConfigAsync(remoteConfig.current.fileConfig, storage)
 
     isDevDevice = remoteConfig.current.dev_devices.includes(getUniqueId())
 
@@ -1732,13 +1736,13 @@ function App(): JSX.Element {
 
   // render lange selection
 
-  // if (!isFinishedDownloadFileConfig) {
-  //   return (
-  //     <SafeAreaView style={{ gap: Outline.Gap, flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-  //         <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{'Đang update file...'}</Text>        
-  //     </SafeAreaView>
-  //   )
-  // }
+  if (!isFinishedDownloadFileConfig) {
+    return (
+      <SafeAreaView style={{ gap: Outline.Gap, flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'white', fontSize: FontSize.Normal }}>{'Đang update file...'}</Text>        
+      </SafeAreaView>
+    )
+  }
 
   // main render
 

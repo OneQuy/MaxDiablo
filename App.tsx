@@ -52,7 +52,7 @@ import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateTyp
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
 import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
-import { FileVersionConfig, uniqueBuilds, useDownloadConfigFile } from './scr/useDownloadConfigFile';
+import { FileVersionConfig, allStatsData_IgnoredCase, uniqueBuilds, useDownloadConfigFile } from './scr/useDownloadConfigFile';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -87,9 +87,6 @@ const version = require('./package.json')['version']
 const buildsData: Tier[] = require('./assets/BuildsData.json') // for find suit builds
 const classesData: SlotOfClasses[] = require('./assets/ClassesData.json') // for rating
 const ignoredStats: IgnoredStatsOfSlot[] = require('./assets/IgnoredStats.json') // for ignoring stats
-
-const allStatsData: string[] = require('./assets/AllStats.json') // for valid stat name
-const allStatsData_IgnoredCase: string[] = allStatsData.map(name => name.toLowerCase())
 
 const DefaultGoodStats = [
   'core skill damage',
@@ -207,9 +204,7 @@ function App(): JSX.Element {
     notify_style: 0,
     apple_review_version: '',
     api_index: 1,
-    fileConfig: {
-      uniqueBuild: 0,
-    } as FileVersionConfig
+    fileConfig: { } as FileVersionConfig
   })
 
   // moving pic

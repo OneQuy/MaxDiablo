@@ -8,13 +8,11 @@ import { UniqueBuild } from "./Types"
 const files = [
     [
         'configs/UniqueBuilds.json',
-        '../assets/UniqueBuilds.json',
         'uniqueBuild',
     ],
 
     [
         'configs/AllStats.json',
-        '../assets/AllStats.json',
         'allStat',
     ],
 ]
@@ -42,7 +40,7 @@ export const useDownloadConfigFile = () => {
         for (let i = 0; i < files.length; i++) {
             console.log('-------------------------------------');
 
-            const [localRLP, defaultPath, prop] = files[i]
+            const [localRLP, prop] = files[i]
             const proper = prop as keyof typeof savedVersion
 
             let isExistFile = await IsExistedAsync(localRLP, true)

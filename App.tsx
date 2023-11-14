@@ -2214,7 +2214,7 @@ const TrackOnOpenApp = async () => {
   Track('app_open')
 }
 
-const FirebaseIncrease = (fbpath: string, incNum: number = 1) => {
+export const FirebaseIncrease = (fbpath: string, incNum: number = 1) => {
   if (isDevDevice)
     return
 

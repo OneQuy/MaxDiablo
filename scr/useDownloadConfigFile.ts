@@ -5,6 +5,8 @@ import { ToCanPrint } from "./common/UtilsTS"
 import { MMKVInstance } from "react-native-mmkv-storage"
 import { UniqueBuild } from "./Types"
 import { StorageLog_LogAsync } from "./common/StorageLog"
+import { FirebaseIncrease } from "../App"
+import { FirebaseDatabase_SetValueAsync } from "./common/Firebase/FirebaseDatabase"
 
 const files = [
     [
@@ -41,6 +43,8 @@ export const useDownloadConfigFile = () => {
         await StorageLog_LogAsync('remote ver:', ToCanPrint(remoteVersion))
         StorageLog_LogAsync('saved ver:', ToCanPrint(savedVersion))
 
+        FirebaseIncrease('download_file/start_loop_dl')
+
         for (let i = 0; i < files.length; i++) {
             console.log('-------------------------------------');
             StorageLog_LogAsync('-------------------------------------');
@@ -67,15 +71,19 @@ export const useDownloadConfigFile = () => {
                     remoteVersion[proper as keyof typeof remoteVersion] = undefined
                     console.error('error when dl', localRLP, ToCanPrint(res))
                     StorageLog_LogAsync('error when dl', localRLP, ToCanPrint(res))
+                    FirebaseIncrease('download_file/dl_error/' + prop)
+                    FirebaseDatabase_SetValueAsync('error_report/download_file/' + Date.now(), ToCanPrint(res))
                 }
                 else {
                     console.log('dl success', localRLP);
                     StorageLog_LogAsync('dl success', localRLP);
+                    FirebaseIncrease('download_file/dl_success/' + prop)
                 }
             }
             else { // dont need dl
                 console.log('dont need to dl', localRLP);
                 StorageLog_LogAsync('dont need to dl', localRLP);
+                FirebaseIncrease('download_file/dont_need_dl/' + prop)
             }
 
             const res = await ReadTextAsync(localRLP, true)
@@ -92,6 +100,7 @@ export const useDownloadConfigFile = () => {
 
                 console.log('load from local success', localRLP)
                 StorageLog_LogAsync('load from local success', localRLP)
+                FirebaseIncrease('download_file/load_local_success/' + prop)
             }
             else { // failed => use default
                 if (prop === 'uniqueBuild')
@@ -105,6 +114,8 @@ export const useDownloadConfigFile = () => {
 
                 console.error('load local file fail, use default in app', localRLP)
                 StorageLog_LogAsync('load local file fail, use default in app', localRLP)
+                FirebaseIncrease('download_file/load_local_fail_use_default/' + prop)
+                FirebaseDatabase_SetValueAsync('error_report/load_local_file_fail/' + Date.now(), ToCanPrint(res.error))
             }
         }
 

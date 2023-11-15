@@ -17,6 +17,14 @@ var KnownWeirdStats = [
     'Rank of Concealment',
     'Rank of the Endless Pyre Passive',
 ];
+var RemovedStat = [
+    'x',
+    'seconds',
+    'second',
+];
+var IncludedRemovedStat = [
+    'socket',
+];
 var SplitLine = function (line) {
     var arr = line.split('][');
     var res = [];
@@ -30,8 +38,12 @@ var SplitLine = function (line) {
 var ReadWeirdStat = function () {
     var fileUris = fs.readdirSync(weirdstatdir);
     var arr = [];
+    var countFile = 0;
     for (var iFile = 0; iFile < fileUris.length; iFile++) {
         var filrUri = fileUris[iFile];
+        if (!filrUri.includes('json'))
+            continue;
+        countFile++;
         var text = fs.readFileSync(weirdstatdir + filrUri);
         var obj = JSON.parse(text);
         var values = Object.values(obj);
@@ -39,6 +51,9 @@ var ReadWeirdStat = function () {
             arr = arr.concat(SplitLine(value));
         });
     }
+    console.log('count file export', countFile);
+    arr = arr.filter(function (s) { return !RemovedStat.includes(s.toLowerCase()); });
+    arr = arr.filter(function (s) { return IncludedRemovedStat.findIndex(function (i) { return s.toLowerCase().includes(i); }) < 0; });
     return arr;
 };
 var GenerateAllStatName = function () {
@@ -62,15 +77,18 @@ var GenerateAllStatName = function () {
     // append KnownWeirdStats
     arr = arr.concat(KnownWeirdStats);
     var exports = ReadWeirdStat();
+    var countDuplicated = 0;
     for (var islot = 0; islot < exports.length; islot++) {
         if (arr.includes(exports[islot])) {
-            // LogRed(exports[islot])
+            countDuplicated++;
             continue;
         }
         arr.push(exports[islot]);
     }
     // done
+    arr.sort();
     fs.writeFileSync('./assets/AllStats.json', JSON.stringify(arr, null, 1));
+    console.log('stat duplicated count', countDuplicated);
     console.log('stat count', arr.length);
     console.log('loop', loop);
 };

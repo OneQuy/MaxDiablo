@@ -20,6 +20,16 @@ const KnownWeirdStats = [
     'Rank of the Endless Pyre Passive',
 ]
 
+const RemovedStat = [
+    'x',
+    'seconds',
+    'second',    
+]
+
+const IncludedRemovedStat = [
+    'socket',
+]
+
 const SplitLine = (line: string): string[] => {
     const arr = line.split('][')
 
@@ -36,9 +46,15 @@ const SplitLine = (line: string): string[] => {
 const ReadWeirdStat = (): string[] => {
     const fileUris = fs.readdirSync(weirdstatdir)
     let arr: string[] = []
+    let countFile = 0
 
     for (let iFile = 0; iFile < fileUris.length; iFile++) {
         const filrUri = fileUris[iFile]
+
+        if (!filrUri.includes('json'))
+            continue
+
+        countFile++
 
         const text = fs.readFileSync(weirdstatdir + filrUri)
 
@@ -51,6 +67,12 @@ const ReadWeirdStat = (): string[] => {
         });
     }
 
+    console.log('count file export', countFile);
+    
+    arr = arr.filter(s => !RemovedStat.includes(s.toLowerCase()))
+    
+    arr = arr.filter(s => IncludedRemovedStat.findIndex(i => s.toLowerCase().includes(i)) < 0)
+    
     return arr
 }
 
@@ -86,9 +108,11 @@ export const GenerateAllStatName = () => {
 
     const exports = ReadWeirdStat()
 
+    let countDuplicated = 0
+
     for (let islot = 0; islot < exports.length; islot++) {
         if (arr.includes(exports[islot])) {
-            // LogRed(exports[islot])
+            countDuplicated++
             continue
         }
 
@@ -97,8 +121,10 @@ export const GenerateAllStatName = () => {
 
     // done
 
+    arr.sort()
     fs.writeFileSync('./assets/AllStats.json', JSON.stringify(arr, null, 1));
 
+    console.log('stat duplicated count', countDuplicated);
     console.log('stat count', arr.length);
     console.log('loop', loop);
 }

@@ -95,6 +95,11 @@ export type UniqueBuild = {
 
 // others ============
 
+export type GoodStatsAlternative = {
+    slotNames: SlotName[],
+    stats: string[]
+}
+
 export type StatForRatingType = [Stat, Classs | undefined, Stat | undefined, number] // user stat, class, class data stat, rate score
 
 export type RateResult = {

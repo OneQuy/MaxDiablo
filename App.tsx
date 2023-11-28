@@ -52,7 +52,7 @@ import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateTyp
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
 import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
-import { FileVersionConfig, allStatsData_IgnoredCase, uniqueBuilds, useDownloadConfigFile } from './scr/useDownloadConfigFile';
+import { FileVersionConfig, allStatsData_IgnoredCase, goodStatsAlternative, uniqueBuilds, useDownloadConfigFile } from './scr/useDownloadConfigFile';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -1070,7 +1070,16 @@ function App(): JSX.Element {
   const rate = useCallback((userSlot: SlotCard, suitBuilds: SuitBuildType[]) => {
     // find in DefaultGoodStats 
 
-    const userGoodStats: Stat[] = userSlot.stats.filter(stat => DefaultGoodStats.includes(stat.name.toLowerCase()))
+    let goodStats: string[] = DefaultGoodStats
+
+    if (goodStatsAlternative && goodStatsAlternative.length >= 1) {
+      const idx = goodStatsAlternative.findIndex(i => i.slotNames.includes(userSlot.slotName))
+
+      if (idx >= 0)
+        goodStats = goodStatsAlternative[idx].stats
+    }
+    
+    const userGoodStats: Stat[] = userSlot.stats.filter(stat => goodStats.includes(stat.name.toLowerCase()))
 
     // find in class data
 

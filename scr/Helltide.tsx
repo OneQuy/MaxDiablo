@@ -37,7 +37,6 @@ const Helltide = () => {
                 <View onLayout={onLayoutViewport} style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>
                     <AnimatedImageBackground
                         onLoad={onLoadedMap}
-                        onLayout={(e) => console.log('aaaa', e.nativeEvent)}
                         resizeMode='center'
                         source={wholeMap}
                         style={[

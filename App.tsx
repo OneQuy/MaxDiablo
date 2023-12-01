@@ -53,6 +53,7 @@ import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
 import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
 import { FileVersionConfig, allStatsData_IgnoredCase, goodStatsAlternative, uniqueBuilds, useDownloadConfigFile } from './scr/useDownloadConfigFile';
+import Helltide from './scr/Helltide';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :
@@ -2044,6 +2045,11 @@ function App(): JSX.Element {
               toggleShow={() => toggleShowMulti(false)}
               onPressItem={onPressItemInMulti}
               items={multiImageItems.current} />
+        }
+        {/* helltide */}
+        {
+          false ? undefined :
+            <Helltide />
         }
         {/* cheat */}
         {

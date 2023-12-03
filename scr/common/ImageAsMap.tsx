@@ -154,8 +154,8 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
                     initial2TouchesDistance.current = currentDistance
                 }
 
-                const scale = (currentDistance - initial2TouchesDistance.current) / 200
-                console.log(scale );
+                const scale = (currentDistance - initial2TouchesDistance.current) / 500
+                // console.log(scale );
                 
                 onSetScale(scale, true)
             },

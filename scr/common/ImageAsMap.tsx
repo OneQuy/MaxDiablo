@@ -51,10 +51,10 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
     }
 
-    const onSetScale = (scale: number, multiByCurrent: boolean) => {
+    const onSetScale = (scale: number, addToCurrent: boolean) => {
         // scale = 7
 
-        if (multiByCurrent)
+        if (addToCurrent)
             scale = mapCurrentScaleCachedValue.current + scale
 
         scale = Math.max(mapMinScale.current, Math.min(maxScale, scale))

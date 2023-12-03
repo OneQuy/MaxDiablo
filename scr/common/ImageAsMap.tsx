@@ -10,7 +10,7 @@ type ImageAsMapProps = {
     img: ImageBackgroundProps['source'],
 }
 
-const ImageAsMap = ({ img } : ImageAsMapProps) => {
+const ImageAsMap = ({ img }: ImageAsMapProps) => {
     const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
     const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
 
@@ -152,11 +152,11 @@ const ImageAsMap = ({ img } : ImageAsMapProps) => {
 
     return (
         <View>
-            <View 
-            {...fatherViewResponser.current}
-            ref={viewportMeasure.current.theRef} 
-            onLayout={onLayoutViewport} 
-            style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>
+            <View
+                {...fatherViewResponser.current}
+                ref={viewportMeasure.current.theRef}
+                onLayout={onLayoutViewport}
+                style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>
                 {/* map */}
                 <AnimatedImageBackground
                     onLoad={onLoadedMap}

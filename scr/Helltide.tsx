@@ -13,9 +13,9 @@ const Helltide = () => {
         // father view
         <SafeAreaView style={{ backgroundColor: 'gray', position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-start' }}>
             <Text style={{ marginTop: 50, color: 'green' }}>Helltide</Text>
-            {/* viewport container */}
-            <View style={{ width: '100%', height: windowSize.height * 0.7, backgroundColor: 'green' }}>
-                {/* viewport */}
+            {/* map container */}
+            <View style={{ width: '100%', height: windowSize.height * 0.6, backgroundColor: 'green' }}>
+                {/* map */}
                 <ImageAsMap img={wholeMap} />
             </View>
         </SafeAreaView>

@@ -151,22 +151,20 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
     }
 
     return (
-        <View>
-            <View
-                {...fatherViewResponser.current}
-                ref={viewportMeasure.current.theRef}
-                onLayout={onLayoutViewport}
-                style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>
-                {/* map */}
-                <AnimatedImageBackground
-                    onLoad={onLoadedMap}
-                    resizeMode='center'
-                    source={img}
-                    style={[
-                        { width: mapRealOriginSize[0], height: mapRealOriginSize[1] },
-                        { ...mapLeftTop.getLayout() },
-                        { transform: [{ scale: mapCurrentScale }] }]} />
-            </View>
+        <View
+            {...fatherViewResponser.current}
+            ref={viewportMeasure.current.theRef}
+            onLayout={onLayoutViewport}
+            style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>
+            {/* map */}
+            <AnimatedImageBackground
+                onLoad={onLoadedMap}
+                resizeMode='center'
+                source={img}
+                style={[
+                    { width: mapRealOriginSize[0], height: mapRealOriginSize[1] },
+                    { ...mapLeftTop.getLayout() },
+                    { transform: [{ scale: mapCurrentScale }] }]} />
         </View>
     )
 }

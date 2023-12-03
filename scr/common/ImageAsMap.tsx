@@ -1,6 +1,7 @@
 import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, ImageBackground, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps } from 'react-native'
 import React, { useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
+import cluster from 'cluster'
 
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground)
 
@@ -8,9 +9,10 @@ const screenScale = Dimensions.get('screen').scale
 
 type ImageAsMapProps = {
     img: ImageBackgroundProps['source'],
+    maxScale: number,
 }
 
-const ImageAsMap = ({ img }: ImageAsMapProps) => {
+const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
     const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
 
@@ -55,7 +57,7 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
         if (multiByCurrent)
             scale = mapCurrentScaleCachedValue.current + scale
 
-        scale = Math.max(mapMinScale.current, Math.min(10, scale))
+        scale = Math.max(mapMinScale.current, Math.min(maxScale, scale))
 
         // update scale
 
@@ -75,6 +77,20 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
         const topLimit = (mapCurrentRealSize[1] - viewportRealSize[1]) / 2 / screenScale
         limitTop.current = Math.abs(topLimit)
+
+        // update pos if exceed limits
+
+        const curLeft = clamp(
+            positionLeftTopCachedValue.current.x,
+            -limitLeft.current,
+            limitLeft.current)
+
+        const curTop = clamp(
+            positionLeftTopCachedValue.current.y,
+            -limitTop.current,
+            limitTop.current)
+
+        onSetPositionLeftTop(curLeft, curTop, false)
     }
 
     const onLayoutViewport = (e: LayoutChangeEvent) => {
@@ -156,7 +172,7 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
                 const scale = (currentDistance - initial2TouchesDistance.current) / 500
                 // console.log(scale );
-                
+
                 onSetScale(scale, true)
             },
 
@@ -192,3 +208,7 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 }
 
 export default ImageAsMap
+
+const clamp = (value: number, min: number, max: number) => {
+    return Math.max(min, Math.min(max, value))
+}

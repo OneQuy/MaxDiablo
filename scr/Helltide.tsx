@@ -16,7 +16,10 @@ const Helltide = () => {
             {/* set viewport of map on this screen here */}
             <View style={{ width: '100%', height: windowSize.height * 0.6 }}>
                 {/* map */}
-                <ImageAsMap img={wholeMap} />
+                <ImageAsMap 
+                    img={wholeMap}
+                    maxScale={10}
+                />
             </View>
         </SafeAreaView>
     )

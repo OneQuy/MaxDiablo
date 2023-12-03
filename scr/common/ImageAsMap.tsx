@@ -16,7 +16,9 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
     // position
 
-    const mapLeftTop = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
+    const positionLeftTopCachedValue = useRef<{x: number, y: number}>({ x: 0, y: 0})
+    const positionLeftTopAnimated = useRef(new Animated.ValueXY(positionLeftTopCachedValue.current)).current
+
     const limitLeft = useRef(0)
     const limitTop = useRef(0)
 
@@ -30,11 +32,15 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
     const viewportMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
     const viewportMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
     const initialImg2TouchesDistance = useRef(-1)
-    const initialImgTouch1Event = useRef<NativeTouchEvent | undefined>(undefined)
+    const initialTouch1 = useRef<NativeTouchEvent | undefined>(undefined)
+    const initialMovePositionLeftTop = useRef(positionLeftTopCachedValue.current)
 
     const fatherViewResponser = useRef<ViewProps>({
-        onMoveShouldSetResponder: (event: GestureResponderEvent) => {
+        onMoveShouldSetResponder: (event: GestureResponderEvent) => { // start move
             const touches = event.nativeEvent.touches
+        
+            initialTouch1.current = touches[0]
+            initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
 
             // if (touches.length !== 2 ||
             //     !viewportMeasureResult.current)
@@ -53,7 +59,6 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
             // move img
 
-            // initialImgTouch1Event.current = t1
 
             // // scale
 
@@ -64,23 +69,23 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
             return true
         },
 
-        onResponderMove: (event: GestureResponderEvent) => {
-            // const touches = event.nativeEvent.touches
+        onResponderMove: (event: GestureResponderEvent) => { // moving
+            const touches = event.nativeEvent.touches
+            const currentTouch1 = touches[0]
 
-            // if (touches.length !== 2) {
-            //     return
-            // }
 
-            // // move img
 
-            // const t1 = touches[0]
-
-            // if (initialImgTouch1Event.current) {
-            //     const x = t1.pageX - initialImgTouch1Event.current.pageX
-            //     const y = t1.pageY - initialImgTouch1Event.current.pageY
-
-            //     mapLeftTop.setValue({ x, y })
-            // }
+            if (initialTouch1.current) {
+                const offsetX = currentTouch1.pageX - initialTouch1.current.pageX
+                let x = initialMovePositionLeftTop.current.x + offsetX
+                x = Math.min(limitLeft.current, Math.max(-limitLeft.current, x))
+               
+                const offsetY = currentTouch1.pageY - initialTouch1.current.pageY
+                let y = initialMovePositionLeftTop.current.y + offsetY
+                y = Math.min(limitTop.current, Math.max(-limitTop.current, y))
+ 
+                onSetPositionLeftTop(x, y, false)
+            }
 
             // // scale
 
@@ -95,7 +100,7 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
             // mapCurrentScale.setValue(Math.max(mapMinScale.current, Math.min(maxScale, scale)))
         },
 
-        onResponderEnd: (_: GestureResponderEvent) => {
+        onResponderEnd: (_: GestureResponderEvent) => { // end move
             // mapCurrentScale.setValue(mapMinScale.current)
             // mapLeftTop.setValue({ x: 0, y: 0 })
             // setIsTouchingImg(false)
@@ -104,7 +109,19 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
     // functions
 
+    const onSetPositionLeftTop = (x: number, y: number, addToCurrent: boolean) => {
+        if (addToCurrent) {
+            x += positionLeftTopCachedValue.current.x
+            y += positionLeftTopCachedValue.current.y
+        }
+
+        positionLeftTopCachedValue.current = {x, y}
+        positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
+    }
+
     const onSetScale = (scale: number) => {
+        scale *= 2
+
         // update scale
 
         mapCurrentScale.setValue(scale)
@@ -122,10 +139,6 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
         const topLimit = (mapCurrentRealSize[1] - viewportRealSize[1]) / 2 / screenScale
         limitTop.current = Math.abs(topLimit)
-
-        // set left, top
-
-        mapLeftTop.setValue({ x: 0, y: 0 })
     }
 
 
@@ -163,7 +176,7 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
                 source={img}
                 style={[
                     { width: mapRealOriginSize[0], height: mapRealOriginSize[1] },
-                    { ...mapLeftTop.getLayout() },
+                    { ...positionLeftTopAnimated.getLayout() },
                     { transform: [{ scale: mapCurrentScale }] }]} />
         </View>
     )

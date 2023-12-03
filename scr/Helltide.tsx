@@ -9,13 +9,18 @@ const wholeMap = require('../assets/images/map/whole.jpg')
 const screenScale = Dimensions.get('screen').scale
 
 const Helltide = () => {
-    const [mapRawSize, setMapRawSize] = useState<[number, number]>([10, 10])
-    const [viewportSize, setViewportSize] = useState<[number, number]>([0, 0])
-    const mapPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
+    const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
+    const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
+
+    // position
+
+    const mapLeftTop = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
+    const limitLeft = useRef(0)
+    const limitTop = useRef(0)
 
     // scale
 
-    const mapScale = useRef(new Animated.Value(1)).current
+    const mapCurrentScale = useRef(new Animated.Value(1)).current
     const mapMinScale = useRef(0)
 
     // gesture
@@ -72,7 +77,7 @@ const Helltide = () => {
                 const x = t1.pageX - initialImgTouch1Event.current.pageX
                 const y = t1.pageY - initialImgTouch1Event.current.pageY
 
-                mapPosition.setValue({ x, y })
+                mapLeftTop.setValue({ x, y })
             }
 
             // scale
@@ -85,7 +90,7 @@ const Helltide = () => {
 
             const scale = currentDistance / initialImg2TouchesDistance.current;
 
-            mapScale.setValue(Math.max(mapMinScale.current, Math.min(maxScale, scale)))
+            mapCurrentScale.setValue(Math.max(mapMinScale.current, Math.min(maxScale, scale)))
         },
 
         onResponderEnd: (_: GestureResponderEvent) => {
@@ -94,15 +99,40 @@ const Helltide = () => {
     })
 
     const onMoveImgEnd = useCallback(() => {
-        mapScale.setValue(mapMinScale.current)
-        mapPosition.setValue({ x: 0, y: 0 })
+        mapCurrentScale.setValue(mapMinScale.current)
+        mapLeftTop.setValue({ x: 0, y: 0 })
         // setIsTouchingImg(false)
     }, [])
 
     // functions
 
+    const onSetScale = (scale: number) => {
+        // update scale
+
+        mapCurrentScale.setValue(scale)
+
+        // map size
+
+        const mapCurrentRealSize = [mapRealOriginSize[0] * scale, mapRealOriginSize[1] * scale]
+
+        // update limit left
+
+        const leftLimit = (mapCurrentRealSize[0]  - viewportRealSize[0]) / 2 / screenScale
+        limitLeft.current = Math.abs(leftLimit)
+                
+        // update limit top
+
+        const topLimit = (mapCurrentRealSize[1]  - viewportRealSize[1]) / 2 / screenScale
+        limitTop.current = Math.abs(topLimit)
+        
+        // set left, top
+
+        mapLeftTop.setValue({ x: 0, y: 0 })
+    }
+
+
     const onLayoutViewport = (e: LayoutChangeEvent) => {
-        setViewportSize([e.nativeEvent.layout.width * screenScale, e.nativeEvent.layout.height * screenScale])
+        setViewportRealSize([e.nativeEvent.layout.width * screenScale, e.nativeEvent.layout.height * screenScale])
 
         viewportMeasure.current.GetOrMessure((res) => {
             viewportMeasureResult.current = res
@@ -114,11 +144,11 @@ const Helltide = () => {
             if (w !== h)
                 console.warn('map w & h are diff. They should same!')
 
-            setMapRawSize([w, h])
+            setMapRealOriginSize([w, h])
 
-            const viewportSizeMax = Math.max(viewportSize[0], viewportSize[1])
+            const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
             mapMinScale.current = viewportSizeMax / w
-            mapScale.setValue(mapMinScale.current)
+            onSetScale(mapMinScale.current)
         })
     }
 
@@ -138,9 +168,9 @@ const Helltide = () => {
                         resizeMode='center'
                         source={wholeMap}
                         style={[
-                            { width: mapRawSize[0], height: mapRawSize[1] },
-                            { ...mapPosition.getLayout() },
-                            { transform: [{ scale: mapScale }] }]} />
+                            { width: mapRealOriginSize[0], height: mapRealOriginSize[1] },
+                            { ...mapLeftTop.getLayout() },
+                            { transform: [{ scale: mapCurrentScale }] }]} />
                 </View>
             </View>
         </SafeAreaView>

@@ -1,5 +1,5 @@
 import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, ImageBackground, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
 
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground)
@@ -16,7 +16,7 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
     // position
 
-    const positionLeftTopCachedValue = useRef<{x: number, y: number}>({ x: 0, y: 0})
+    const positionLeftTopCachedValue = useRef<{ x: number, y: number }>({ x: 0, y: 0 })
     const positionLeftTopAnimated = useRef(new Animated.ValueXY(positionLeftTopCachedValue.current)).current
 
     const limitLeft = useRef(0)
@@ -31,96 +31,25 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
 
     const viewportMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
     const viewportMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
-    const initialImg2TouchesDistance = useRef(-1)
+    const initial2TouchesDistance = useRef(-1)
+
     const initialTouch1 = useRef<NativeTouchEvent | undefined>(undefined)
     const initialMovePositionLeftTop = useRef(positionLeftTopCachedValue.current)
 
-    const fatherViewResponser = useRef<ViewProps>({
-        onMoveShouldSetResponder: (event: GestureResponderEvent) => { // start move
-            const touches = event.nativeEvent.touches
-        
-            initialTouch1.current = touches[0]
-            initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
-
-            // if (touches.length !== 2 ||
-            //     !viewportMeasureResult.current)
-            //     return false
-
-            // const t1 = touches[0]
-            // const t2 = touches[1]
-
-            // if (!IsPointInRectMeasure(t1.pageX, t1.pageY, viewportMeasureResult.current) &&
-            //     !IsPointInRectMeasure(t2.pageX, t2.pageY, viewportMeasureResult.current))
-            //     return false
-
-            // can be moved!
-
-            // setIsTouchingImg(true)
-
-            // move img
-
-
-            // // scale
-
-            // initialImg2TouchesDistance.current = Math.sqrt(
-            //     Math.pow(t1.pageX - t2.pageX, 2) +
-            //     Math.pow(t1.pageY - t2.pageY, 2))
-
-            return true
-        },
-
-        onResponderMove: (event: GestureResponderEvent) => { // moving
-            const touches = event.nativeEvent.touches
-            const currentTouch1 = touches[0]
-
-
-
-            if (initialTouch1.current) {
-                const offsetX = currentTouch1.pageX - initialTouch1.current.pageX
-                let x = initialMovePositionLeftTop.current.x + offsetX
-                x = Math.min(limitLeft.current, Math.max(-limitLeft.current, x))
-               
-                const offsetY = currentTouch1.pageY - initialTouch1.current.pageY
-                let y = initialMovePositionLeftTop.current.y + offsetY
-                y = Math.min(limitTop.current, Math.max(-limitTop.current, y))
- 
-                onSetPositionLeftTop(x, y, false)
-            }
-
-            // // scale
-
-            // const t2 = touches[1]
-
-            // const currentDistance = Math.sqrt(Math.pow(t1.pageX - t2.pageX, 2) + Math.pow(t1.pageY - t2.pageY, 2))
-
-            // const maxScale = 20
-
-            // const scale = currentDistance / initialImg2TouchesDistance.current;
-
-            // mapCurrentScale.setValue(Math.max(mapMinScale.current, Math.min(maxScale, scale)))
-        },
-
-        onResponderEnd: (_: GestureResponderEvent) => { // end move
-            // mapCurrentScale.setValue(mapMinScale.current)
-            // mapLeftTop.setValue({ x: 0, y: 0 })
-            // setIsTouchingImg(false)
-        },
-    })
-
     // functions
-
+    
     const onSetPositionLeftTop = (x: number, y: number, addToCurrent: boolean) => {
         if (addToCurrent) {
             x += positionLeftTopCachedValue.current.x
             y += positionLeftTopCachedValue.current.y
         }
 
-        positionLeftTopCachedValue.current = {x, y}
+        positionLeftTopCachedValue.current = { x, y }
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
     }
 
     const onSetScale = (scale: number) => {
-        scale *= 2
+        // scale = 7
 
         // update scale
 
@@ -140,6 +69,77 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
         const topLimit = (mapCurrentRealSize[1] - viewportRealSize[1]) / 2 / screenScale
         limitTop.current = Math.abs(topLimit)
     }
+
+    const fatherViewResponser = useMemo<ViewProps>(() => {
+        return {
+            onMoveShouldSetResponder: (event: GestureResponderEvent) => { // start move
+                const touches = event.nativeEvent.touches
+
+                initialTouch1.current = touches[0]
+                initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
+
+                // if (touches.length !== 2 ||
+                //     !viewportMeasureResult.current)
+                //     return false
+
+                // const t1 = touches[0]
+                // const t2 = touches[1]
+
+                // if (!IsPointInRectMeasure(t1.pageX, t1.pageY, viewportMeasureResult.current) &&
+                //     !IsPointInRectMeasure(t2.pageX, t2.pageY, viewportMeasureResult.current))
+                //     return false
+
+                // setIsTouchingImg(true)
+
+                return true
+            },
+
+            onResponderMove: (event: GestureResponderEvent) => { // moving
+                const touches = event.nativeEvent.touches
+                const t1 = touches[0]
+
+                if (initialTouch1.current) {
+                    const offsetX = t1.pageX - initialTouch1.current.pageX
+                    let x = initialMovePositionLeftTop.current.x + offsetX
+                    x = Math.min(limitLeft.current, Math.max(-limitLeft.current, x))
+
+                    const offsetY = t1.pageY - initialTouch1.current.pageY
+                    let y = initialMovePositionLeftTop.current.y + offsetY
+                    y = Math.min(limitTop.current, Math.max(-limitTop.current, y))
+
+                    onSetPositionLeftTop(x, y, false)
+                }
+
+                // scale
+
+                if (touches.length < 2)
+                    return
+
+                const t2 = touches[1]
+                const currentDistance = Math.sqrt(Math.pow(t1.pageX - t2.pageX, 2) + Math.pow(t1.pageY - t2.pageY, 2))
+
+                if (initial2TouchesDistance.current <= 0) {
+                    initial2TouchesDistance.current = currentDistance
+                }
+
+                const maxScale = 20
+
+                const scale = currentDistance / initial2TouchesDistance.current
+
+                const mapScale = Math.max(mapMinScale.current, Math.min(maxScale, scale))
+
+                onSetScale(mapScale)
+            },
+
+            onResponderEnd: (_: GestureResponderEvent) => { // end move
+                initial2TouchesDistance.current = -1
+
+                // mapCurrentScale.setValue(mapMinScale.current)
+                // mapLeftTop.setValue({ x: 0, y: 0 })
+                // setIsTouchingImg(false)
+            },
+        }
+    }, [onSetPositionLeftTop, onSetScale])
 
 
     const onLayoutViewport = (e: LayoutChangeEvent) => {
@@ -163,9 +163,11 @@ const ImageAsMap = ({ img }: ImageAsMapProps) => {
         })
     }
 
+    // render
+
     return (
         <View
-            {...fatherViewResponser.current}
+            {...fatherViewResponser}
             ref={viewportMeasure.current.theRef}
             onLayout={onLayoutViewport}
             style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>

@@ -94,15 +94,11 @@ const Helltide = () => {
         },
 
         onResponderEnd: (_: GestureResponderEvent) => {
-            onMoveImgEnd()
+            // mapCurrentScale.setValue(mapMinScale.current)
+            // mapLeftTop.setValue({ x: 0, y: 0 })
+            // setIsTouchingImg(false)
         },
     })
-
-    const onMoveImgEnd = useCallback(() => {
-        mapCurrentScale.setValue(mapMinScale.current)
-        mapLeftTop.setValue({ x: 0, y: 0 })
-        // setIsTouchingImg(false)
-    }, [])
 
     // functions
 
@@ -117,14 +113,14 @@ const Helltide = () => {
 
         // update limit left
 
-        const leftLimit = (mapCurrentRealSize[0]  - viewportRealSize[0]) / 2 / screenScale
+        const leftLimit = (mapCurrentRealSize[0] - viewportRealSize[0]) / 2 / screenScale
         limitLeft.current = Math.abs(leftLimit)
-                
+
         // update limit top
 
-        const topLimit = (mapCurrentRealSize[1]  - viewportRealSize[1]) / 2 / screenScale
+        const topLimit = (mapCurrentRealSize[1] - viewportRealSize[1]) / 2 / screenScale
         limitTop.current = Math.abs(topLimit)
-        
+
         // set left, top
 
         mapLeftTop.setValue({ x: 0, y: 0 })

@@ -51,6 +51,17 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
     }
 
+    const onSetCenter = (viewportPageX: number, viewportPageY: number) => {
+        if (!viewportMeasureResult.current)
+            return
+        
+        const vpX = viewportPageX - viewportMeasureResult.current.px
+        const vpY = viewportPageY - viewportMeasureResult.current.py
+
+        console.log(vpX, vpY);
+        
+    }
+
     const onSetScale = (scale: number, addToCurrent: boolean) => {
         // scale = 7
 
@@ -122,6 +133,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 initialTouch1.current = touches[0]
                 initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
 
+                onSetCenter(initialTouch1.current.pageX, initialTouch1.current.pageY)
                 // if (touches.length !== 2 ||
                 //     !viewportMeasureResult.current)
                 //     return false

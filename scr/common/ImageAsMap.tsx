@@ -36,6 +36,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     const viewportMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
     const viewportMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
     const initial2TouchesDistance = useRef(-1)
+    const initialScaleMidPoint = useRef<[number, number]>([0, 0])
 
     const initialTouch1 = useRef<NativeTouchEvent | undefined>(undefined)
     const initialMovePositionLeftTop = useRef(positionLeftTopCachedValue.current)
@@ -57,11 +58,15 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
     }
 
-    const getLeftTopToCenterMapByMapPointPercent = (mapPercentX: number, mapPercentY: number) => {
+    const getLeftTopToCenterMapByMapPointPercent = (
+        mapPercentX: number, 
+        mapPercentY: number,
+        viewportPercentX: number, 
+        viewportPercentY: number) => {
         const mapCurSize = [mapRealOriginSize[0] * mapCurrentScaleCachedValue.current, mapRealOriginSize[1] * mapCurrentScaleCachedValue.current]
 
-        const left = limitLeft.current - (mapPercentX * mapCurSize[0] - (0.5 * viewportRealSize[0])) / screenScale
-        const top = limitTop.current - (mapPercentY * mapCurSize[1] - (0.5 * viewportRealSize[1])) / screenScale
+        const left = limitLeft.current - (mapPercentX * mapCurSize[0] - (viewportPercentX * viewportRealSize[0])) / screenScale
+        const top = limitTop.current - (mapPercentY * mapCurSize[1] - (viewportPercentY * viewportRealSize[1])) / screenScale
 
         return [left, top]
     }
@@ -91,7 +96,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
         // console.log('value percent', valuePercent);
 
-        const [left, top] = getLeftTopToCenterMapByMapPointPercent(mapPercentX, mapPercentY)
+        const [left, top] = getLeftTopToCenterMapByMapPointPercent(mapPercentX, mapPercentY, viewportPercentX, viewportPercentY)
 
         onSetPositionLeftTop(left, top, false)
     }
@@ -199,16 +204,17 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 const t2 = touches[1]
                 const currentDistance = Math.sqrt(Math.pow(t1.pageX - t2.pageX, 2) + Math.pow(t1.pageY - t2.pageY, 2))
 
-                if (initial2TouchesDistance.current <= 0) {
+                if (initial2TouchesDistance.current <= 0) { // start regconize scale
                     initial2TouchesDistance.current = currentDistance
+                    initialScaleMidPoint.current = getMidPoint(t1.pageX, t1.pageY, t2.pageX, t2.pageY)
                 }
 
                 const scale = (currentDistance - initial2TouchesDistance.current) / 500
                 // console.log(scale );
 
-                // onSetCenter(initialTouch1.current.pageX, initialTouch1.current.pageY)
-
                 onSetScale(scale, true)
+
+                // onSetCenter(initialScaleMidPoint.current[0], initialScaleMidPoint.current[1])
             },
 
             onResponderEnd: (_: GestureResponderEvent) => { // end move
@@ -247,3 +253,5 @@ export default ImageAsMap
 const clamp = (value: number, min: number, max: number) => {
     return Math.max(min, Math.min(max, value))
 }
+
+const getMidPoint = (x1: number, y1: number, x2: number, y2: number) : [number, number] => [(x1 + x2) / 2, (y1 + y2) / 2];

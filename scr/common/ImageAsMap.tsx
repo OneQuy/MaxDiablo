@@ -48,11 +48,10 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
             y += positionLeftTopCachedValue.current.y
         }
 
-        console.log('set left top', x, y, limitLeft.current, limitTop.current);
+        // console.log('set left top', x, y, limitLeft.current, limitTop.current);
 
         x = Math.min(limitLeft.current, Math.max(-limitLeft.current, x))
         y = Math.min(limitTop.current, Math.max(-limitTop.current, y))
-
 
         positionLeftTopCachedValue.current = { x, y }
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
@@ -73,7 +72,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
         const vpX = viewportPageX - viewportMeasureResult.current.px
         const vpY = viewportPageY - viewportMeasureResult.current.py
-        
+
         const viewportPercentX = vpX / viewportMeasureResult.current.width
         const viewportPercentY = vpY / viewportMeasureResult.current.height
 
@@ -158,7 +157,6 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 initialTouch1.current = touches[0]
                 initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
 
-                onSetCenter(initialTouch1.current.pageX, initialTouch1.current.pageY)
                 // if (touches.length !== 2 ||
                 //     !viewportMeasureResult.current)
                 //     return false
@@ -185,13 +183,13 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 const t1 = touches[0]
 
-                // const offsetX = t1.pageX - initialTouch1.current.pageX
-                // const x = initialMovePositionLeftTop.current.x + offsetX
+                const offsetX = t1.pageX - initialTouch1.current.pageX
+                const x = initialMovePositionLeftTop.current.x + offsetX
 
-                // const offsetY = t1.pageY - initialTouch1.current.pageY
-                // const y = initialMovePositionLeftTop.current.y + offsetY
+                const offsetY = t1.pageY - initialTouch1.current.pageY
+                const y = initialMovePositionLeftTop.current.y + offsetY
 
-                // onSetPositionLeftTop(x, y, false)
+                onSetPositionLeftTop(x, y, false)
 
                 // scale
 
@@ -207,6 +205,8 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 const scale = (currentDistance - initial2TouchesDistance.current) / 500
                 // console.log(scale );
+
+                // onSetCenter(initialTouch1.current.pageX, initialTouch1.current.pageY)
 
                 onSetScale(scale, true)
             },

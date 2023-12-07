@@ -36,7 +36,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     const viewportMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
     const viewportMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
     const initial2TouchesDistance = useRef(-1)
-    const initialScaleMidPoint = useRef<[number, number]>([0, 0])
+    const initialFocus = useRef<[number, number, number, number]>([0, 0, 0, 0]) // map percent & vp percent
 
     const initialTouch1 = useRef<NativeTouchEvent | undefined>(undefined)
     const initialMovePositionLeftTop = useRef(positionLeftTopCachedValue.current)
@@ -49,7 +49,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
             y += positionLeftTopCachedValue.current.y
         }
 
-        // console.log('set left top', x, y, limitLeft.current, limitTop.current);
+        // console.log('set left top ', x, y, limitLeft.current, limitTop.current);
 
         x = Math.min(limitLeft.current, Math.max(-limitLeft.current, x))
         y = Math.min(limitTop.current, Math.max(-limitTop.current, y))
@@ -59,11 +59,13 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     }
 
     const getLeftTopToCenterMapByMapPointPercent = (
-        mapPercentX: number, 
+        mapPercentX: number,
         mapPercentY: number,
-        viewportPercentX: number, 
+        viewportPercentX: number,
         viewportPercentY: number) => {
         const mapCurSize = [mapRealOriginSize[0] * mapCurrentScaleCachedValue.current, mapRealOriginSize[1] * mapCurrentScaleCachedValue.current]
+
+        // viewportPercentX = viewportPercentY = 0.5
 
         const left = limitLeft.current - (mapPercentX * mapCurSize[0] - (viewportPercentX * viewportRealSize[0])) / screenScale
         const top = limitTop.current - (mapPercentY * mapCurSize[1] - (viewportPercentY * viewportRealSize[1])) / screenScale
@@ -71,9 +73,9 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         return [left, top]
     }
 
-    const onSetCenter = (viewportPageX: number, viewportPageY: number) => {
+    const getMapPercentFromVpPage = (viewportPageX: number, viewportPageY: number) : [number, number, number, number] => {
         if (!viewportMeasureResult.current)
-            return
+            throw new Error('vp not messure yet')
 
         const vpX = viewportPageX - viewportMeasureResult.current.px
         const vpY = viewportPageY - viewportMeasureResult.current.py
@@ -86,7 +88,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         // console.log('left top', positionLeftTopCachedValue.current);
         // console.log('limit left top', limitLeft.current, limitTop.current);
         // console.log('viewportRealSize', viewportRealSize);
-        // console.log('xPercent', xPercent);
+        // console.log('Percent', viewportPercentX, viewportPercentY);
         const mapCurSize = [mapRealOriginSize[0] * mapCurrentScaleCachedValue.current, mapRealOriginSize[1] * mapCurrentScaleCachedValue.current]
         // console.log('map current size', mapCurSize)
 
@@ -94,15 +96,17 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         const mapPercentX = ((viewportPercentX * viewportRealSize[0]) + (limitLeft.current - positionLeftTopCachedValue.current.x) * screenScale) / mapCurSize[0]
         const mapPercentY = ((viewportPercentY * viewportRealSize[1]) + (limitTop.current - positionLeftTopCachedValue.current.y) * screenScale) / mapCurSize[1]
 
-        // console.log('value percent', valuePercent);
+        return [mapPercentX, mapPercentY, viewportPercentX, viewportPercentY]
+    }
 
+    const setCenter = (mapPercentX: number, mapPercentY: number, viewportPercentX: number, viewportPercentY: number) => {
         const [left, top] = getLeftTopToCenterMapByMapPointPercent(mapPercentX, mapPercentY, viewportPercentX, viewportPercentY)
 
         onSetPositionLeftTop(left, top, false)
     }
 
     const onSetScale = (scale: number, addToCurrent: boolean) => {
-        // scale = 7
+        // scale = 4
 
         if (addToCurrent)
             scale = mapCurrentScaleCachedValue.current + scale
@@ -162,6 +166,9 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 initialTouch1.current = touches[0]
                 initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
 
+                // onSetCenter(touches[0].pageX, touches[0].pageY)
+
+
                 // if (touches.length !== 2 ||
                 //     !viewportMeasureResult.current)
                 //     return false
@@ -188,13 +195,15 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 const t1 = touches[0]
 
-                const offsetX = t1.pageX - initialTouch1.current.pageX
-                const x = initialMovePositionLeftTop.current.x + offsetX
+                if (touches.length == 0) {
+                    const offsetX = t1.pageX - initialTouch1.current.pageX
+                    const x = initialMovePositionLeftTop.current.x + offsetX
 
-                const offsetY = t1.pageY - initialTouch1.current.pageY
-                const y = initialMovePositionLeftTop.current.y + offsetY
+                    const offsetY = t1.pageY - initialTouch1.current.pageY
+                    const y = initialMovePositionLeftTop.current.y + offsetY
 
-                onSetPositionLeftTop(x, y, false)
+                    onSetPositionLeftTop(x, y, false)
+                }
 
                 // scale
 
@@ -206,7 +215,15 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 if (initial2TouchesDistance.current <= 0) { // start regconize scale
                     initial2TouchesDistance.current = currentDistance
-                    initialScaleMidPoint.current = getMidPoint(t1.pageX, t1.pageY, t2.pageX, t2.pageY)
+
+
+                    const midPoint = getMidPoint(t1.pageX, t1.pageY, t2.pageX, t2.pageY)
+                    // console.log(initialScaleMidPoint.current);
+
+                    initialFocus.current = getMapPercentFromVpPage(midPoint[0], midPoint[1])
+
+                    console.log(initialFocus.current);
+                    
                 }
 
                 const scale = (currentDistance - initial2TouchesDistance.current) / 500
@@ -214,7 +231,8 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 onSetScale(scale, true)
 
-                // onSetCenter(initialScaleMidPoint.current[0], initialScaleMidPoint.current[1])
+
+                setCenter(initialFocus.current[0], initialFocus.current[1], initialFocus.current[2], initialFocus.current[3])
             },
 
             onResponderEnd: (_: GestureResponderEvent) => { // end move
@@ -225,7 +243,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 // setIsTouchingImg(false)
             },
         }
-    }, [onSetPositionLeftTop, onSetScale, onSetCenter])
+    }, [onSetPositionLeftTop, onSetScale, setCenter])
 
     // render
 
@@ -254,4 +272,4 @@ const clamp = (value: number, min: number, max: number) => {
     return Math.max(min, Math.min(max, value))
 }
 
-const getMidPoint = (x1: number, y1: number, x2: number, y2: number) : [number, number] => [(x1 + x2) / 2, (y1 + y2) / 2];
+const getMidPoint = (x1: number, y1: number, x2: number, y2: number): [number, number] => [(x1 + x2) / 2, (y1 + y2) / 2];

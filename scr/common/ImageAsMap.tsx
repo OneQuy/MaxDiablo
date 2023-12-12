@@ -36,7 +36,8 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     const viewportMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
     const viewportMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
     const initial2TouchesDistance = useRef(-1)
-    const initialFocus = useRef<[number, number, number, number]>([0, 0, 0, 0]) // map percent & vp percent
+    const initialScale = useRef(-1)
+    const initialFocusPoint = useRef<[number, number, number, number]>([0, 0, 0, 0]) // map percent & vp percent
 
     const initialTouch1 = useRef<NativeTouchEvent | undefined>(undefined)
     const initialMovePositionLeftTop = useRef(positionLeftTopCachedValue.current)
@@ -166,9 +167,6 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 initialTouch1.current = touches[0]
                 initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
 
-                // onSetCenter(touches[0].pageX, touches[0].pageY)
-
-
                 // if (touches.length !== 2 ||
                 //     !viewportMeasureResult.current)
                 //     return false
@@ -195,7 +193,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 const t1 = touches[0]
 
-                if (touches.length == 0) {
+                if (touches.length > 0) {
                     const offsetX = t1.pageX - initialTouch1.current.pageX
                     const x = initialMovePositionLeftTop.current.x + offsetX
 
@@ -215,24 +213,20 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 if (initial2TouchesDistance.current <= 0) { // start regconize scale
                     initial2TouchesDistance.current = currentDistance
-
+                    initialScale.current = mapCurrentScaleCachedValue.current
 
                     const midPoint = getMidPoint(t1.pageX, t1.pageY, t2.pageX, t2.pageY)
-                    // console.log(initialScaleMidPoint.current);
 
-                    initialFocus.current = getMapPercentFromVpPage(midPoint[0], midPoint[1])
-
-                    console.log(initialFocus.current);
-                    
+                    initialFocusPoint.current = getMapPercentFromVpPage(midPoint[0], midPoint[1])
                 }
 
-                const scale = (currentDistance - initial2TouchesDistance.current) / 500
-                // console.log(scale );
+                const scale = initialScale.current * (currentDistance / initial2TouchesDistance.current)
+                console.log(scale );
 
-                onSetScale(scale, true)
+                onSetScale(scale, false)
 
 
-                setCenter(initialFocus.current[0], initialFocus.current[1], initialFocus.current[2], initialFocus.current[3])
+                setCenter(initialFocusPoint.current[0], initialFocusPoint.current[1], initialFocusPoint.current[2], initialFocusPoint.current[3])
             },
 
             onResponderEnd: (_: GestureResponderEvent) => { // end move

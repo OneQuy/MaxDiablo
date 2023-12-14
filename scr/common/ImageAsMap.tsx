@@ -1,8 +1,6 @@
 import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, ImageBackground, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps } from 'react-native'
 import React, { useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
-import cluster from 'cluster'
-import { windowSize } from '../AppConstant'
 
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground)
 
@@ -240,9 +238,5 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 }
 
 export default ImageAsMap
-
-const clamp = (value: number, min: number, max: number) => {
-    return Math.max(min, Math.min(max, value))
-}
 
 const getMidPoint = (x1: number, y1: number, x2: number, y2: number): [number, number] => [(x1 + x2) / 2, (y1 + y2) / 2];

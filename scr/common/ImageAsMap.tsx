@@ -1,19 +1,28 @@
-import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, ImageBackground, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps } from 'react-native'
+import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps, ImageProps } from 'react-native'
 import React, { useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
+import { Throttle } from './Throttler'
 
 // const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground)
 
 const screenScale = Dimensions.get('screen').scale
 
-type ImageAsMapProps = {
-    img: ImageBackgroundProps['source'],
-    maxScale: number,
+export type MapItem = {
+    posX: number,
+    posY: number
 }
 
-const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
+type ImageAsMapProps = {
+    img: ImageProps['source'],
+    maxScale: number,
+    allItems: MapItem[],
+}
+
+const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
     const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
     const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
+    const [currentItems, setCurrentItems] = useState<MapItem[]>([])
+    const setCurrentItemsThrottler = useRef(() => {})
 
     // position
 
@@ -54,6 +63,8 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
         positionLeftTopCachedValue.current = { x, y }
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
+
+        setCurrentItemsThrottler.current()
     }
 
     const getLeftTopToCenterMapByMapPointPercent = (
@@ -71,6 +82,25 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         return [left, top]
     }
 
+    const getItemsInCurrentVP = (): MapItem[] => {
+        const arr = allItems.map(i => {
+            const vp = getVpFromMapRealPos(i.posX, i.posY)
+
+            return {
+                posX: vp[0],
+                posY: vp[1]
+            } as MapItem
+        })
+
+        return arr.filter(i => {
+            if (i.posX >= 0 && i.posX < 400 &&
+                i.posY >= 0 && i.posY < 400)
+                return true
+            else
+                return false
+        })
+    }
+
     const getVpFromMapRealPos = (realMapPosX: number, realMapPosY: number): [number, number] => {
         if (!viewportMeasureResult.current)
             throw new Error('vp not messure yet')
@@ -80,17 +110,17 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         const mapPercentX = realMapPosX / mapRealOriginSize[0]
         const mapCurSize = [mapRealOriginSize[0] * mapCurrentScaleCachedValue.current, mapRealOriginSize[1] * mapCurrentScaleCachedValue.current]
         const viewportPercentX = (mapPercentX * mapCurSize[0] - (limitLeft.current - positionLeftTopCachedValue.current.x) * screenScale) / viewportRealSize[0]
-        
+
         // find vpX
 
         const vpX = viewportMeasureResult.current.width * viewportPercentX
 
-        // find viewportPercentX
-        
+        // find viewportPercentY
+
         const mapPercentY = realMapPosY / mapRealOriginSize[1]
         const viewportPercentY = (mapPercentY * mapCurSize[1] - (limitTop.current - positionLeftTopCachedValue.current.y) * screenScale) / viewportRealSize[1]
-        
-        // find vpX
+
+        // find vpY
 
         const vpY = viewportMeasureResult.current.height * viewportPercentY
 
@@ -173,6 +203,11 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
             const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
             mapMinScale.current = viewportSizeMax / w
+
+            setCurrentItemsThrottler.current = Throttle(() => {
+                setCurrentItems(getItemsInCurrentVP())
+            }, 100)
+
             onSetScale(mapMinScale.current, false)
         })
     }
@@ -238,7 +273,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     }, [onSetPositionLeftTop, onSetScale, setCenter])
 
     // render
-
+    
     return (
         <View
             {...fatherViewResponser}
@@ -254,6 +289,25 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                     { width: mapRealOriginSize[0], height: mapRealOriginSize[1] },
                     { ...positionLeftTopAnimated.getLayout() },
                     { transform: [{ scale: mapCurrentScaleAnimated }] }]} />
+            <View style={{ position: 'absolute', width: '100%', height: '100%', }}>
+                {
+                    currentItems.map((item: MapItem, index: number) => {
+                        return <View key={index} style={[
+                            {
+                                left: item.posX,
+                                top: item.posY
+                            }, 
+                            {
+                            position: 'absolute',
+                            backgroundColor: 'green',
+                            width: '10%',
+                            height: '10%',
+                        }]}>
+
+                        </View>
+                    })
+                }
+            </View>
         </View>
     )
 }

@@ -71,6 +71,36 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         return [left, top]
     }
 
+    const getVpFromMapRealPos = (realMapPosX: number, realMapPosY: number): [number, number] => {
+        if (!viewportMeasureResult.current)
+            throw new Error('vp not messure yet')
+
+        // find viewportPercentX
+
+        const mapPercentX = realMapPosX / mapRealOriginSize[0]
+        const mapCurSize = [mapRealOriginSize[0] * mapCurrentScaleCachedValue.current, mapRealOriginSize[1] * mapCurrentScaleCachedValue.current]
+        const viewportPercentX = (mapPercentX * mapCurSize[0] - (limitLeft.current - positionLeftTopCachedValue.current.x) * screenScale) / viewportRealSize[0]
+        
+        // find vpX
+
+        const vpX = viewportMeasureResult.current.width * viewportPercentX
+
+        // find viewportPercentX
+        
+        const mapPercentY = realMapPosY / mapRealOriginSize[1]
+        const viewportPercentY = (mapPercentY * mapCurSize[1] - (limitTop.current - positionLeftTopCachedValue.current.y) * screenScale) / viewportRealSize[1]
+        
+        // find vpX
+
+        const vpY = viewportMeasureResult.current.height * viewportPercentY
+
+        // return
+
+        // console.log(vpX, vpY, viewportPercentX, viewportPercentY);
+
+        return [vpX, vpY]
+    }
+
     const getMapPercentFromVpPage = (viewportPageX: number, viewportPageY: number): [number, number, number, number] => {
         if (!viewportMeasureResult.current)
             throw new Error('vp not messure yet')
@@ -80,16 +110,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
         const viewportPercentX = vpX / viewportMeasureResult.current.width
         const viewportPercentY = vpY / viewportMeasureResult.current.height
-
-
-        // console.log('vpx vpy', vpX, vpY);
-        // console.log('left top', positionLeftTopCachedValue.current);
-        // console.log('limit left top', limitLeft.current, limitTop.current);
-        // console.log('viewportRealSize', viewportRealSize);
-        // console.log('Percent', viewportPercentX, viewportPercentY);
         const mapCurSize = [mapRealOriginSize[0] * mapCurrentScaleCachedValue.current, mapRealOriginSize[1] * mapCurrentScaleCachedValue.current]
-        // console.log('map current size', mapCurSize)
-
 
         const mapPercentX = ((viewportPercentX * viewportRealSize[0]) + (limitLeft.current - positionLeftTopCachedValue.current.x) * screenScale) / mapCurSize[0]
         const mapPercentY = ((viewportPercentY * viewportRealSize[1]) + (limitTop.current - positionLeftTopCachedValue.current.y) * screenScale) / mapCurSize[1]

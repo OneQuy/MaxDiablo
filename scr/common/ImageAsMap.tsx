@@ -193,7 +193,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
                 const t1 = touches[0]
 
-                if (touches.length > 0) {
+                if (touches.length === 1) {
                     const offsetX = t1.pageX - initialTouch1.current.pageX
                     const x = initialMovePositionLeftTop.current.x + offsetX
 
@@ -221,10 +221,8 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 }
 
                 const scale = initialScale.current * (currentDistance / initial2TouchesDistance.current)
-                console.log(scale );
 
                 onSetScale(scale, false)
-
 
                 setCenter(initialFocusPoint.current[0], initialFocusPoint.current[1], initialFocusPoint.current[2], initialFocusPoint.current[3])
             },
@@ -232,8 +230,6 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
             onResponderEnd: (_: GestureResponderEvent) => { // end move
                 initial2TouchesDistance.current = -1 // reset scale
 
-                // mapCurrentScale.setValue(mapMinScale.current)
-                // mapLeftTop.setValue({ x: 0, y: 0 })
                 // setIsTouchingImg(false)
             },
         }

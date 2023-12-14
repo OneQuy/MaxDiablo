@@ -2,7 +2,7 @@ import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dim
 import React, { useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
 
-const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground)
+// const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground)
 
 const screenScale = Dimensions.get('screen').scale
 
@@ -246,7 +246,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
             onLayout={onLayoutViewport}
             style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>
             {/* map */}
-            <AnimatedImageBackground
+            <Animated.Image
                 onLoad={onLoadedMap}
                 resizeMode='center'
                 source={img}

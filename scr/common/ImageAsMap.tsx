@@ -38,7 +38,6 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     const initial2TouchesDistance = useRef(-1)
     const initialScale = useRef(-1)
     const initialFocusPoint = useRef<[number, number, number, number]>([0, 0, 0, 0]) // map percent & vp percent
-
     const initialTouch1 = useRef<NativeTouchEvent | undefined>(undefined)
     const initialMovePositionLeftTop = useRef(positionLeftTopCachedValue.current)
 
@@ -74,7 +73,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
         return [left, top]
     }
 
-    const getMapPercentFromVpPage = (viewportPageX: number, viewportPageY: number) : [number, number, number, number] => {
+    const getMapPercentFromVpPage = (viewportPageX: number, viewportPageY: number): [number, number, number, number] => {
         if (!viewportMeasureResult.current)
             throw new Error('vp not messure yet')
 
@@ -162,31 +161,10 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
     const fatherViewResponser = useMemo<ViewProps>(() => {
         return {
             onMoveShouldSetResponder: (event: GestureResponderEvent) => { // start move
-                const touches = event.nativeEvent.touches
-
-                initialTouch1.current = touches[0]
-                initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
-
-                // if (touches.length !== 2 ||
-                //     !viewportMeasureResult.current)
-                //     return false
-
-                // const t1 = touches[0]
-                // const t2 = touches[1]
-
-                // if (!IsPointInRectMeasure(t1.pageX, t1.pageY, viewportMeasureResult.current) &&
-                //     !IsPointInRectMeasure(t2.pageX, t2.pageY, viewportMeasureResult.current))
-                //     return false
-
-                // setIsTouchingImg(true)
-
                 return true
             },
 
             onResponderMove: (event: GestureResponderEvent) => { // moving
-                if (!initialTouch1.current)
-                    return
-
                 const touches = event.nativeEvent.touches
 
                 // move
@@ -194,6 +172,11 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 const t1 = touches[0]
 
                 if (touches.length === 1) {
+                    if (!initialTouch1.current) {
+                        initialTouch1.current = touches[0]
+                        initialMovePositionLeftTop.current = positionLeftTopCachedValue.current
+                    }
+
                     const offsetX = t1.pageX - initialTouch1.current.pageX
                     const x = initialMovePositionLeftTop.current.x + offsetX
 
@@ -208,6 +191,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
                 if (touches.length < 2)
                     return
 
+                initialTouch1.current = undefined
                 const t2 = touches[1]
                 const currentDistance = Math.sqrt(Math.pow(t1.pageX - t2.pageX, 2) + Math.pow(t1.pageY - t2.pageY, 2))
 
@@ -229,8 +213,7 @@ const ImageAsMap = ({ img, maxScale }: ImageAsMapProps) => {
 
             onResponderEnd: (_: GestureResponderEvent) => { // end move
                 initial2TouchesDistance.current = -1 // reset scale
-
-                // setIsTouchingImg(false)
+                initialTouch1.current = undefined // reset move
             },
         }
     }, [onSetPositionLeftTop, onSetScale, setCenter])

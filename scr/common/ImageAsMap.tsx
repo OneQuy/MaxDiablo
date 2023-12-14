@@ -206,7 +206,7 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
 
             setCurrentItemsThrottler.current = Throttle(() => {
                 setCurrentItems(getItemsInCurrentVP())
-            }, 100)
+            }, 10)
 
             onSetScale(mapMinScale.current, false)
         })

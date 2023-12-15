@@ -18,6 +18,10 @@ type ImageAsMapProps = {
     maxScale: number,
     allItems: MapItem[] | undefined,
     isDrawAllItems: boolean | undefined,
+
+    /**
+     * idealy is 10
+     */
     throttleInMsToUpdateItems: number | undefined,
 }
 
@@ -69,9 +73,15 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         positionLeftTopCachedValue.current = { x, y }
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
 
+        // draw only items in vp
+
         if (allItems && !isDrawAllItems) {
             setCurrentItemsThrottler.current()
         }
+
+        // case draw all items
+
+        updatePositionAllItems()
     }
 
     const getLeftTopToCenterMapByMapPointPercent = (
@@ -196,6 +206,17 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         onSetPositionLeftTop(positionLeftTopCachedValue.current.x, positionLeftTopCachedValue.current.y, false)
     }
 
+    const updatePositionAllItems = () => {
+        if (!allItems || isDrawAllItems !== true)
+            return
+
+        for (let i = 0; i < allItems.length; i++) {
+            const xy = getVpFromMapRealPos(allItems[i].posX, allItems[i].posY)
+            
+            itemLeftTopAnimatedValueArr.current[i].setValue({ x: xy[0], y: xy[1] })
+        }
+    }
+
     const onLayoutViewport = (e: LayoutChangeEvent) => {
         setViewportRealSize([e.nativeEvent.layout.width * screenScale, e.nativeEvent.layout.height * screenScale])
 
@@ -214,7 +235,7 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
             const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
             mapMinScale.current = viewportSizeMax / w
 
-            if (allItems && !isDrawAllItems) {
+            if (allItems && isDrawAllItems !== true) {
                 setCurrentItemsThrottler.current = Throttle(() => {
                     const items = getItemsInCurrentVP()
 
@@ -306,21 +327,34 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                     { transform: [{ scale: mapCurrentScaleAnimated }] }]} />
             <View style={{ position: 'absolute', width: '100%', height: '100%', }}>
                 {
-                    currentItems.map((item: MapItem, index: number) => {
-                        return <View key={index} style={[
-                            {
-                                left: item.posX,
-                                top: item.posY
-                            },
-                            {
-                                position: 'absolute',
-                                backgroundColor: 'green',
-                                width: '10%',
-                                height: '10%',
-                            }]}>
-
-                        </View>
-                    })
+                    isDrawAllItems !== true ?
+                        currentItems.map((item: MapItem, index: number) => {
+                            return <View key={index} style={[
+                                {
+                                    left: item.posX,
+                                    top: item.posY
+                                },
+                                {
+                                    position: 'absolute',
+                                    backgroundColor: 'green',
+                                    width: '10%',
+                                    height: '10%',
+                                }]}>
+                            </View>
+                        }) :
+                        allItems?.map((item: MapItem, index: number) => {
+                            return <Animated.View key={index} style={[
+                                {
+                                    ...itemLeftTopAnimatedValueArr.current[index].getLayout()
+                                },
+                                {
+                                    position: 'absolute',
+                                    backgroundColor: 'green',
+                                    width: '10%',
+                                    height: '10%',
+                                }]}>
+                            </Animated.View>
+                        })
                 }
             </View>
         </View>

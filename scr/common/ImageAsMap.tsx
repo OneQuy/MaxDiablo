@@ -6,6 +6,7 @@ import { Throttle } from './Throttler'
 // const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground)
 
 const screenScale = Dimensions.get('screen').scale
+const dimensionsScreen = Dimensions.get('screen')
 
 export type MapItem = {
     posX: number,
@@ -91,10 +92,10 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
                 posY: vp[1]
             } as MapItem
         })
-
+        
         return arr.filter(i => {
-            if (i.posX >= 0 && i.posX < 400 &&
-                i.posY >= 0 && i.posY < 400)
+            if (i.posX >= 0 && i.posX < dimensionsScreen.width &&
+                i.posY >= 0 && i.posY < dimensionsScreen.height)
                 return true
             else
                 return false

@@ -16,14 +16,18 @@ export type MapItem = {
 type ImageAsMapProps = {
     img: ImageProps['source'],
     maxScale: number,
-    allItems: MapItem[],
+    allItems: MapItem[] | undefined,
+    isDrawAllItems: boolean | undefined,
+    throttleInMsToUpdateItems: number | undefined,
 }
 
-const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
+const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpdateItems }: ImageAsMapProps) => {
     const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
     const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
     const [currentItems, setCurrentItems] = useState<MapItem[]>([])
-    const setCurrentItemsThrottler = useRef(() => {})
+    const setCurrentItemsThrottler = useRef(() => { })
+
+    const itemLeftTopAnimatedValueArr = useRef(allItems && isDrawAllItems ? allItems.map(i => new Animated.ValueXY()) : [])
 
     // position
 
@@ -65,7 +69,9 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
         positionLeftTopCachedValue.current = { x, y }
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
 
-        setCurrentItemsThrottler.current()
+        if (allItems && !isDrawAllItems) {
+            setCurrentItemsThrottler.current()
+        }
     }
 
     const getLeftTopToCenterMapByMapPointPercent = (
@@ -83,7 +89,10 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
         return [left, top]
     }
 
-    const getItemsInCurrentVP = (): MapItem[] => {
+    const getItemsInCurrentVP = (): MapItem[] | undefined => {
+        if (!allItems)
+            return undefined
+
         const arr = allItems.map(i => {
             const vp = getVpFromMapRealPos(i.posX, i.posY)
 
@@ -92,7 +101,7 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
                 posY: vp[1]
             } as MapItem
         })
-        
+
         return arr.filter(i => {
             if (i.posX >= 0 && i.posX < dimensionsScreen.width &&
                 i.posY >= 0 && i.posY < dimensionsScreen.height)
@@ -205,9 +214,14 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
             const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
             mapMinScale.current = viewportSizeMax / w
 
-            setCurrentItemsThrottler.current = Throttle(() => {
-                setCurrentItems(getItemsInCurrentVP())
-            }, 10)
+            if (allItems && !isDrawAllItems) {
+                setCurrentItemsThrottler.current = Throttle(() => {
+                    const items = getItemsInCurrentVP()
+
+                    if (items)
+                        setCurrentItems(items)
+                }, typeof throttleInMsToUpdateItems === 'number' ? throttleInMsToUpdateItems : 10)
+            }
 
             onSetScale(mapMinScale.current, false)
         })
@@ -274,7 +288,7 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
     }, [onSetPositionLeftTop, onSetScale, setCenter])
 
     // render
-    
+
     return (
         <View
             {...fatherViewResponser}
@@ -297,13 +311,13 @@ const ImageAsMap = ({ img, maxScale, allItems }: ImageAsMapProps) => {
                             {
                                 left: item.posX,
                                 top: item.posY
-                            }, 
+                            },
                             {
-                            position: 'absolute',
-                            backgroundColor: 'green',
-                            width: '10%',
-                            height: '10%',
-                        }]}>
+                                position: 'absolute',
+                                backgroundColor: 'green',
+                                width: '10%',
+                                height: '10%',
+                            }]}>
 
                         </View>
                     })

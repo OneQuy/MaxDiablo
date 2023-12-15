@@ -4,6 +4,23 @@ import { windowSize } from './AppConstant'
 import ImageAsMap, { MapItem } from './common/ImageAsMap'
 
 const wholeMap = require('../assets/images/map/whole.jpg')
+const chestImg = require('../assets/images/map/chest.png')
+
+const Chest = () => {
+    return <ImageBackground
+        source={chestImg}
+        resizeMode='contain'
+        style={{ width: 20, height: 20 }} />
+}
+
+const allItems: MapItem[] = new Array(50).fill({}).map(i => {
+    return {
+        posX: Math.random() * 2400,
+        posY: Math.random() * 2400,
+        element: Chest
+    } as MapItem
+})
+
 
 const Helltide = () => {
 
@@ -16,29 +33,12 @@ const Helltide = () => {
             {/* set viewport of map on this screen here */}
             <View style={{ width: '100%', height: windowSize.height * 0.6 }}>
                 {/* map */}
-                <ImageAsMap 
+                <ImageAsMap
                     img={wholeMap}
                     maxScale={10}
                     isDrawAllItems={true}
                     throttleInMsToUpdateItems={10}
-                    allItems={[
-                        {
-                            posX: 500,
-                            posY: 500
-                        } as MapItem,
-                        {
-                            posX: 1000,
-                            posY: 1000
-                        } as MapItem,
-                        {
-                            posX: 1200,
-                            posY: 1200
-                        } as MapItem,
-                        {
-                            posX: 1700,
-                            posY: 1700
-                        } as MapItem
-                    ]}
+                    allItems={allItems}
                 />
             </View>
         </SafeAreaView>

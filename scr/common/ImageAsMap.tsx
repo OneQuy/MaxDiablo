@@ -10,7 +10,8 @@ const dimensionsScreen = Dimensions.get('screen')
 
 export type MapItem = {
     posX: number,
-    posY: number
+    posY: number,
+    element: Element,
 }
 
 type ImageAsMapProps = {
@@ -337,8 +338,8 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                                 {
                                     position: 'absolute',
                                     backgroundColor: 'green',
-                                    width: '10%',
-                                    height: '10%',
+                                    width: 10,
+                                    height: 10,
                                 }]}>
                             </View>
                         }) :
@@ -350,8 +351,8 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                                 {
                                     position: 'absolute',
                                     backgroundColor: 'green',
-                                    width: '10%',
-                                    height: '10%',
+                                    width: 20,
+                                    height: 20,
                                 }]}>
                             </Animated.View>
                         })

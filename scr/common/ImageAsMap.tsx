@@ -351,13 +351,8 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                             return <View key={index} style={[
                                 {
                                     left: item.posX,
-                                    top: item.posY
-                                },
-                                {
-                                    position: 'absolute',
-                                    // backgroundColor: 'green',
-                                    // width: 20,
-                                    // height: 20,
+                                    top: item.posY,
+                                    position: 'absolute'
                                 }]}>
                                 {
                                     item.element
@@ -367,13 +362,8 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                         allItems?.map((item: MapItem, index: number) => {
                             return <Animated.View key={index} style={[
                                 {
-                                    ...itemLeftTopAnimatedValueArr.current[index].getLayout()
-                                },
-                                {
-                                    position: 'absolute',
-                                    // backgroundColor: 'green',
-                                    // width: 20,
-                                    // height: 20,
+                                    ...itemLeftTopAnimatedValueArr.current[index].getLayout(),
+                                    position: 'absolute'
                                 }]}>
                                 {
                                     item.element

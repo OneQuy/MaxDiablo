@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Image, ImageBackground, NativeSyntheticEvent, ImageLoadEventData, LayoutChangeEvent, Animated, Dimensions, ViewProps, GestureResponderEvent, NativeTouchEvent } from 'react-native'
+import { View, Text, SafeAreaView, Image, ImageBackground, NativeSyntheticEvent, ImageLoadEventData, LayoutChangeEvent, Animated, Dimensions, ViewProps, GestureResponderEvent, NativeTouchEvent, Button } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
 import { windowSize } from './AppConstant'
 import ImageAsMap, { MapItem } from './common/ImageAsMap'
@@ -13,16 +13,18 @@ const Chest = () => {
         style={{ width: 20, height: 20 }} />
 }
 
-const allItems: MapItem[] = new Array(50).fill({}).map(i => {
-    return {
-        posX: Math.random() * 2400,
-        posY: Math.random() * 2400,
-        element: <Chest />
-    } as MapItem
-})
-
+const randomItems = () => {
+    return new Array(50).fill({}).map(i => {
+        return {
+            posX: Math.random() * 2000,
+            posY: Math.random() * 2000,
+            element: <Chest />
+        } as MapItem
+    })
+}
 
 const Helltide = () => {
+    const [items, setItems] = useState(randomItems())
 
     // render
 
@@ -38,9 +40,10 @@ const Helltide = () => {
                     maxScale={10}
                     isDrawAllItems={true}
                     throttleInMsToUpdateItems={10}
-                    allItems={allItems}
+                    allItems={items}
                 />
             </View>
+            <Button onPress={() => setItems(randomItems())} title='Random items' />
         </SafeAreaView>
     )
 }

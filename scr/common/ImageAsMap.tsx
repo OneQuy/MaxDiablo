@@ -1,5 +1,5 @@
 import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps, ImageProps } from 'react-native'
-import React, { ReactNode, useMemo, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
 import { Throttle } from './Throttler'
 
@@ -74,15 +74,9 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         positionLeftTopCachedValue.current = { x, y }
         positionLeftTopAnimated.setValue(positionLeftTopCachedValue.current)
 
-        // draw only items in vp
+        // update items
 
-        if (allItems && !isDrawAllItems) {
-            setCurrentItemsThrottler.current()
-        }
-
-        // case draw all items
-
-        updatePositionAllItems()
+        updatePositionItems()
     }
 
     const getLeftTopToCenterMapByMapPointPercent = (
@@ -208,14 +202,26 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         onSetPositionLeftTop(positionLeftTopCachedValue.current.x, positionLeftTopCachedValue.current.y, false)
     }
 
-    const updatePositionAllItems = () => {
-        if (!allItems || isDrawAllItems !== true)
+    const updatePositionItems = () => {
+        if (!allItems || allItems.length <= 0) // no items to render
             return
 
-        for (let i = 0; i < allItems.length; i++) {
-            const xy = getVpFromMapRealPos(allItems[i].posX, allItems[i].posY)
-            
-            itemLeftTopAnimatedValueArr.current[i].setValue({ x: xy[0], y: xy[1] })
+        if (!viewportMeasureResult.current)
+            return
+
+        // for draw only items in vp mode
+
+        if (isDrawAllItems !== true) {
+            setCurrentItemsThrottler.current()
+        }
+
+        // for draw all mode
+
+        else {
+            for (let i = 0; i < allItems.length; i++) {
+                const xy = getVpFromMapRealPos(allItems[i].posX, allItems[i].posY)
+                itemLeftTopAnimatedValueArr.current[i].setValue({ x: xy[0], y: xy[1] })
+            }
         }
     }
 
@@ -310,8 +316,12 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         }
     }, [onSetPositionLeftTop, onSetScale, setCenter])
 
+    useEffect(() => {
+        updatePositionItems()
+    }, [allItems])
+
     // console.log(currentItems.length);
-    
+
     // render
 
     return (
@@ -341,12 +351,12 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                                 {
                                     position: 'absolute',
                                     // backgroundColor: 'green',
-                                    width: 20,
-                                    height: 20,
+                                    // width: 20,
+                                    // height: 20,
                                 }]}>
-                                    {
-                                        item.element
-                                    }
+                                {
+                                    item.element
+                                }
                             </View>
                         }) :
                         allItems?.map((item: MapItem, index: number) => {
@@ -357,12 +367,12 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                                 {
                                     position: 'absolute',
                                     // backgroundColor: 'green',
-                                    width: 20,
-                                    height: 20,
+                                    // width: 20,
+                                    // height: 20,
                                 }]}>
-                                    {
-                                        item.element
-                                    }
+                                {
+                                    item.element
+                                }
                             </Animated.View>
                         })
                 }

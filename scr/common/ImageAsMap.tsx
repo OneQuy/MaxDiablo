@@ -109,7 +109,8 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
 
             return {
                 posX: vp[0],
-                posY: vp[1]
+                posY: vp[1],
+                element: i.element,
             } as MapItem
         })
 
@@ -309,6 +310,8 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         }
     }, [onSetPositionLeftTop, onSetScale, setCenter])
 
+    console.log(currentItems.length);
+    
     // render
 
     return (
@@ -337,10 +340,13 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                                 },
                                 {
                                     position: 'absolute',
-                                    backgroundColor: 'green',
-                                    width: 10,
-                                    height: 10,
+                                    // backgroundColor: 'green',
+                                    width: 20,
+                                    height: 20,
                                 }]}>
+                                    {
+                                        item.element
+                                    }
                             </View>
                         }) :
                         allItems?.map((item: MapItem, index: number) => {

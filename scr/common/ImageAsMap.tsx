@@ -310,7 +310,7 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         }
     }, [onSetPositionLeftTop, onSetScale, setCenter])
 
-    console.log(currentItems.length);
+    // console.log(currentItems.length);
     
     // render
 

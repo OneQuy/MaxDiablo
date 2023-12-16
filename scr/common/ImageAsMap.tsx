@@ -1,5 +1,5 @@
 import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps, ImageProps } from 'react-native'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { ReactNode, useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
 import { Throttle } from './Throttler'
 
@@ -11,7 +11,7 @@ const dimensionsScreen = Dimensions.get('screen')
 export type MapItem = {
     posX: number,
     posY: number,
-    element: Element,
+    element: React.JSX.Element,
 }
 
 type ImageAsMapProps = {
@@ -350,10 +350,13 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                                 },
                                 {
                                     position: 'absolute',
-                                    backgroundColor: 'green',
+                                    // backgroundColor: 'green',
                                     width: 20,
                                     height: 20,
                                 }]}>
+                                    {
+                                        item.element
+                                    }
                             </Animated.View>
                         })
                 }

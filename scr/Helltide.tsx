@@ -17,7 +17,7 @@ const allItems: MapItem[] = new Array(50).fill({}).map(i => {
     return {
         posX: Math.random() * 2400,
         posY: Math.random() * 2400,
-        element: Chest
+        element: <Chest />
     } as MapItem
 })
 

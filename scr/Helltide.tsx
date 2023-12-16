@@ -5,20 +5,23 @@ import ImageAsMap, { MapItem } from './common/ImageAsMap'
 
 const wholeMap = require('../assets/images/map/whole.jpg')
 const chestImg = require('../assets/images/map/chest.png')
+const chestSize = 30
 
-const Chest = () => {
+const Chest = ({ num }: { num: number }) => {
     return <ImageBackground
         source={chestImg}
         resizeMode='contain'
-        style={{ width: 20, height: 20 }} />
+        style={{ width: chestSize, height: chestSize, alignItems: 'center', alignContent: 'center' }} >
+        <Text style={{ color: 'white', verticalAlign: 'middle' }}>{num}</Text>
+    </ImageBackground>
 }
 
 const randomItems = () => {
-    return new Array(50).fill({}).map(i => {
+    return new Array(50).fill({}).map((i, index) => {
         return {
             posX: Math.random() * 2000,
             posY: Math.random() * 2000,
-            element: <Chest />
+            element: <Chest num={index} />
         } as MapItem
     })
 }

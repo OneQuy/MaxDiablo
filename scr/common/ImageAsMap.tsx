@@ -16,14 +16,19 @@ export type MapItem = {
 
 type ImageAsMapProps = {
     img: ImageProps['source'],
-    maxScale: number,
-    allItems: MapItem[] | undefined,
-    isDrawAllItems: boolean | undefined,
+    maxScale?: number,
+    allItems?: MapItem[],
 
     /**
-     * idealy is 10
+     * it should be true if items less than 100 :)
      */
-    throttleInMsToUpdateItems: number | undefined,
+    isDrawAllItems?: boolean,
+
+    /**
+     * only use for isDrawAllItems = false or undefined.
+     * idealy is 0 - 10
+     */
+    throttleInMsToUpdateItems?: number,
 }
 
 const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpdateItems }: ImageAsMapProps) => {
@@ -176,7 +181,7 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         if (addToCurrent)
             scale = mapCurrentScaleCachedValue.current + scale
 
-        scale = Math.max(mapMinScale.current, Math.min(maxScale, scale))
+        scale = Math.max(mapMinScale.current, Math.min(maxScale || 10, scale))
 
         // update scale
 

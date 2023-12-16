@@ -42,8 +42,8 @@ const Helltide = () => {
                     img={wholeMap}
                     maxScale={10}
                     isDrawAllItems={true}
-                    throttleInMsToUpdateItems={10}
                     allItems={items}
+                    // throttleInMsToUpdateItems={10}
                 />
             </View>
             <Button onPress={() => setItems(randomItems())} title='Random items' />

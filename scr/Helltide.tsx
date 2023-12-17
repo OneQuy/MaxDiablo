@@ -4,7 +4,9 @@ import { windowSize } from './AppConstant'
 import ImageAsMap, { MapItem } from './common/ImageAsMap'
 import { RandomInt } from './common/Utils'
 
-const wholeMap = require('../assets/images/map/whole.jpg')
+const wholeMap = require('../assets/images/map/map2.jpeg')
+// const wholeMap = require('../assets/images/map/whole.jpg')
+
 const chestImg = require('../assets/images/map/chest.png')
 const chestSize = 30
 
@@ -44,7 +46,7 @@ const Helltide = () => {
                 <ImageAsMap
                     img={wholeMap}
                     maxScale={10}
-                    // initialScale={3}
+                    // initialScale={-3}
                     isDrawAllItems={true}
                     allItems={items}
                     // throttleInMsToUpdateItems={10}

@@ -29,6 +29,7 @@ type ImageAsMapProps = {
     maxScale?: number,
     initialScale?: number,
     allItems?: MapItem[],
+    initialPointCenterByMapSizePercent?: [number, number],
 
     /**
      * it should be true if items less than 100 :)
@@ -258,15 +259,17 @@ const ImageAsMap = ({ img, maxScale, initialScale, allItems, isDrawAllItems, thr
 
     const onLoadedMap = (e: NativeSyntheticEvent<ImageLoadEventData>) => {
         Image.getSize(e.nativeEvent.source.uri, (w, h) => {
-            if (w !== h)
-                console.warn('map w & h are diff. They should same!')
-
             setMapRealOriginSize([w, h])
+
+            if (viewportRealSize[0] * viewportRealSize[1] <= 0) {
+                console.error('viewportRealSize is not inited. Maybe onLayoutViewport(e) was not called before this (onLoadedMap).')
+                return
+            }
 
             const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
             mapMinScale.current = viewportSizeMax / w
             mapMaxScale.current = Math.max(mapMinScale.current, maxScale || 10)
-            
+
             createSetItemsThrottler()
 
             onSetScale(initialScale || mapMinScale.current, false)

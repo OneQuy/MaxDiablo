@@ -204,8 +204,6 @@ const ImageAsMap = ({
     }
 
     const onSetScale = (scale: number, addToCurrent: boolean) => {
-        // scale = 4
-
         if (addToCurrent)
             scale = mapCurrentScaleCachedValue.current + scale
 
@@ -279,7 +277,7 @@ const ImageAsMap = ({
             }
 
             const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
-            mapMinScale.current = viewportSizeMax / w
+            mapMinScale.current = viewportSizeMax / Math.min(w, h)
             mapMaxScale.current = Math.max(mapMinScale.current, maxScale || 10)
 
             createSetItemsThrottler()

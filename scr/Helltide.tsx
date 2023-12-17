@@ -47,9 +47,9 @@ const Helltide = () => {
                 <ImageAsMap
                     img={wholeMap}
                     maxScale={10}
-                    // initialPointCenterByMapSizePercent={[0.3, 0.7]}
-                    // initialScale={3}
-                    isDrawAllItems={true}
+                    // initialPointCenterByMapSizePercent={[0.7, 0.7]}
+                    // initialScale={4}
+                    // isDrawAllItems={true}
                     // allItems={items}
                     // throttleInMsToUpdateItems={10}
                 />

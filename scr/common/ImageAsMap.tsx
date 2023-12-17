@@ -271,6 +271,8 @@ const ImageAsMap = ({
         Image.getSize(e.nativeEvent.source.uri, (w, h) => {
             setMapRealOriginSize([w, h])
 
+            // find min scale
+
             if (viewportRealSize[0] * viewportRealSize[1] <= 0) {
                 console.error('viewportRealSize is not inited. Maybe onLayoutViewport(e) was not called before this (onLoadedMap).')
                 return
@@ -290,8 +292,12 @@ const ImageAsMap = ({
             }
 
 
+            // find max scale
+
             mapMaxScale.current = Math.max(mapMinScale.current, maxScale || 10)
 
+            // other setups
+            
             createSetItemsThrottler()
 
             onSetScale(initialScale || mapMinScale.current, false)

@@ -29,6 +29,10 @@ type ImageAsMapProps = {
     maxScale?: number,
     initialScale?: number,
     allItems?: MapItem[],
+
+    /**
+     * default is [0.5, 0.5] (center of the map)
+     */
     initialPointCenterByMapSizePercent?: [number, number],
 
     /**

@@ -43,7 +43,15 @@ type ImageAsMapProps = {
     throttleInMsToUpdateItems?: number,
 }
 
-const ImageAsMap = ({ img, maxScale, initialScale, allItems, isDrawAllItems, throttleInMsToUpdateItems }: ImageAsMapProps) => {
+const ImageAsMap = ({
+    img,
+    maxScale,
+    initialScale,
+    allItems,
+    isDrawAllItems,
+    throttleInMsToUpdateItems,
+    initialPointCenterByMapSizePercent,
+}: ImageAsMapProps) => {
     const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
     const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
     const [currentItems, setCurrentItems] = useState<MapItem[]>([])
@@ -273,6 +281,14 @@ const ImageAsMap = ({ img, maxScale, initialScale, allItems, isDrawAllItems, thr
             createSetItemsThrottler()
 
             onSetScale(initialScale || mapMinScale.current, false)
+
+            if (initialPointCenterByMapSizePercent && initialPointCenterByMapSizePercent.length === 2) {
+                setCenter(
+                    initialPointCenterByMapSizePercent[0],
+                    initialPointCenterByMapSizePercent[1],
+                    0.5,
+                    0.5)
+            }
         })
     }
 

@@ -276,8 +276,20 @@ const ImageAsMap = ({
                 return
             }
 
-            const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
-            mapMinScale.current = viewportSizeMax / Math.min(w, h)
+            if (w < h) {
+                mapMinScale.current = viewportRealSize[0] / w
+
+                if (mapMinScale.current * h < viewportRealSize[1])
+                    mapMinScale.current = viewportRealSize[1] / h
+            }
+            else {
+                mapMinScale.current = viewportRealSize[1] / h
+
+                if (mapMinScale.current * w < viewportRealSize[0])
+                    mapMinScale.current = viewportRealSize[0] / w
+            }
+
+
             mapMaxScale.current = Math.max(mapMinScale.current, maxScale || 10)
 
             createSetItemsThrottler()

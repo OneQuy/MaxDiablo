@@ -4,8 +4,9 @@ import { windowSize } from './AppConstant'
 import ImageAsMap, { MapItem } from './common/ImageAsMap'
 import { RandomInt } from './common/Utils'
 
-const wholeMap = require('../assets/images/map/map2.jpeg')
-// const wholeMap = require('../assets/images/map/whole.jpg')
+// const wholeMap = require('../assets/images/map/map-vertical.jpeg')
+// const wholeMap = require('../assets/images/map/map2.jpeg')
+const wholeMap = require('../assets/images/map/whole.jpg')
 
 const chestImg = require('../assets/images/map/chest.png')
 const chestSize = 30
@@ -41,12 +42,12 @@ const Helltide = () => {
         <SafeAreaView style={{ backgroundColor: 'white', position: 'absolute', width: '100%', height: '100%', justifyContent: 'flex-start' }}>
             <Text style={{ marginTop: 50, color: 'green' }}>Helltide</Text>
             {/* set viewport of map on this screen here */}
-            <View style={{ width: '100%', height: windowSize.height * 0.6 }}>
+            <View style={{ width: '100%', height: windowSize.height * 0.7 }}>
                 {/* map */}
                 <ImageAsMap
                     img={wholeMap}
                     maxScale={10}
-                    // initialPointCenterByMapSizePercent={[0.87, 0.7]}
+                    // initialPointCenterByMapSizePercent={[0.3, 0.7]}
                     // initialScale={3}
                     isDrawAllItems={true}
                     // allItems={items}

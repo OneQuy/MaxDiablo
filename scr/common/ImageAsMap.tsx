@@ -275,8 +275,6 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
             return
         }
 
-        console.log(111);
-
         setCurrentItemsThrottler.current = Throttle(() => {
             const items = getItemsInCurrentVP()
 

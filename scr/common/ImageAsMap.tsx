@@ -1,5 +1,5 @@
 import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps, ImageProps } from 'react-native'
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
 import { Throttle } from './Throttler'
 
@@ -12,6 +12,16 @@ export type MapItem = {
     posX: number,
     posY: number,
     element: React.JSX.Element,
+
+    /**
+     * should be assigned if isDrawAllItems = false or undefined for check if this item is rendered
+     */
+    width?: number,
+
+    /**
+     * should be assigned if isDrawAllItems = false or undefined for check if this item is rendered
+     */
+    height?: number,
 }
 
 type ImageAsMapProps = {
@@ -107,15 +117,18 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
             const vp = getVpFromMapRealPos(i.posX, i.posY)
 
             return {
+                ...i,
                 posX: vp[0],
                 posY: vp[1],
-                element: i.element,
             } as MapItem
         })
 
         return arr.filter(i => {
-            if (i.posX >= 0 && i.posX < dimensionsScreen.width &&
-                i.posY >= 0 && i.posY < dimensionsScreen.height)
+            const w = i.width || 0
+            const h = i.height || 0
+
+            if (i.posX + w >= 0 && i.posX < dimensionsScreen.width &&
+                i.posY + h >= 0 && i.posY < dimensionsScreen.height)
                 return true
             else
                 return false
@@ -223,6 +236,9 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         // for draw all mode
 
         else {
+            if (itemLeftTopAnimatedValueArr.current.length !== allItems.length)
+                itemLeftTopAnimatedValueArr.current = allItems.map(_ => new Animated.ValueXY())
+
             for (let i = 0; i < allItems.length; i++) {
                 const xy = getVpFromMapRealPos(allItems[i].posX, allItems[i].posY)
                 itemLeftTopAnimatedValueArr.current[i].setValue({ x: xy[0], y: xy[1] })
@@ -248,17 +264,25 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
             const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
             mapMinScale.current = viewportSizeMax / w
 
-            if (allItems && isDrawAllItems !== true) {
-                setCurrentItemsThrottler.current = Throttle(() => {
-                    const items = getItemsInCurrentVP()
-
-                    if (items)
-                        setCurrentItems(items)
-                }, typeof throttleInMsToUpdateItems === 'number' ? throttleInMsToUpdateItems : 10)
-            }
+            createSetItemsThrottler()
 
             onSetScale(mapMinScale.current, false)
         })
+    }
+
+    const createSetItemsThrottler = () => {
+        if (!allItems || isDrawAllItems === true) {
+            return
+        }
+
+        console.log(111);
+
+        setCurrentItemsThrottler.current = Throttle(() => {
+            const items = getItemsInCurrentVP()
+
+            if (items)
+                setCurrentItems(items)
+        }, typeof throttleInMsToUpdateItems === 'number' ? throttleInMsToUpdateItems : 10)
     }
 
     const fatherViewResponser = useMemo<ViewProps>(() => {
@@ -322,10 +346,17 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
     }, [onSetPositionLeftTop, onSetScale, setCenter])
 
     useEffect(() => {
+        createSetItemsThrottler()
         updatePositionItems()
     }, [allItems])
 
     // console.log(currentItems.length);
+    // console.log(allItems?.length, itemLeftTopAnimatedValueArr.current.length);
+
+    const isDrawItems = allItems && allItems.length > 0 &&
+        (isDrawAllItems !== true || allItems.length === itemLeftTopAnimatedValueArr.current.length)
+
+    //     return
 
     // render
 
@@ -344,34 +375,42 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
                     { width: mapRealOriginSize[0], height: mapRealOriginSize[1] },
                     { ...positionLeftTopAnimated.getLayout() },
                     { transform: [{ scale: mapCurrentScaleAnimated }] }]} />
-            <View style={{ position: 'absolute', width: '100%', height: '100%', }}>
-                {
-                    isDrawAllItems !== true ?
-                        currentItems.map((item: MapItem, index: number) => {
-                            return <View key={index} style={[
-                                {
-                                    left: item.posX,
-                                    top: item.posY,
-                                    position: 'absolute'
-                                }]}>
-                                {
-                                    item.element
-                                }
-                            </View>
-                        }) :
-                        allItems?.map((item: MapItem, index: number) => {
-                            return <Animated.View key={index} style={[
-                                {
-                                    ...itemLeftTopAnimatedValueArr.current[index].getLayout(),
-                                    position: 'absolute'
-                                }]}>
-                                {
-                                    item.element
-                                }
-                            </Animated.View>
-                        })
-                }
-            </View>
+            {/* items */}
+            {
+                !isDrawItems ? undefined :
+                    <View style={{ position: 'absolute', width: '100%', height: '100%', }}>
+                        {
+                            isDrawAllItems !== true ?
+                                // draw part
+                                currentItems.map((item: MapItem, index: number) => {
+                                    return <View key={index} style={[
+                                        {
+                                            left: item.posX,
+                                            top: item.posY,
+                                            position: 'absolute'
+                                        }]}>
+                                        {
+                                            item.element
+                                        }
+                                    </View>
+                                }) :
+
+                                // draw all
+
+                                allItems?.map((item: MapItem, index: number) => {
+                                    return <Animated.View key={index} style={[
+                                        {
+                                            ...itemLeftTopAnimatedValueArr.current[index].getLayout(),
+                                            position: 'absolute'
+                                        }]}>
+                                        {
+                                            item.element
+                                        }
+                                    </Animated.View>
+                                })
+                        }
+                    </View>
+            }
         </View>
     )
 }

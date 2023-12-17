@@ -2,6 +2,7 @@ import { View, Text, SafeAreaView, Image, ImageBackground, NativeSyntheticEvent,
 import React, { useCallback, useRef, useState } from 'react'
 import { windowSize } from './AppConstant'
 import ImageAsMap, { MapItem } from './common/ImageAsMap'
+import { RandomInt } from './common/Utils'
 
 const wholeMap = require('../assets/images/map/whole.jpg')
 const chestImg = require('../assets/images/map/chest.png')
@@ -17,10 +18,12 @@ const Chest = ({ num }: { num: number }) => {
 }
 
 const randomItems = () => {
-    return new Array(50).fill({}).map((i, index) => {
+    return new Array(RandomInt(30, 100)).fill({}).map((i, index) => {
         return {
             posX: Math.random() * 2000,
             posY: Math.random() * 2000,
+            width: chestSize,
+            height: chestSize,
             element: <Chest num={index} />
         } as MapItem
     })

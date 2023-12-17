@@ -62,6 +62,7 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
     const mapCurrentScaleCachedValue = useRef(1)
     const mapCurrentScaleAnimated = useRef(new Animated.Value(1)).current
     const mapMinScale = useRef(0)
+    const mapMaxScale = useRef(maxScale || 10) // is maxScale but validated
 
     // gesture
 
@@ -194,7 +195,7 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
         if (addToCurrent)
             scale = mapCurrentScaleCachedValue.current + scale
 
-        scale = Math.max(mapMinScale.current, Math.min(maxScale || 10, scale))
+        scale = Math.max(mapMinScale.current, Math.min(mapMaxScale.current, scale))
 
         // update scale
 
@@ -263,7 +264,8 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
 
             const viewportSizeMax = Math.max(viewportRealSize[0], viewportRealSize[1])
             mapMinScale.current = viewportSizeMax / w
-
+            mapMaxScale.current = Math.max(mapMinScale.current, maxScale || 10)
+            
             createSetItemsThrottler()
 
             onSetScale(mapMinScale.current, false)

@@ -27,6 +27,7 @@ export type MapItem = {
 type ImageAsMapProps = {
     img: ImageProps['source'],
     maxScale?: number,
+    initialScale?: number,
     allItems?: MapItem[],
 
     /**
@@ -41,7 +42,7 @@ type ImageAsMapProps = {
     throttleInMsToUpdateItems?: number,
 }
 
-const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpdateItems }: ImageAsMapProps) => {
+const ImageAsMap = ({ img, maxScale, initialScale, allItems, isDrawAllItems, throttleInMsToUpdateItems }: ImageAsMapProps) => {
     const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
     const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
     const [currentItems, setCurrentItems] = useState<MapItem[]>([])
@@ -69,7 +70,7 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
     const viewportMeasure = useRef<CachedMeassure>(new CachedMeassure(false))
     const viewportMeasureResult = useRef<CachedMeassureResult | undefined>(undefined)
     const initial2TouchesDistance = useRef(-1)
-    const initialScale = useRef(-1)
+    const initialScaleWhenPinching = useRef(-1)
     const initialFocusPoint = useRef<[number, number, number, number]>([0, 0, 0, 0]) // map percent & vp percent
     const initialTouch1 = useRef<NativeTouchEvent | undefined>(undefined)
     const initialMovePositionLeftTop = useRef(positionLeftTopCachedValue.current)
@@ -268,7 +269,7 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
             
             createSetItemsThrottler()
 
-            onSetScale(mapMinScale.current, false)
+            onSetScale(initialScale || mapMinScale.current, false)
         })
     }
 
@@ -324,14 +325,14 @@ const ImageAsMap = ({ img, maxScale, allItems, isDrawAllItems, throttleInMsToUpd
 
                 if (initial2TouchesDistance.current <= 0) { // start regconize scale
                     initial2TouchesDistance.current = currentDistance
-                    initialScale.current = mapCurrentScaleCachedValue.current
+                    initialScaleWhenPinching.current = mapCurrentScaleCachedValue.current
 
                     const midPoint = getMidPoint(t1.pageX, t1.pageY, t2.pageX, t2.pageY)
 
                     initialFocusPoint.current = getMapPercentFromVpPage(midPoint[0], midPoint[1])
                 }
 
-                const scale = initialScale.current * (currentDistance / initial2TouchesDistance.current)
+                const scale = initialScaleWhenPinching.current * (currentDistance / initial2TouchesDistance.current)
 
                 onSetScale(scale, false)
 

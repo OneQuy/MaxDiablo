@@ -44,6 +44,7 @@ const Helltide = () => {
                 <ImageAsMap
                     img={wholeMap}
                     maxScale={10}
+                    // initialScale={3}
                     isDrawAllItems={true}
                     allItems={items}
                     // throttleInMsToUpdateItems={10}

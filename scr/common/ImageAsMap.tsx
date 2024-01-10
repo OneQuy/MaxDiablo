@@ -1,5 +1,5 @@
-import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps, ImageProps } from 'react-native'
-import React, { ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { View, Animated, NativeTouchEvent, ViewProps, GestureResponderEvent, Dimensions, LayoutChangeEvent, NativeSyntheticEvent, ImageLoadEventData, Image, ImageBackgroundProps, ImageProps, ActivityIndicator, ActivityIndicatorProps, StyleSheet } from 'react-native'
+import React, { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { CachedMeassure, CachedMeassureResult } from './PreservedMessure'
 import { Throttle } from './Throttler'
 
@@ -25,10 +25,14 @@ export type MapItem = {
 }
 
 type ImageAsMapProps = {
-    img: ImageProps['source'],
+    img?: ImageProps['source'],
+    uri?: string,
     maxScale?: number,
     initialScale?: number,
     allItems?: MapItem[],
+    minScaleIsContainIfImageRatioOver?: number,
+    notMinScaleCoverModeWhenImageIsLandscape?: boolean,
+    loadingIndicatorProps?: ActivityIndicatorProps,
 
     /**
      * default is [0.5, 0.5] (center of the map)
@@ -49,17 +53,22 @@ type ImageAsMapProps = {
 
 const ImageAsMap = ({
     img,
+    uri,
     maxScale,
     initialScale,
     allItems,
     isDrawAllItems,
     throttleInMsToUpdateItems,
     initialPointCenterByMapSizePercent,
+    minScaleIsContainIfImageRatioOver,
+    notMinScaleCoverModeWhenImageIsLandscape,
+    loadingIndicatorProps,
 }: ImageAsMapProps) => {
     const [mapRealOriginSize, setMapRealOriginSize] = useState<[number, number]>([10, 10])
     const [viewportRealSize, setViewportRealSize] = useState<[number, number]>([0, 0])
     const [currentItems, setCurrentItems] = useState<MapItem[]>([])
     const setCurrentItemsThrottler = useRef(() => { })
+    const [showIndicator, setShowIndicator] = useState(true)
 
     const itemLeftTopAnimatedValueArr = useRef(allItems && isDrawAllItems ? allItems.map(i => new Animated.ValueXY()) : [])
 
@@ -271,6 +280,15 @@ const ImageAsMap = ({
         Image.getSize(e.nativeEvent.source.uri, (w, h) => {
             setMapRealOriginSize([w, h])
 
+            const ratio = Math.max(w, h) / Math.min(w, h)
+            let minScaleIsContainOrCover = typeof minScaleIsContainIfImageRatioOver === 'number' && minScaleIsContainIfImageRatioOver > ratio
+
+            if (notMinScaleCoverModeWhenImageIsLandscape === true && w > h) {
+                minScaleIsContainOrCover = true
+            }
+
+            // console.log(ratio, minScaleIsContainOrCover);
+
             // find min scale
 
             if (viewportRealSize[0] * viewportRealSize[1] <= 0) {
@@ -278,7 +296,21 @@ const ImageAsMap = ({
                 return
             }
 
-            if (w < h) {
+            if (minScaleIsContainOrCover) {
+                if (w > h) {
+                    mapMinScale.current = viewportRealSize[0] / w
+
+                    if (mapMinScale.current * h > viewportRealSize[1])
+                        mapMinScale.current = viewportRealSize[1] / h
+                }
+                else {
+                    mapMinScale.current = viewportRealSize[1] / h
+
+                    if (mapMinScale.current * w > viewportRealSize[0])
+                        mapMinScale.current = viewportRealSize[0] / w
+                }
+            }
+            else if (w < h) {
                 mapMinScale.current = viewportRealSize[0] / w
 
                 if (mapMinScale.current * h < viewportRealSize[1])
@@ -297,12 +329,12 @@ const ImageAsMap = ({
             mapMaxScale.current = Math.max(mapMinScale.current, maxScale || 10)
 
             // other setups
-            
+
             createSetItemsThrottler()
 
             onSetScale(initialScale || mapMinScale.current, false)
 
-            if (initialPointCenterByMapSizePercent && initialPointCenterByMapSizePercent.length === 2) {
+            if (!minScaleIsContainOrCover && initialPointCenterByMapSizePercent && initialPointCenterByMapSizePercent.length === 2) {
                 setCenter(
                     initialPointCenterByMapSizePercent[0],
                     initialPointCenterByMapSizePercent[1],
@@ -390,8 +422,18 @@ const ImageAsMap = ({
         updatePositionItems()
     }, [allItems])
 
-    // console.log(currentItems.length);
-    // console.log(allItems?.length, itemLeftTopAnimatedValueArr.current.length);
+    // const key = useMemo(() => {
+    //     return Math.random()
+    //     // @ts-ignore
+    // }, [props.source.uri])
+
+    const onStartLoad = useCallback(() => {
+        setShowIndicator(true)
+    }, [])
+
+    const onEndLoad = useCallback(() => {
+        setShowIndicator(false)
+    }, [])
 
     const isDrawItems = allItems && allItems.length > 0 &&
         (isDrawAllItems !== true || allItems.length === itemLeftTopAnimatedValueArr.current.length)
@@ -408,9 +450,11 @@ const ImageAsMap = ({
             style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', overflow: 'hidden' }}>
             {/* map */}
             <Animated.Image
+                onLoadStart={onStartLoad}
                 onLoad={onLoadedMap}
+                onLoadEnd={onEndLoad}
                 resizeMode='center'
-                source={img}
+                source={img ?? { uri }}
                 style={[
                     { width: mapRealOriginSize[0], height: mapRealOriginSize[1] },
                     { ...positionLeftTopAnimated.getLayout() },
@@ -418,7 +462,7 @@ const ImageAsMap = ({
             {/* items */}
             {
                 !isDrawItems ? undefined :
-                    <View style={{ position: 'absolute', width: '100%', height: '100%', }}>
+                    <View style={style.itemsView}>
                         {
                             isDrawAllItems !== true ?
                                 // draw part
@@ -451,10 +495,23 @@ const ImageAsMap = ({
                         }
                     </View>
             }
+            {/* loading indicator */}
+            {
+                !showIndicator ? undefined :
+                    <View pointerEvents='none' style={style.loadingIndicatorView}>
+                        {
+                            <ActivityIndicator {...loadingIndicatorProps} />
+                        }
+                    </View>
+            }
         </View>
     )
 }
 
 export default ImageAsMap
 
+const style = StyleSheet.create({
+    itemsView: { position: 'absolute', width: '100%', height: '100%', },
+    loadingIndicatorView: { justifyContent: 'center', alignItems: 'center', position: 'absolute', width: '100%', height: '100%', },
+})
 const getMidPoint = (x1: number, y1: number, x2: number, y2: number): [number, number] => [(x1 + x2) / 2, (y1 + y2) / 2];

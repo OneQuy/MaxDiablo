@@ -21,16 +21,49 @@ const Chest = ({ num }: { num: number }) => {
 }
 
 const randomItems = () => {
-    return new Array(RandomInt(30, 100)).fill({}).map((i, index) => {
-        return {
-            posX: Math.random() * 2000,
-            posY: Math.random() * 2000,
+    return [
+        {
+            posX: 1119,
+            posY: 306,
             width: chestSize,
             height: chestSize,
-            element: <Chest num={index} />
+            element: <Chest num={0} />
+        } as MapItem,
+        {
+            posX: 1128,
+            posY: 780,
+            width: chestSize,
+            height: chestSize,
+            element: <Chest num={1} />
+        } as MapItem,
+        {
+            posX: 1180,
+            posY: 431,
+            width: chestSize,
+            height: chestSize,
+            element: <Chest num={2} />
+        } as MapItem,
+        {
+            posX: 1113,
+            posY: 619,
+            width: chestSize,
+            height: chestSize,
+            element: <Chest num={3} />
         } as MapItem
-    })
+    ]
 }
+
+// const randomItems = () => {
+//     return new Array(RandomInt(30, 100)).fill({}).map((i, index) => {
+//         return {
+//             posX: Math.random() * 2000,
+//             posY: Math.random() * 2000,
+//             width: chestSize,
+//             height: chestSize,
+//             element: <Chest num={index} />
+//         } as MapItem
+//     })
+// }
 
 const Helltide = () => {
     const [items, setItems] = useState(randomItems())
@@ -47,11 +80,8 @@ const Helltide = () => {
                 <ImageAsMap
                     img={wholeMap}
                     maxScale={10}
-                    // initialPointCenterByMapSizePercent={[0.7, 0.7]}
-                    // initialScale={4}
-                    // isDrawAllItems={true}
-                    // allItems={items}
-                    // throttleInMsToUpdateItems={10}
+                    isDrawAllItems={true}
+                    allItems={items}
                 />
             </View>
             <Button onPress={() => setItems(randomItems())} title='Random items' />

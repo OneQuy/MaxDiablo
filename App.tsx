@@ -204,7 +204,8 @@ function App(): JSX.Element {
     notify_style: 0,
     apple_review_version: '',
     api_index: 1,
-    fileConfig: { } as FileVersionConfig
+    fileConfig: {} as FileVersionConfig,
+    helltide: {} as Event,
   })
 
   // moving pic
@@ -1078,7 +1079,7 @@ function App(): JSX.Element {
       if (idx >= 0)
         goodStats = goodStatsAlternative[idx].stats
     }
-    
+
     const userGoodStats: Stat[] = userSlot.stats.filter(stat => goodStats.includes(stat.name.toLowerCase()))
 
     // find in class data
@@ -1503,6 +1504,15 @@ function App(): JSX.Element {
     }
   }, [])
 
+  const handleHellTideConfig = useCallback(async () => {
+    if (remoteConfig.current &&
+      remoteConfig.current.helltide &&
+      remoteConfig.current.helltide.originTime > 0 &&
+      remoteConfig.current.helltide.intervalInMinute > 0) {
+      events[1] = remoteConfig.current.helltide
+    }
+  }, [])
+
   const getFirebaseConfigAsync = useCallback(async () => {
     const res = await FirebaseDatabase_GetValueAsync('app_config')
 
@@ -1515,6 +1525,8 @@ function App(): JSX.Element {
 
     if (typeof checkAndDownloadFileConfigAsync === 'function')
       checkAndDownloadFileConfigAsync(remoteConfig.current.fileConfig, storage)
+
+    handleHellTideConfig()
 
     isDevDevice = remoteConfig.current.dev_devices.includes(getUniqueId())
 

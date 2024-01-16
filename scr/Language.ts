@@ -17,6 +17,7 @@ const viet = {
     startAt: 'Tiếp theo bắt đầu lúc ',
     update: 'Cập nhật',
     ios_updating: 'App đang bảo trì & cập nhật phiên bản mới.',
+    discord_desc: 'THAM GIA GROUP DISCORD \n ĐỂ TRADE ITEM',
     vie: 'Tiếng Việt',
     en: 'English',
     err_unique: 'Không thể rate item UNIQUE này. Vui lòng chọn hình khác!',
@@ -75,6 +76,7 @@ const eng: Lang = {
     en: 'English',
     err_unique: 'Cant rate this UNIQUE item. Pls select another pic!',
     downloadingFiles: 'Updating data...',
+    discord_desc: 'JOIN DISCORD\nTO TRADE ITEMS',
 
     noti_pp_title: 'Notification for event:',
     only_next_event: 'Only the next time',

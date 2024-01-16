@@ -1990,7 +1990,7 @@ function App(): JSX.Element {
           }
           {/* group discord */}
           <TouchableOpacity onPress={onPressDiscord} style={{ borderRadius: BorderRadius.Normal, borderWidth: BorderWidth.Normal, borderColor: 'white', paddingVertical: Outline.Margin, marginTop: Outline.Gap, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ width: '70%', textAlign: 'center', color: 'white', fontSize: FontSize.Big }}>THAM GIA GROUP DISCORD ĐỂ TRADE ITEM</Text>
+            <Text style={{ textAlign: 'center', color: 'white', fontSize: FontSize.Big }}>{lang.current.discord_desc}</Text>
             <Text style={{ textAlign: 'center', color: 'gold', fontWeight: FontWeight.Bold, fontSize: FontSize.Big }}>DISCORD.GG/GASENPAI</Text>
           </TouchableOpacity>
           {/* debug text, version, remain ocr count */}

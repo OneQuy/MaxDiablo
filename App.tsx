@@ -429,6 +429,10 @@ function App(): JSX.Element {
     setShowCheat(true)
   }, [])
 
+  const onPressDiscord = useCallback(async () => {
+    Linking.openURL('https://www.discord.gg/gasenpai')
+  }, [])
+
   const onPressCopyOCRResult = useCallback(async () => {
     if (!ocrResultTextOnly.current)
       return
@@ -1984,6 +1988,11 @@ function App(): JSX.Element {
                 }
               </View>
           }
+          {/* group discord */}
+          <TouchableOpacity onPress={onPressDiscord} style={{ borderRadius: BorderRadius.Normal, borderWidth: BorderWidth.Normal, borderColor: 'white', paddingVertical: Outline.Margin, marginTop: Outline.Gap, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ width: '70%', textAlign: 'center', color: 'white', fontSize: FontSize.Big }}>THAM GIA GROUP DISCORD ĐỂ TRADE ITEM</Text>
+            <Text style={{ textAlign: 'center', color: 'gold', fontWeight: FontWeight.Bold, fontSize: FontSize.Big }}>DISCORD.GG/GASENPAI</Text>
+          </TouchableOpacity>
           {/* debug text, version, remain ocr count */}
           <Text onPress={onPressCopyOCRResult} style={{ opacity: isTouchingImg ? 0 : 1, marginTop: Outline.Gap, color: 'gray' }}>v{version}{rateLimitText.current ? ' - ' : ''}{rateLimitText.current}{'-api' + remoteConfig.current.api_index}</Text>
         </ScrollView>

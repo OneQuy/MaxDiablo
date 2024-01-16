@@ -30,7 +30,7 @@ import { ColorNameToRgb, GetHourMinSecFromMs, RequestCameraPermissionAsync, ToCa
 import { BorderRadius, BorderWidth, FontSize, FontWeight, NotiLoopDayCountForModeAll, NotifyInMinArr_Full, NotifyInMinArr_Max20, Outline, limitMultiImage, windowSize } from './scr/AppConstant';
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ExtractSlotCard } from './scr/OCRUtils';
-import { Build, Event, IgnoredStatsOfSlot, ImgItemData, NotificationData, NotificationState, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier, UniqueBuild } from './scr/Types';
+import { Build, Event, IgnoredStatsOfSlot, ImgItemData, NotificationData, NotificationState, RateResult, SlotCard, SlotName, SlotOfClasses, Stat, StatForRatingType, SuitBuildType, Tier } from './scr/Types';
 import { IsExistedAsync } from './scr/common/FileUtils';
 import { RoundNumber, prependZero } from './scr/common/Utils';
 import { FirebaseDatabase_GetValueAsync, FirebaseDatabase_IncreaseNumberAsync, FirebaseDatabase_SetValueAsync } from './scr/common/Firebase/FirebaseDatabase';
@@ -51,9 +51,8 @@ import { useForceUpdate } from './scr/common/useForceUpdate';
 import { GetRateTypeByScore, GetSuitBuildsForUnique, IsUberUnique, defineRateType_UberUnique, defineRateType_Unique } from './scr/AppUtils';
 import { API } from './scr/API';
 import { AxiosResponse } from 'axios';
-import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification, setNotification_RemainSeconds } from './scr/common/Nofitication';
+import { NotificationOption, cancelAllLocalNotifications, initNotificationAsync, setNotification } from './scr/common/Nofitication';
 import { FileVersionConfig, allStatsData_IgnoredCase, goodStatsAlternative, uniqueBuilds, useDownloadConfigFile } from './scr/useDownloadConfigFile';
-import Helltide from './scr/Helltide';
 
 const adID_Interstitial = Platform.OS === 'android' ?
   'ca-app-pub-9208244284687724/6474432133' :

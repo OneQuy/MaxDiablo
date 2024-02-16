@@ -15,7 +15,8 @@
    "Godslayer Crown",
    "Raiment of the Infinite",
    "Tibault's Will",
-   "Flickerstep"
+   "Flickerstep",
+   "Ring of Starless Skies"
   ]
  },
  {
@@ -40,7 +41,8 @@
    "Raiment of the Infinite",
    "Tibault's Will",
    "Esu's Heirloom",
-   "Blue Rose"
+   "Blue Rose",
+   "Ring of Starless Skies"
   ]
  },
  {
@@ -59,6 +61,12 @@
   "name": "Bone Spear Necro",
   "upperSlotNames": [
    "Deathless Visage"
+  ]
+ },
+ {
+  "name": "Boulder Druid",
+  "upperSlotNames": [
+   "Ring of Starless Skies"
   ]
  },
  {
@@ -164,7 +172,9 @@
  {
   "name": "Lightning Storm Druid",
   "upperSlotNames": [
-   "Tempest Roar"
+   "Tempest Roar",
+   "Unsung Ascetic's Wraps",
+   "Dire Wolf's Ring"
   ]
  },
  {
@@ -172,7 +182,8 @@
   "upperSlotNames": [
    "Godslayer Crown",
    "Raiment of the Infinite",
-   "Flickerstep"
+   "Flickerstep",
+   "Starfall Coronet"
   ]
  },
  {
@@ -181,7 +192,8 @@
    "Condemnation",
    "Harlequin Crest",
    "Grasp of Shadow",
-   "Tibault's Will"
+   "Tibault's Will",
+   "SkyHunter"
   ]
  },
  {
@@ -254,6 +266,12 @@
    "Ancients' Oath",
    "Ramaladni's Magnum Opus",
    "Razorplate"
+  ]
+ },
+ {
+  "name": "Thunder Storm Druid",
+  "upperSlotNames": [
+   "Ring of Starless Skies"
   ]
  },
  {
